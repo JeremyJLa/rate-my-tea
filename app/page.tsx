@@ -527,7 +527,7 @@ function CompletionScreen({ ratings, onDone }: {
         <button
           onClick={goToPhase2}
           className="mt-4"
-          style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", textDecoration: "underline", textUnderlineOffset: 3 }}
+          style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", textDecoration: "underline", textUnderlineOffset: 3, marginTop: 50 }}
         >
           See your top 3 →
         </button>
@@ -660,9 +660,11 @@ export default function App() {
   const handleEditFromLeaderboard = (teaId: string) => { setActiveTeaId(teaId); setScreen("rate"); };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4" style={{ background: "#d1d5db" }}>
-      <div className="relative overflow-hidden"
-        style={{ width: "100%", maxWidth: 390, height: 844, borderRadius: 50, boxShadow: "0 40px 80px rgba(0,0,0,0.35), 0 0 0 10px #1a1a1a", background: "#F7F6F3" }}>
+    <div className="flex items-center justify-center min-h-screen sm:bg-[#d1d5db] bg-[#F7F6F3] sm:p-4">
+      <div
+        className="relative overflow-hidden w-full h-screen sm:h-[844px] sm:w-[390px] sm:rounded-[50px] sm:shadow-2xl"
+        style={{ background: "#F7F6F3" }}
+      >
 
         {/* Home */}
         <div className="absolute inset-0">
