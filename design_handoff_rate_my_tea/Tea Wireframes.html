@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en" data-annotations="on" data-paper="on">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tea Tasting — Lo-fi Wireframe Concepts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Gaegu:wght@300;400;700&family=Patrick+Hand&family=Architects+Daughter&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#f3f1ea;
+    --ink:#2c2b27;
+    --ink-soft:#6e6c63;
+    --ink-faint:#aea99d;
+    --fill:#e6e3d9;
+    --fill-2:#d6d2c5;
+    --screen:#fbfaf5;
+    --accent:#c98a2e;
+    --hand:'Gaegu';
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--hand),'Gaegu','Comic Sans MS',cursive;
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:80px;
+  }
+  html[data-paper="on"] body{
+    background-image:radial-gradient(rgba(44,43,39,.05) 1px, transparent 1.4px);
+    background-size:22px 22px;
+  }
+  html[data-annotations="off"] .anno{display:none;}
+
+  /* ---------- shared sketch primitives ---------- */
+  .sketch{border:2.5px solid var(--ink);border-radius:255px 14px 225px 14px/14px 225px 14px 255px;}
+  .sketch.alt{border-radius:14px 225px 14px 255px/255px 14px 225px 14px;}
+  .mono{font-family:ui-monospace,"SFMono-Regular",Menlo,monospace;}
+
+  .bar{height:9px;border-radius:6px;background:var(--fill);display:block;}
+  .bar.d{background:var(--fill-2);}
+  .bar.ink{background:var(--ink);opacity:.78;}
+
+  .chip{display:inline-flex;align-items:center;gap:5px;border:2px solid var(--ink);
+    border-radius:14px 6px 16px 6px/6px 14px 6px 16px;padding:2px 9px;font-size:13px;
+    line-height:1.3;background:var(--screen);white-space:nowrap;}
+  .chip.on{background:var(--accent);border-color:var(--ink);}
+  .chip.ghost{border-style:dashed;color:var(--ink-soft);}
+
+  .btn{display:flex;align-items:center;justify-content:center;gap:6px;border:2.5px solid var(--ink);
+    border-radius:200px 12px 200px 12px/12px 200px 12px 200px;padding:9px 14px;font-size:16px;
+    background:var(--screen);text-align:center;}
+  .btn.solid{background:var(--ink);color:var(--screen);}
+  .btn.acc{background:var(--accent);}
+
+  .blob{width:50px;height:50px;border-radius:50%;border:2.5px solid var(--ink);
+    background:repeating-linear-gradient(48deg,var(--fill),var(--fill) 5px,var(--screen) 5px,var(--screen) 9px);
+    display:flex;align-items:center;justify-content:center;font-family:'Caveat',cursive;
+    font-size:19px;font-weight:600;flex:none;}
+  .handle{font-size:15px;color:var(--ink-faint);letter-spacing:-1px;}
+
+  /* ---------- phone frame ---------- */
+  .fig{position:relative;}
+  .phone{width:288px;background:var(--ink);border-radius:38px;padding:7px;
+    box-shadow:6px 7px 0 rgba(44,43,39,.13);}
+  .phone .screen{background:var(--screen);border-radius:32px;height:592px;padding:14px 15px;
+    display:flex;flex-direction:column;gap:11px;overflow:hidden;position:relative;}
+  .status{display:flex;align-items:center;justify-content:space-between;font-size:12px;
+    color:var(--ink-soft);flex:none;}
+  .status .dotrow{display:flex;gap:3px;align-items:center;}
+  .status .sig{width:13px;height:9px;border:1.5px solid var(--ink-soft);border-radius:2px;}
+  .scr-title{font-family:'Caveat',cursive;font-weight:700;font-size:23px;line-height:1;white-space:nowrap;}
+  .kicker{font-size:12.5px;color:var(--ink-soft);letter-spacing:.04em;text-transform:uppercase;}
+
+  .phone.mini{width:190px;box-shadow:5px 6px 0 rgba(44,43,39,.12);}
+  .phone.mini .screen{height:392px;padding:11px 11px;gap:8px;border-radius:24px;}
+  .phone.mini .scr-title{font-size:18px;}
+  .phone.mini .status{font-size:10px;}
+
+  /* ---------- analytical axis rows ---------- */
+  .axis{display:flex;align-items:center;gap:9px;}
+  .axis .lab{width:64px;font-size:13.5px;color:var(--ink-soft);flex:none;}
+  .dots{display:flex;gap:6px;}
+  .dot{width:13px;height:13px;border-radius:50%;border:2px solid var(--ink);flex:none;}
+  .dot.on{background:var(--ink);}
+  .slider{position:relative;height:11px;border:2.5px solid var(--ink);border-radius:999px;
+    background:var(--fill);}
+  .slider .fill{position:absolute;inset:0 auto 0 0;background:var(--accent);border-radius:999px;}
+  .slider .knob{position:absolute;top:50%;width:23px;height:23px;border-radius:50%;
+    border:2.5px solid var(--ink);background:var(--screen);transform:translate(-50%,-50%);}
+
+  .rowline{display:flex;align-items:center;gap:9px;}
+  .rank{font-family:'Caveat',cursive;font-weight:700;font-size:19px;width:20px;flex:none;}
+
+  /* ---------- tier rows ---------- */
+  .tier{display:flex;align-items:stretch;border:2.5px solid var(--ink);
+    border-radius:8px 18px 8px 18px/18px 8px 18px 8px;min-height:58px;overflow:hidden;}
+  .tier .tlab{width:44px;display:flex;align-items:center;justify-content:center;
+    font-family:'Caveat',cursive;font-weight:700;font-size:26px;border-right:2.5px solid var(--ink);
+    background:var(--fill);flex:none;}
+  .tier .tlab.s{background:var(--accent);}
+  .tier .tdrop{flex:1;display:flex;align-items:center;gap:7px;padding:7px 8px;flex-wrap:wrap;}
+  .ghostslot{width:38px;height:38px;border:2px dashed var(--ink-faint);border-radius:50%;flex:none;}
+  .blob.sm{width:38px;height:38px;font-size:15px;}
+  .blob.drag{box-shadow:3px 5px 0 rgba(44,43,39,.22);transform:rotate(-7deg);position:relative;z-index:3;}
+  .tray{border:2.5px dashed var(--ink);border-radius:14px;padding:9px;display:flex;
+    align-items:center;gap:8px;flex-wrap:wrap;background:rgba(214,210,197,.35);}
+
+  /* ---------- swipe card ---------- */
+  .deck{position:relative;flex:1;display:flex;align-items:center;justify-content:center;}
+  .swipe{position:relative;width:204px;}
+  .swipe .card{border:2.5px solid var(--ink);border-radius:22px;background:var(--screen);
+    padding:16px 14px;display:flex;flex-direction:column;align-items:center;gap:11px;
+    box-shadow:4px 5px 0 rgba(44,43,39,.14);transform:rotate(-3deg);}
+  .swipe .behind{position:absolute;inset:0;border:2.5px solid var(--ink-faint);border-radius:22px;
+    background:var(--screen);}
+  .swipe .b1{transform:rotate(4deg) translate(7px,7px);z-index:0;}
+  .swipe .b2{transform:rotate(-8deg) translate(-6px,5px);z-index:0;}
+  .swipe .card{position:relative;z-index:2;}
+  .blob.big{width:84px;height:84px;font-size:30px;}
+  .swactions{display:flex;align-items:center;justify-content:space-between;gap:10px;flex:none;}
+  .swbtn{width:54px;height:54px;border-radius:50%;border:2.5px solid var(--ink);display:flex;
+    align-items:center;justify-content:center;font-size:24px;background:var(--screen);}
+  .swbtn.no{font-family:'Caveat',cursive;}
+  .swbtn.yes{background:var(--accent);}
+  .swbtn.sm{width:42px;height:42px;font-size:17px;}
+  .progress{display:flex;gap:4px;justify-content:center;flex:none;}
+  .pdot{width:9px;height:9px;border-radius:50%;border:2px solid var(--ink);}
+  .pdot.done{background:var(--ink);}
+  .pdot.now{background:var(--accent);border-color:var(--ink);transform:scale(1.25);}
+
+  /* ---------- journal ---------- */
+  .photo{border:2.5px solid var(--ink);border-radius:14px;height:118px;
+    background:repeating-linear-gradient(45deg,var(--fill),var(--fill) 9px,var(--screen) 9px,var(--screen) 18px);
+    display:flex;align-items:center;justify-content:center;flex:none;}
+  .photo span{font-size:11px;color:var(--ink-soft);background:var(--screen);padding:3px 8px;
+    border:1.5px dashed var(--ink-faint);border-radius:6px;}
+  .notelines{display:flex;flex-direction:column;gap:7px;}
+  .timeitem{display:flex;gap:9px;align-items:flex-start;}
+  .timeitem .when{font-family:'Caveat',cursive;font-size:15px;color:var(--ink-soft);width:34px;flex:none;
+    line-height:1.1;padding-top:2px;}
+  .thumb{width:34px;height:34px;border-radius:8px;border:2px solid var(--ink);flex:none;
+    background:repeating-linear-gradient(45deg,var(--fill),var(--fill) 5px,var(--screen) 5px,var(--screen) 9px);}
+  .timeline{position:relative;display:flex;flex-direction:column;gap:11px;padding-left:6px;}
+
+  /* ---------- page chrome ---------- */
+  .topbar{position:sticky;top:0;z-index:40;background:rgba(243,241,234,.92);
+    backdrop-filter:blur(6px);border-bottom:2.5px solid var(--ink);
+    padding:12px 26px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+  .topbar h1{font-family:'Caveat',cursive;font-weight:700;font-size:28px;margin:0;line-height:1;}
+  .topbar .sub{font-size:13.5px;color:var(--ink-soft);}
+  .jump{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap;}
+  .jump a{font-size:14px;text-decoration:none;color:var(--ink);padding:3px 11px;}
+  .jump a:hover{background:var(--accent);}
+
+  .lane{max-width:1180px;margin:0 auto;padding:48px 170px 30px;position:relative;}
+  .lane + .lane{border-top:2px dashed var(--ink-faint);}
+  .lane-head{display:flex;align-items:flex-start;gap:18px;margin-bottom:30px;}
+  .lane-num{font-family:'Caveat',cursive;font-weight:700;font-size:60px;line-height:.8;
+    color:var(--ink);opacity:.85;flex:none;}
+  .lane-meta h2{font-family:'Caveat',cursive;font-weight:700;font-size:34px;margin:0 0 2px;line-height:1;}
+  .lane-meta .blurb{font-size:16px;color:var(--ink-soft);max-width:560px;line-height:1.35;margin:6px 0 10px;
+    text-wrap:pretty;}
+  .lean{display:inline-block;border:2.5px solid var(--ink);border-radius:14px 6px 16px 6px/6px 14px 6px 16px;
+    padding:2px 11px;font-family:'Caveat',cursive;font-weight:600;font-size:17px;background:var(--accent);
+    margin-bottom:6px;white-space:nowrap;}
+  .patterns{display:flex;gap:7px;flex-wrap:wrap;}
+
+  .phones-row{display:flex;gap:74px;align-items:flex-start;justify-content:center;flex-wrap:wrap;}
+  .minis{display:flex;flex-direction:column;gap:26px;padding-top:18px;}
+
+  /* ---------- annotations ---------- */
+  .anno{position:absolute;max-width:166px;font-family:'Caveat',cursive;font-weight:600;
+    font-size:18.5px;line-height:1.12;color:var(--ink);z-index:5;}
+  .anno.r{text-align:left;}
+  .anno.l{text-align:right;}
+  .anno .arw{font-family:'Caveat',cursive;font-size:26px;display:block;line-height:.7;}
+
+  .legendnote{font-family:'Caveat',cursive;font-size:18px;color:var(--ink-soft);}
+
+  /* ---------- storyboard flow ---------- */
+  .lane.wide{padding-left:40px;padding-right:40px;}
+  .flowrail{display:flex;align-items:center;justify-content:flex-start;gap:0;
+    overflow-x:auto;padding:6px 4px 16px;}
+  .phone.sb{width:218px;flex:none;box-shadow:5px 6px 0 rgba(44,43,39,.12);}
+  .phone.sb .screen{height:446px;padding:11px 11px;gap:8px;border-radius:26px;}
+  .phone.sb .scr-title{font-size:18px;}
+  .phone.sb .status{font-size:10px;}
+  .sbcap{font-family:'Caveat',cursive;font-size:14px;color:var(--ink-soft);
+    text-align:center;margin-top:4px;line-height:1;}
+  .flowconn{display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:5px;min-width:74px;flex:none;align-self:center;}
+  .flowconn .arw{font-family:'Caveat',cursive;font-size:38px;line-height:.5;}
+  .flowconn .clab{font-family:'Caveat',cursive;font-size:14.5px;text-align:center;
+    color:var(--ink-soft);line-height:1.05;}
+  .hatch{background:repeating-linear-gradient(48deg,var(--fill),var(--fill) 5px,var(--screen) 5px,var(--screen) 9px);}
+  .tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+  .teacard{border:2.2px solid var(--ink);border-radius:10px 16px 10px 16px/16px 10px 16px 10px;
+    aspect-ratio:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:4px;position:relative;padding:3px;}
+  .teacard .sw{width:23px;height:23px;border-radius:50%;border:2px solid var(--ink);}
+  .teacard .tnm{font-size:8.5px;line-height:1;color:var(--ink-soft);text-align:center;text-wrap:balance;}
+  .teacard.done{opacity:.5;}
+  .teacard.done::after{content:"\2715";position:absolute;font-family:'Caveat',cursive;font-weight:700;
+    font-size:30px;color:var(--ink);}
+  .lbrow{display:flex;align-items:center;gap:8px;border:2.2px solid var(--ink);
+    border-radius:8px 16px 8px 16px/16px 8px 16px 8px;padding:7px 9px;}
+  .lbrow.top{box-shadow:3px 4px 0 rgba(44,43,39,.14);}
+
+  /* ---------- interactive rate-my-tea overlay ---------- */
+  .scrim{position:absolute;inset:0;background:rgba(44,43,39,.34);border-radius:32px;
+    display:none;align-items:flex-end;z-index:30;}
+  .scrim.show{display:flex;}
+  .sheet{background:var(--screen);border:2.5px solid var(--ink);border-radius:24px 24px 0 0;
+    width:100%;max-height:92%;padding:11px 13px 15px;display:flex;flex-direction:column;gap:8px;
+    box-shadow:0 -5px 0 rgba(44,43,39,.10);overflow:hidden;animation:sheetup .22s ease-out;}
+  @keyframes sheetup{from{transform:translateY(40px);opacity:.4;}to{transform:translateY(0);opacity:1;}}
+  .sheet .grab{width:40px;height:5px;border-radius:3px;background:var(--fill-2);margin:0 auto 1px;flex:none;}
+  .sheethead{display:flex;align-items:center;justify-content:space-between;flex:none;}
+  .sheetClose{width:26px;height:26px;border:2px solid var(--ink);border-radius:50%;display:flex;
+    align-items:center;justify-content:center;font-family:'Caveat',cursive;font-size:15px;cursor:pointer;flex:none;}
+  .pickgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 8px;justify-items:center;
+    overflow-y:auto;padding:4px 2px 2px;max-height:430px;}
+  .pickcell{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;width:100%;}
+  .pickcell .nm{font-size:10.5px;text-align:center;line-height:1.05;color:var(--ink-soft);text-wrap:balance;}
+  .pickcell.done .blob{background:var(--accent);}
+  .pickcell.done .nm{color:var(--ink);}
+  .pickcell .tick{font-family:'Caveat',cursive;font-size:11px;color:var(--ink-soft);height:12px;line-height:1;}
+  .dot,.slider{cursor:pointer;}
+
+  @media (max-width:1080px){
+    .lane{padding-left:32px;padding-right:32px;}
+    .anno{position:static;max-width:none;display:block;margin:4px 0;text-align:left;}
+    .anno .arw{display:inline;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>Tea Tasting App</h1>
+  <span class="sub">Lo-fi wireframe concepts · grayscale · rough by design</span>
+  <span class="legendnote">12-sample variety pack → confident favourites</span>
+  <nav class="jump">
+    <a href="#home">⌂ Home</a>
+    <a href="#flow">⟳ Flow</a>
+    <a href="#c1">① Lab</a>
+    <a href="#c2">② Tier</a>
+    <a href="#c3">③ Swipe</a>
+    <a href="#c4">④ Journal</a>
+  </nav>
+</div>
+
+<!-- ========================= HOME SCREEN ========================= -->
+<section class="lane" id="home" data-screen-label="Home screen">
+  <div class="lane-head">
+    <div class="lane-num">00</div>
+    <div class="lane-meta">
+      <div class="lean">shared entry</div>
+      <h2>Home</h2>
+      <p class="blurb">One front door for every concept below — see the whole pack at a glance, track how many you've tasted, and start a session with a single big tap.</p>
+      <div class="patterns">
+        <span class="chip">pack overview</span>
+        <span class="chip">tasting progress</span>
+        <span class="chip">one big CTA</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="phones-row">
+    <div class="fig">
+      <div class="phone">
+        <div class="screen" id="home-screen">
+          <div class="status"><span>9:41</span><span class="kicker">home</span><div class="dotrow"><div class="sig"></div></div></div>
+          <div>
+            <div class="scr-title" style="font-size:27px;">12-Tea Sampler</div>
+            <div class="kicker" style="text-transform:none;">variety pack · taste at your pace</div>
+          </div>
+          <div class="sketch" style="border-width:2px;border-radius:14px;padding:10px 12px;display:flex;align-items:center;gap:11px;">
+            <div style="font-family:'Caveat',cursive;font-weight:700;font-size:30px;line-height:1;" id="home-count">4<span style="font-size:18px;color:var(--ink-soft);">/12</span></div>
+            <div style="flex:1;">
+              <div class="kicker" style="font-size:11px;">tasted so far</div>
+              <div class="slider" style="margin-top:6px;height:10px;"><div class="fill" id="home-prog" style="width:33%;"></div></div>
+            </div>
+          </div>
+          <div class="kicker">your pack</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:11px;justify-items:center;" id="home-grid">
+            <div class="blob sm" data-tea="0">01</div><div class="blob sm" data-tea="1">02</div><div class="blob sm" data-tea="2">03</div><div class="blob sm" data-tea="3">04</div>
+            <div class="blob sm" data-tea="4" style="opacity:.45;">05</div><div class="blob sm" data-tea="5" style="opacity:.45;">06</div><div class="blob sm" data-tea="6" style="opacity:.45;">07</div><div class="blob sm" data-tea="7" style="opacity:.45;">08</div>
+            <div class="blob sm" data-tea="8" style="opacity:.45;">09</div><div class="blob sm" data-tea="9" style="opacity:.45;">10</div><div class="blob sm" data-tea="10" style="opacity:.45;">11</div><div class="blob sm" data-tea="11" style="opacity:.45;">12</div>
+          </div>
+          <div style="margin-top:auto;display:flex;flex-direction:column;gap:10px;">
+            <div class="btn acc" id="home-cta" style="padding:17px;font-family:'Caveat',cursive;font-weight:700;font-size:27px;border-width:3px;box-shadow:4px 5px 0 rgba(44,43,39,.18);border-radius:200px 16px 200px 16px/16px 200px 16px 200px;cursor:pointer;">Rate my tea →</div>
+            <div class="btn" style="padding:9px;font-size:15px;">★ see my favourites</div>
+          </div>
+
+          <!-- interactive rate-my-tea overlay -->
+          <div class="scrim" id="home-scrim">
+            <div class="sheet" id="home-sheet">
+              <div class="grab"></div>
+              <div id="view-pick">
+                <div class="sheethead">
+                  <div class="scr-title" style="font-size:20px;">Pick a tea to rate</div>
+                  <div class="sheetClose" data-close>✕</div>
+                </div>
+                <div class="kicker" style="text-transform:none;margin-bottom:8px;">tap any sample — taste in any order</div>
+                <div class="pickgrid" id="pickgrid"></div>
+              </div>
+              <div id="view-rate" style="display:none;flex-direction:column;gap:9px;overflow-y:auto;max-height:478px;padding-right:2px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="anno l" style="top:150px;left:-156px;">whole pack at a glance — faded = not tasted yet <span class="arw" style="text-align:right;">↘</span></div>
+      <div class="anno r" style="top:494px;right:-150px;"><span class="arw">↙</span> big, unmissable CTA drops into the tasting flow</div>
+    </div>
+
+    <div class="minis">
+      <div class="fig" style="width:220px;">
+        <div class="sketch alt" style="border-width:2px;border-radius:16px;padding:15px;background:var(--screen);box-shadow:5px 6px 0 rgba(44,43,39,.10);">
+          <div class="kicker">“rate my tea” leads into…</div>
+          <div style="display:flex;flex-direction:column;gap:11px;margin-top:11px;font-family:'Caveat',cursive;font-size:20px;">
+            <div class="rowline"><span style="font-weight:700;width:18px;">①</span> Lab — score the axes</div>
+            <div class="rowline"><span style="font-weight:700;width:18px;">②</span> Tier — drag &amp; rank</div>
+            <div class="rowline"><span style="font-weight:700;width:18px;">③</span> Swipe — keep / pass</div>
+            <div class="rowline"><span style="font-weight:700;width:18px;">④</span> Journal — note &amp; reflect</div>
+          </div>
+          <div class="kicker mono" style="font-size:10px;margin-top:13px;">one entry point, four tasting modes</div>
+        </div>
+        <div class="anno r" style="top:40px;right:-150px;"><span class="arw">↙</span> the same CTA can open any of the 4 flows</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= CORE FLOW STORYBOARD ========================= -->
+<section class="lane wide" id="flow" data-screen-label="Core flow — Rate my tea">
+  <div class="lane-head">
+    <div class="lane-num">★</div>
+    <div class="lane-meta">
+      <div class="lean">core flow · happy path</div>
+      <h2>Rate my tea — the loop</h2>
+      <p class="blurb">She picks whatever sounds good from the fixed pack of 12, brews it, and rates it while she sips. Submitting fades that tea out of the grid and feeds the leaderboard — which she can reopen to edit any score later.</p>
+    </div>
+  </div>
+
+  <div class="flowrail">
+    <!-- 1 · HOME -->
+    <div>
+      <div class="phone sb">
+        <div class="screen">
+          <div class="status"><span>9:41</span><span class="kicker">home</span><div class="dotrow"><div class="sig"></div></div></div>
+          <div class="scr-title">Rate my tea</div>
+          <div class="kicker" style="text-transform:none;">pick whatever sounds good</div>
+          <div class="tgrid" style="margin-top:2px;">
+            <div class="teacard"><div class="sw hatch"></div><div class="tnm">Melb Breakfast</div></div>
+            <div class="teacard"><div class="sw hatch"></div><div class="tnm">Jasmine</div></div>
+            <div class="teacard"><div class="sw hatch"></div><div class="tnm">Earl Grey</div></div>
+            <div class="teacard"><div class="sw hatch"></div><div class="tnm">Peppermint</div></div>
+            <div class="teacard"><div class="sw hatch"></div><div class="tnm">Sencha</div></div>
+            <div class="teacard"><div class="sw hatch"></div><div class="tnm">Oolong</div></div>
+            <div class="teacard"><div class="sw hatch"></div><div class="tnm">Chai</div></div>
+            <div class="teacard"><div class="sw hatch"></div><div class="tnm">Rooibos</div></div>
+            <div class="teacard"><div class="sw hatch"></div><div class="tnm">Hibiscus</div></div>
+            <div class="teacard"><div class="sw hatch"></div><div class="tnm">Chamomile</div></div>
+            <div class="teacard"><div class="sw hatch"></div><div class="tnm">Lemon Ginger</div></div>
+            <div class="teacard"><div class="sw hatch"></div><div class="tnm">Darjeeling</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="sbcap">① Home · the 12-tea pack</div>
+    </div>
+
+    <div class="flowconn">
+      <div class="clab">tap a tea<br>(slide up)</div>
+      <div class="arw">→</div>
+    </div>
+
+    <!-- 2 · RATE -->
+    <div>
+      <div class="phone sb">
+        <div class="screen">
+          <div class="status"><span>9:41</span><span class="kicker">rate</span><div class="dotrow"><div class="sig"></div></div></div>
+          <div class="scr-title">Melbourne Breakfast</div>
+          <div class="kicker">score the basics</div>
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <div class="axis"><span class="lab">Aroma</span><div class="dots"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></div></div>
+            <div class="axis"><span class="lab">Body</span><div class="dots"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div></div>
+            <div class="axis"><span class="lab">Sweetness</span><div class="dots"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div></div>
+            <div class="axis"><span class="lab">Finish</span><div class="dots"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></div></div>
+          </div>
+          <div style="margin-top:2px;">
+            <div class="rowline" style="justify-content:space-between;"><span class="kicker" style="text-transform:none;white-space:nowrap;">Would you buy again?</span><span style="font-family:'Caveat',cursive;font-weight:700;font-size:18px;">72%</span></div>
+            <div class="slider" style="margin-top:7px;height:13px;"><div class="fill" style="width:72%;"></div><div class="knob" style="left:72%;"></div></div>
+          </div>
+          <div class="sketch" style="border-width:2px;padding:7px 9px;border-radius:12px;color:var(--ink-soft);font-size:13px;">tasting note <span class="mono" style="font-size:10px;">(optional)</span></div>
+          <div class="btn solid" style="margin-top:auto;">SUBMIT →</div>
+        </div>
+      </div>
+      <div class="sbcap">② Rate · while she sips</div>
+    </div>
+
+    <div class="flowconn">
+      <div class="clab">submit</div>
+      <div class="arw">→</div>
+      <div class="clab" style="font-size:12px;">(slide down<br>to go back)</div>
+    </div>
+
+    <!-- 3 · HOME 2 -->
+    <div>
+      <div class="phone sb">
+        <div class="screen">
+          <div class="status"><span>9:41</span><span class="kicker">home</span><div class="dotrow"><div class="sig"></div></div></div>
+          <div class="scr-title">Rate my tea</div>
+          <div class="sketch" style="border-width:2px;border-radius:12px;padding:7px 9px;display:flex;align-items:center;gap:9px;">
+            <span class="kicker" style="font-size:10px;white-space:nowrap;">tasted</span>
+            <div class="slider" style="flex:1;height:10px;"><div class="fill" style="width:17%;"></div></div>
+            <span style="font-family:'Caveat',cursive;font-weight:700;font-size:15px;">2/12</span>
+          </div>
+          <div class="tgrid" style="margin-top:2px;">
+            <div class="teacard done"><div class="sw hatch"></div><div class="tnm">Melb Breakfast</div></div>
+            <div class="teacard"><div class="sw hatch"></div><div class="tnm">Jasmine</div></div>
+            <div class="teacard"><div class="sw hatch"></div><div class="tnm">Earl Grey</div></div>
+            <div class="teacard"><div class="sw hatch"></div><div class="tnm">Peppermint</div></div>
+            <div class="teacard done"><div class="sw hatch"></div><div class="tnm">Sencha</div></div>
+            <div class="teacard"><div class="sw hatch"></div><div class="tnm">Oolong</div></div>
+            <div class="teacard"><div class="sw hatch"></div><div class="tnm">Chai</div></div>
+            <div class="teacard"><div class="sw hatch"></div><div class="tnm">Rooibos</div></div>
+            <div class="teacard"><div class="sw hatch"></div><div class="tnm">Hibiscus</div></div>
+            <div class="teacard"><div class="sw hatch"></div><div class="tnm">Chamomile</div></div>
+            <div class="teacard"><div class="sw hatch"></div><div class="tnm">Lemon Ginger</div></div>
+            <div class="teacard"><div class="sw hatch"></div><div class="tnm">Darjeeling</div></div>
+          </div>
+          <div class="btn" style="margin-top:auto;font-size:14px;padding:8px;">view leaderboard →</div>
+        </div>
+      </div>
+      <div class="sbcap">③ Home · rated teas fade out ✕</div>
+    </div>
+
+    <div class="flowconn">
+      <div class="clab">view<br>leaderboard<br>(slide up)</div>
+      <div class="arw">→</div>
+    </div>
+
+    <!-- 4 · TEA BOARD -->
+    <div>
+      <div class="phone sb">
+        <div class="screen">
+          <div class="status"><span>9:41</span><span class="kicker">leaderboard</span><div class="dotrow"><div class="sig"></div></div></div>
+          <div class="rowline" style="justify-content:space-between;">
+            <div class="scr-title">Tea board</div>
+            <div class="sheetClose">✕</div>
+          </div>
+          <div class="kicker" style="text-transform:none;">ranked by would-buy-again</div>
+          <div style="display:flex;flex-direction:column;gap:9px;margin-top:2px;">
+            <div class="lbrow top"><span class="rank">1</span><div class="sw hatch" style="width:24px;height:24px;border-radius:50%;border:2px solid var(--ink);flex:none;"></div><span style="font-size:12px;flex:1;">Melbourne Breakfast</span><span style="font-family:'Caveat',cursive;font-weight:700;font-size:16px;">72%</span></div>
+            <div class="lbrow"><span class="rank">2</span><div class="sw hatch" style="width:24px;height:24px;border-radius:50%;border:2px solid var(--ink);flex:none;"></div><span style="font-size:12px;flex:1;">Sencha</span><span style="font-family:'Caveat',cursive;font-weight:700;font-size:16px;">62%</span></div>
+            <div class="lbrow" style="border-style:dashed;opacity:.55;"><span class="rank">3</span><div class="sw" style="width:24px;height:24px;border-radius:50%;border:2px dashed var(--ink-faint);flex:none;"></div><span style="font-size:12px;flex:1;color:var(--ink-soft);">next tea…</span><span class="kicker mono" style="font-size:9px;">—</span></div>
+          </div>
+          <div class="legendnote" style="font-size:14px;text-align:center;margin-top:auto;">tap a row to edit its rating</div>
+        </div>
+      </div>
+      <div class="sbcap">④ Tea board · ranked &amp; editable</div>
+    </div>
+
+    <div class="flowconn">
+      <div class="clab">tap a row →<br>edit rating</div>
+      <div class="arw" style="font-size:32px;">↩</div>
+      <div class="clab" style="font-size:12px;">(back to ②)</div>
+    </div>
+  </div>
+
+  <p class="blurb" style="max-width:760px;margin:14px auto 0;text-align:center;">
+    The loop: <strong>pick → brew → rate → submit</strong>. Each submit fades that tea out of the grid and bumps it onto the leaderboard, so she always sees what's left to taste and where her current favourites stand — and nothing is locked in, since any leaderboard row reopens Rate.
+  </p>
+</section>
+
+<!-- ========================= CONCEPT 1 — TEA LAB ========================= -->
+<section class="lane" id="c1" data-screen-label="Concept 1 — Tea Lab">
+  <div class="lane-head">
+    <div class="lane-num">01</div>
+    <div class="lane-meta">
+      <div class="lean">analytical</div>
+      <h2>Tea Lab</h2>
+      <p class="blurb">Score every sample on the same handful of axes, mark a buy-again %, and let the app rank your pack objectively. For the taster who wants comparable data, not just gut feel.</p>
+      <div class="patterns">
+        <span class="chip">multi-axis rating</span>
+        <span class="chip">buy-again slider</span>
+        <span class="chip">auto leaderboard</span>
+        <span class="chip">pairwise compare</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="phones-row">
+    <!-- HERO: rate a sample -->
+    <div class="fig">
+      <div class="phone">
+        <div class="screen">
+          <div class="status"><span>9:41</span><span class="kicker">lab</span><div class="dotrow"><div class="sig"></div></div></div>
+          <div class="rowline" style="gap:11px;">
+            <div class="blob">02</div>
+            <div>
+              <div class="scr-title">Jasmine Green</div>
+              <div class="kicker" style="text-transform:none;">sample 2 of 12 · loose leaf</div>
+            </div>
+          </div>
+          <div class="kicker">score the basics</div>
+          <div style="display:flex;flex-direction:column;gap:11px;">
+            <div class="axis"><span class="lab">Aroma</span><div class="dots"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></div></div>
+            <div class="axis"><span class="lab">Body</span><div class="dots"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div></div>
+            <div class="axis"><span class="lab">Sweetness</span><div class="dots"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div></div>
+            <div class="axis"><span class="lab">Bitterness</span><div class="dots"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div></div>
+            <div class="axis"><span class="lab">Finish</span><div class="dots"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></div></div>
+          </div>
+          <div style="margin-top:3px;">
+            <div class="rowline" style="justify-content:space-between;"><span class="kicker" style="text-transform:none;white-space:nowrap;">Would buy again?</span><span style="font-family:'Caveat',cursive;font-weight:700;font-size:19px;">72%</span></div>
+            <div class="slider" style="margin-top:8px;"><div class="fill" style="width:72%;"></div><div class="knob" style="left:72%;"></div></div>
+          </div>
+          <div class="sketch" style="border-width:2px;padding:8px 10px;border-radius:12px;color:var(--ink-soft);font-size:14px;">+ tasting note <span class="mono" style="font-size:11px;">(optional)</span></div>
+          <div style="margin-top:auto;display:flex;gap:9px;">
+            <div class="btn" style="flex:none;width:52px;">skip</div>
+            <div class="btn solid" style="flex:1;">Save &amp; next →</div>
+          </div>
+        </div>
+      </div>
+      <div class="anno l" style="top:120px;left:-156px;">multi-axis quick score — same axes every cup <span class="arw" style="text-align:right;">↘</span></div>
+      <div class="anno r" style="top:372px;right:-150px;"><span class="arw">↙</span> buy-again as a % — the real purchase signal</div>
+    </div>
+
+    <div class="minis">
+      <!-- MINI A: leaderboard -->
+      <div class="fig">
+        <div class="phone mini">
+          <div class="screen">
+            <div class="status"><span>9:41</span><div class="dotrow"><div class="sig"></div></div></div>
+            <div class="scr-title">Leaderboard</div>
+            <div class="rowline" style="justify-content:space-between;"><span class="chip ghost" style="font-size:11px;">sort: overall ▾</span><span class="kicker mono" style="font-size:10px;">9/12 rated</span></div>
+            <div style="display:flex;flex-direction:column;gap:9px;margin-top:2px;">
+              <div class="rowline"><span class="rank">1</span><div class="blob sm">07</div><div style="flex:1;"><span class="bar ink" style="width:92%;"></span></div></div>
+              <div class="rowline"><span class="rank">2</span><div class="blob sm">02</div><div style="flex:1;"><span class="bar ink" style="width:81%;"></span></div></div>
+              <div class="rowline"><span class="rank">3</span><div class="blob sm">11</div><div style="flex:1;"><span class="bar" style="width:74%;"></span></div></div>
+              <div class="rowline"><span class="rank">4</span><div class="blob sm">05</div><div style="flex:1;"><span class="bar" style="width:60%;"></span></div></div>
+              <div class="rowline"><span class="rank">5</span><div class="blob sm">09</div><div style="flex:1;"><span class="bar" style="width:54%;"></span></div></div>
+            </div>
+            <div class="btn acc" style="margin-top:auto;font-size:14px;padding:7px;">★ shortlist top 3</div>
+          </div>
+        </div>
+        <div class="anno r" style="top:60px;right:-150px;"><span class="arw">↙</span> ranked automatically from your scores</div>
+      </div>
+
+      <!-- MINI B: head to head -->
+      <div class="fig">
+        <div class="phone mini">
+          <div class="screen">
+            <div class="status"><span>9:41</span><div class="dotrow"><div class="sig"></div></div></div>
+            <div class="scr-title">Head to head</div>
+            <div class="rowline" style="justify-content:space-around;">
+              <div style="text-align:center;"><div class="blob sm" style="margin:0 auto;">07</div><div class="kicker mono" style="font-size:9px;margin-top:3px;">Chai</div></div>
+              <span style="font-family:'Caveat',cursive;font-weight:700;">vs</span>
+              <div style="text-align:center;"><div class="blob sm" style="margin:0 auto;">02</div><div class="kicker mono" style="font-size:9px;margin-top:3px;">Jasmine</div></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:3px;">
+              <div><div class="kicker" style="font-size:10px;">aroma</div><div class="rowline"><span class="bar ink" style="width:48%;"></span><span class="bar d" style="width:34%;"></span></div></div>
+              <div><div class="kicker" style="font-size:10px;">body</div><div class="rowline"><span class="bar ink" style="width:40%;"></span><span class="bar d" style="width:44%;"></span></div></div>
+              <div><div class="kicker" style="font-size:10px;">finish</div><div class="rowline"><span class="bar ink" style="width:50%;"></span><span class="bar d" style="width:30%;"></span></div></div>
+            </div>
+            <div class="sketch" style="border-radius:12px;padding:7px;text-align:center;margin-top:auto;background:var(--accent);font-size:14px;">winner: #07 Chai</div>
+          </div>
+        </div>
+        <div class="anno r" style="top:150px;right:-150px;"><span class="arw">↙</span> pairwise compare breaks ties</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= CONCEPT 2 — TIER TEA ========================= -->
+<section class="lane" id="c2" data-screen-label="Concept 2 — Tier Tea">
+  <div class="lane-head">
+    <div class="lane-num">02</div>
+    <div class="lane-meta">
+      <div class="lean">playful &amp; visual</div>
+      <h2>Tier Tea</h2>
+      <p class="blurb">A TierMaker board for your pack. Drag each tea token into S / A / B / C tiers, shuffle them around as you taste more, and watch your favourites rise to the top. Pure tactile fun.</p>
+      <div class="patterns">
+        <span class="chip">drag-and-drop tiers</span>
+        <span class="chip">rearrange freely</span>
+        <span class="chip">instant feedback</span>
+        <span class="chip">visual discovery</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="phones-row">
+    <!-- HERO: tier board -->
+    <div class="fig">
+      <div class="phone">
+        <div class="screen">
+          <div class="status"><span>9:41</span><span class="kicker">tier</span><div class="dotrow"><div class="sig"></div></div></div>
+          <div class="scr-title">Your tier board</div>
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <div class="tier"><div class="tlab s">S</div><div class="tdrop"><div class="blob sm">07</div><div class="blob sm">11</div></div></div>
+            <div class="tier"><div class="tlab">A</div><div class="tdrop"><div class="blob sm">02</div><div class="blob sm drag">05</div><div class="ghostslot"></div></div></div>
+            <div class="tier"><div class="tlab">B</div><div class="tdrop"><div class="blob sm">09</div></div></div>
+            <div class="tier"><div class="tlab">C</div><div class="tdrop"><div class="blob sm">01</div><div class="blob sm">03</div></div></div>
+          </div>
+          <div class="kicker" style="margin-top:4px;">not ranked yet · 5 left</div>
+          <div class="tray">
+            <div class="blob sm">04</div>
+            <div class="blob sm">06</div>
+            <div class="blob sm">08</div>
+            <div class="blob sm">10</div>
+            <div class="blob sm">12</div>
+          </div>
+          <div class="btn" style="margin-top:auto;">＋ taste next sample</div>
+        </div>
+      </div>
+      <div class="anno l" style="top:150px;left:-158px;">drag a tea token straight into a tier <span class="arw" style="text-align:right;">↘</span></div>
+      <div class="anno r" style="top:200px;right:-150px;"><span class="arw">↙</span> mid-drag — drops into the open slot</div>
+      <div class="anno l" style="top:430px;left:-150px;">untasted teas wait in the tray <span class="arw" style="text-align:right;">↘</span></div>
+    </div>
+
+    <div class="minis">
+      <!-- MINI A: empty start -->
+      <div class="fig">
+        <div class="phone mini">
+          <div class="screen">
+            <div class="status"><span>9:41</span><div class="dotrow"><div class="sig"></div></div></div>
+            <div class="scr-title">Start ranking</div>
+            <div style="display:flex;flex-direction:column;gap:7px;">
+              <div class="tier" style="min-height:42px;"><div class="tlab s" style="font-size:20px;">S</div><div class="tdrop"></div></div>
+              <div class="tier" style="min-height:42px;"><div class="tlab" style="font-size:20px;">A</div><div class="tdrop"></div></div>
+              <div class="tier" style="min-height:42px;"><div class="tlab" style="font-size:20px;">B</div><div class="tdrop"></div></div>
+            </div>
+            <div style="text-align:center;font-family:'Caveat',cursive;font-size:20px;color:var(--ink-soft);">drag up ↑</div>
+            <div class="tray" style="margin-top:auto;">
+              <div class="blob sm">01</div><div class="blob sm">02</div><div class="blob sm">03</div><div class="blob sm">04</div>
+            </div>
+          </div>
+        </div>
+        <div class="anno r" style="top:54px;right:-150px;"><span class="arw">↙</span> empty board, all 12 in the tray</div>
+      </div>
+
+      <!-- MINI B: celebration -->
+      <div class="fig">
+        <div class="phone mini">
+          <div class="screen">
+            <div class="status"><span>9:41</span><div class="dotrow"><div class="sig"></div></div></div>
+            <div class="scr-title">Your S-tier ★</div>
+            <div style="position:relative;text-align:center;font-family:'Caveat',cursive;color:var(--ink-faint);font-size:15px;">✦ &nbsp; ✧ &nbsp; ✦ &nbsp; ✧</div>
+            <div class="tier" style="border-width:3px;"><div class="tlab s">S</div><div class="tdrop"><div class="blob sm">07</div><div class="blob sm">11</div></div></div>
+            <div style="text-align:center;font-family:'Caveat',cursive;font-size:19px;margin-top:4px;">2 clear favourites!</div>
+            <div style="display:flex;flex-direction:column;gap:7px;margin-top:2px;">
+              <div class="rowline"><div class="blob sm">07</div><div style="flex:1;"><div style="font-size:13px;">Masala Chai</div><span class="bar ink" style="width:90%;"></span></div></div>
+              <div class="rowline"><div class="blob sm">11</div><div style="flex:1;"><div style="font-size:13px;">Hibiscus</div><span class="bar ink" style="width:84%;"></span></div></div>
+            </div>
+            <div class="btn acc" style="margin-top:auto;font-size:14px;padding:7px;">buy these in bulk →</div>
+          </div>
+        </div>
+        <div class="anno r" style="top:150px;right:-150px;"><span class="arw">↙</span> satisfying payoff at the top</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= CONCEPT 3 — SIP & SWIPE ========================= -->
+<section class="lane" id="c3" data-screen-label="Concept 3 — Sip & Swipe">
+  <div class="lane-head">
+    <div class="lane-num">03</div>
+    <div class="lane-meta">
+      <div class="lean">fast &amp; low-friction</div>
+      <h2>Sip &amp; Swipe</h2>
+      <p class="blurb">One tea, one card, one decision. Swipe right to keep, left to pass, tap flavour chips instead of typing. Built to fly through all 12 samples in under a minute with zero pressure.</p>
+      <div class="patterns">
+        <span class="chip">one card at a time</span>
+        <span class="chip">swipe to decide</span>
+        <span class="chip">tap, don't type</span>
+        <span class="chip">&lt;5s per tea</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="phones-row">
+    <!-- HERO: swipe card -->
+    <div class="fig">
+      <div class="phone">
+        <div class="screen">
+          <div class="status"><span>9:41</span><span class="kicker">swipe</span><div class="dotrow"><div class="sig"></div></div></div>
+          <div class="progress">
+            <span class="pdot done"></span><span class="pdot done"></span><span class="pdot done"></span><span class="pdot now"></span><span class="pdot"></span><span class="pdot"></span><span class="pdot"></span><span class="pdot"></span><span class="pdot"></span><span class="pdot"></span><span class="pdot"></span><span class="pdot"></span>
+          </div>
+          <div class="kicker" style="text-align:center;text-transform:none;">tea 4 of 12</div>
+          <div class="deck">
+            <div class="swipe">
+              <div class="behind b1"></div>
+              <div class="behind b2"></div>
+              <div class="card">
+                <div class="blob big">04</div>
+                <div style="font-family:'Caveat',cursive;font-weight:700;font-size:26px;text-align:center;line-height:1;">Peppermint</div>
+                <div class="kicker mono" style="font-size:10px;">herbal · caffeine-free</div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;">
+                  <span class="chip" style="font-size:12px;">cooling</span>
+                  <span class="chip" style="font-size:12px;">crisp</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="text-align:center;font-family:'Caveat',cursive;font-size:19px;color:var(--ink-soft);">← pass &nbsp;·&nbsp; keep →</div>
+          <div class="swactions">
+            <div class="swbtn no">✕</div>
+            <div class="swbtn sm">↻</div>
+            <div class="swbtn yes">♥</div>
+          </div>
+        </div>
+      </div>
+      <div class="anno l" style="top:210px;left:-156px;">one tea per card, stack behind <span class="arw" style="text-align:right;">↘</span></div>
+      <div class="anno r" style="top:470px;right:-150px;"><span class="arw">↙</span> swipe or tap: pass · maybe · keep</div>
+    </div>
+
+    <div class="minis">
+      <!-- MINI A: flavour chips -->
+      <div class="fig">
+        <div class="phone mini">
+          <div class="screen">
+            <div class="status"><span>9:41</span><div class="dotrow"><div class="sig"></div></div></div>
+            <div class="scr-title">Quick note</div>
+            <div class="kicker" style="text-transform:none;">tap what you taste — skip if you like</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:3px;">
+              <span class="chip on" style="font-size:12px;">minty</span>
+              <span class="chip" style="font-size:12px;">floral</span>
+              <span class="chip on" style="font-size:12px;">fresh</span>
+              <span class="chip" style="font-size:12px;">earthy</span>
+              <span class="chip" style="font-size:12px;">sweet</span>
+              <span class="chip" style="font-size:12px;">bitter</span>
+              <span class="chip" style="font-size:12px;">smoky</span>
+              <span class="chip" style="font-size:12px;">citrus</span>
+              <span class="chip ghost" style="font-size:12px;">＋</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:7px;margin-top:10px;">
+              <span class="kicker" style="text-transform:none;">strength</span>
+              <div class="slider" style="flex:1;"><div class="fill" style="width:55%;"></div><div class="knob" style="left:55%;"></div></div>
+            </div>
+            <div class="btn solid" style="margin-top:auto;font-size:14px;padding:8px;">next tea →</div>
+          </div>
+        </div>
+        <div class="anno r" style="top:80px;right:-150px;"><span class="arw">↙</span> tap chips, never the keyboard</div>
+      </div>
+
+      <!-- MINI B: done -->
+      <div class="fig">
+        <div class="phone mini">
+          <div class="screen">
+            <div class="status"><span>9:41</span><div class="dotrow"><div class="sig"></div></div></div>
+            <div class="scr-title">All done!</div>
+            <div style="display:flex;justify-content:center;gap:14px;margin-top:8px;">
+              <div style="text-align:center;"><div style="font-family:'Caveat',cursive;font-weight:700;font-size:38px;line-height:1;">9</div><div class="kicker">kept ♥</div></div>
+              <div style="text-align:center;"><div style="font-family:'Caveat',cursive;font-weight:700;font-size:38px;line-height:1;color:var(--ink-faint);">3</div><div class="kicker">passed</div></div>
+            </div>
+            <div class="kicker" style="margin-top:6px;">your keeps</div>
+            <div style="display:flex;gap:7px;flex-wrap:wrap;">
+              <div class="blob sm">04</div><div class="blob sm">02</div><div class="blob sm">07</div><div class="blob sm">11</div><div class="blob sm">09</div>
+            </div>
+            <div class="btn acc" style="margin-top:auto;font-size:14px;padding:8px;">see shortlist →</div>
+          </div>
+        </div>
+        <div class="anno r" style="top:140px;right:-150px;"><span class="arw">↙</span> a shortlist in under a minute</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= CONCEPT 4 — TEA JOURNAL ========================= -->
+<section class="lane" id="c4" data-screen-label="Concept 4 — Tea Journal">
+  <div class="lane-head">
+    <div class="lane-num">04</div>
+    <div class="lane-meta">
+      <div class="lean">memory &amp; reflection</div>
+      <h2>Tea Journal</h2>
+      <p class="blurb">Slow it down and remember. Each cup gets a photo, free tasting notes and a short reflection prompt. Look back over time and revisit past favourites so memory never decides for you.</p>
+      <div class="patterns">
+        <span class="chip">photo + notes</span>
+        <span class="chip">reflection prompt</span>
+        <span class="chip">tasting timeline</span>
+        <span class="chip">revisit &amp; confirm</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="phones-row">
+    <!-- HERO: journal entry -->
+    <div class="fig">
+      <div class="phone">
+        <div class="screen">
+          <div class="status"><span>9:41</span><span class="kicker">journal</span><div class="dotrow"><div class="sig"></div></div></div>
+          <div class="rowline" style="justify-content:space-between;">
+            <div class="scr-title">Masala Chai</div>
+            <span class="kicker mono" style="font-size:10px;">Tue · Apr 14</span>
+          </div>
+          <div class="photo"><span class="mono">cup photo</span></div>
+          <div>
+            <div class="kicker">tasting notes</div>
+            <div class="notelines" style="margin-top:6px;">
+              <span class="bar" style="width:100%;"></span>
+              <span class="bar" style="width:92%;"></span>
+              <span class="bar" style="width:68%;"></span>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <span class="chip" style="font-size:12px;">spiced</span>
+            <span class="chip" style="font-size:12px;">warming</span>
+            <span class="chip" style="font-size:12px;">creamy</span>
+          </div>
+          <div class="sketch alt" style="border-width:2px;border-radius:14px;padding:9px 11px;">
+            <div class="kicker" style="text-transform:none;">it reminded me of…</div>
+            <div class="notelines" style="margin-top:6px;"><span class="bar d" style="width:88%;"></span><span class="bar d" style="width:54%;"></span></div>
+          </div>
+          <div class="rowline" style="justify-content:space-between;margin-top:auto;">
+            <div class="dots"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></div>
+            <div class="btn solid" style="flex:none;padding:8px 16px;">save</div>
+          </div>
+        </div>
+      </div>
+      <div class="anno l" style="top:150px;left:-156px;">photo + free notes anchor the memory <span class="arw" style="text-align:right;">↘</span></div>
+      <div class="anno r" style="top:380px;right:-150px;"><span class="arw">↙</span> a reflection prompt to make it stick</div>
+    </div>
+
+    <div class="minis">
+      <!-- MINI A: timeline -->
+      <div class="fig">
+        <div class="phone mini">
+          <div class="screen">
+            <div class="status"><span>9:41</span><div class="dotrow"><div class="sig"></div></div></div>
+            <div class="scr-title">Your tastings</div>
+            <div class="timeline">
+              <div class="timeitem"><span class="when">Apr 14</span><div class="thumb"></div><div style="flex:1;"><div style="font-size:13px;">Masala Chai</div><span class="bar" style="width:80%;"></span></div></div>
+              <div class="timeitem"><span class="when">Apr 12</span><div class="thumb"></div><div style="flex:1;"><div style="font-size:13px;">Hibiscus</div><span class="bar" style="width:65%;"></span></div></div>
+              <div class="timeitem"><span class="when">Apr 11</span><div class="thumb"></div><div style="flex:1;"><div style="font-size:13px;">Jasmine</div><span class="bar" style="width:72%;"></span></div></div>
+              <div class="timeitem"><span class="when">Apr 9</span><div class="thumb"></div><div style="flex:1;"><div style="font-size:13px;">Sencha</div><span class="bar" style="width:50%;"></span></div></div>
+            </div>
+            <div class="btn" style="margin-top:auto;font-size:13px;padding:7px;">filter by flavour ▾</div>
+          </div>
+        </div>
+        <div class="anno r" style="top:70px;right:-150px;"><span class="arw">↙</span> scroll back through every cup</div>
+      </div>
+
+      <!-- MINI B: remember this -->
+      <div class="fig">
+        <div class="phone mini">
+          <div class="screen">
+            <div class="status"><span>9:41</span><div class="dotrow"><div class="sig"></div></div></div>
+            <div class="scr-title">Remember this?</div>
+            <div class="kicker" style="text-transform:none;">two old favourites — still true?</div>
+            <div style="display:flex;gap:9px;margin-top:4px;">
+              <div class="sketch" style="flex:1;border-radius:14px;padding:9px;text-align:center;border-width:2px;">
+                <div class="blob sm" style="margin:0 auto;">07</div>
+                <div style="font-size:12px;margin-top:5px;">Chai</div>
+                <div class="kicker mono" style="font-size:8px;">"cosy, spiced"</div>
+              </div>
+              <div class="sketch" style="flex:1;border-radius:14px;padding:9px;text-align:center;border-width:2px;">
+                <div class="blob sm" style="margin:0 auto;">02</div>
+                <div style="font-size:12px;margin-top:5px;">Jasmine</div>
+                <div class="kicker mono" style="font-size:8px;">"light, floral"</div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:7px;margin-top:8px;">
+              <div class="btn acc" style="font-size:13px;padding:7px;">still my fave ★</div>
+              <div class="btn" style="font-size:13px;padding:7px;">they're a tie</div>
+            </div>
+            <div class="kicker mono" style="font-size:9px;text-align:center;margin-top:auto;">confirm before you bulk-buy</div>
+          </div>
+        </div>
+        <div class="anno r" style="top:150px;right:-150px;"><span class="arw">↙</span> revisit to confirm — not memory alone</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="tweak-root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel">
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accent": "#5f6b7a",
+  "handFont": "Gaegu",
+  "annotations": true,
+  "paper": true
+}/*EDITMODE-END*/;
+
+function App(){
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  React.useEffect(()=>{
+    const r = document.documentElement;
+    r.style.setProperty('--accent', t.accent);
+    r.style.setProperty('--hand', "'" + t.handFont + "'");
+    r.dataset.annotations = t.annotations ? 'on' : 'off';
+    r.dataset.paper = t.paper ? 'on' : 'off';
+  }, [t]);
+  return (
+    <TweaksPanel title="Tweaks">
+      <TweakSection label="Look" />
+      <TweakColor label="Accent" value={t.accent}
+        options={['#c98a2e','#7d8a5c','#5f6b7a','#9a8f86']}
+        onChange={(v)=>setTweak('accent', v)} />
+      <TweakRadio label="Handwriting" value={t.handFont}
+        options={[{value:'Gaegu',label:'Gaegu'},{value:'Patrick Hand',label:'Hand'},{value:'Architects Daughter',label:'Sketch'}]}
+        onChange={(v)=>setTweak('handFont', v)} />
+      <TweakSection label="Display" />
+      <TweakToggle label="Annotations" value={t.annotations} onChange={(v)=>setTweak('annotations', v)} />
+      <TweakToggle label="Paper texture" value={t.paper} onChange={(v)=>setTweak('paper', v)} />
+    </TweaksPanel>
+  );
+}
+ReactDOM.createRoot(document.getElementById('tweak-root')).render(<App />);
+</script>
+
+<script>
+/* ---- Rate my tea: CTA → sample picker → rating panel ---- */
+(function(){
+  var TEAS = ["English Breakfast","Jasmine Green","Earl Grey","Peppermint","Sencha","Oolong","Masala Chai","Rooibos","Chamomile","Lemon Ginger","Hibiscus","Darjeeling"];
+  var KINDS = ["black","green","black","herbal","green","oolong","spiced","herbal","herbal","herbal","herbal","black"];
+  var AXES = ["Aroma","Body","Sweetness","Bitterness","Finish"];
+  var tasted = {0:true,1:true,2:true,3:true};
+
+  var scrim = document.getElementById('home-scrim');
+  var sheet = document.getElementById('home-sheet');
+  var viewPick = document.getElementById('view-pick');
+  var viewRate = document.getElementById('view-rate');
+  var pickgrid = document.getElementById('pickgrid');
+  var cta = document.getElementById('home-cta');
+  if(!scrim) return;
+
+  function pad(n){ return (n+1<10?'0':'') + (n+1); }
+
+  function buildPicker(){
+    pickgrid.innerHTML = '';
+    TEAS.forEach(function(name, i){
+      var cell = document.createElement('div');
+      cell.className = 'pickcell' + (tasted[i] ? ' done' : '');
+      cell.innerHTML =
+        '<div class="blob sm">'+pad(i)+'</div>' +
+        '<div class="nm">'+name+'</div>' +
+        '<div class="tick">'+(tasted[i] ? 'rated ✓' : '')+'</div>';
+      cell.addEventListener('click', function(){ openRating(i); });
+      pickgrid.appendChild(cell);
+    });
+  }
+
+  function openSheet(){
+    buildPicker();
+    viewPick.style.display = 'block';
+    viewRate.style.display = 'none';
+    scrim.classList.add('show');
+  }
+  function closeSheet(){ scrim.classList.remove('show'); }
+
+  function openRating(i){
+    viewPick.style.display = 'none';
+    viewRate.style.display = 'flex';
+
+    var rows = AXES.map(function(ax){
+      return '<div class="axis"><span class="lab">'+ax+'</span>'+
+        '<div class="dots" data-axis>'+
+        '<span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>'+
+        '</div></div>';
+    }).join('');
+
+    viewRate.innerHTML =
+      '<div class="sheethead">'+
+        '<div style="display:flex;align-items:center;gap:9px;">'+
+          '<div class="sheetClose" data-back>←</div>'+
+          '<div><div class="scr-title" style="font-size:19px;">'+TEAS[i]+'</div>'+
+          '<div class="kicker mono" style="font-size:9px;">sample '+pad(i)+' · '+KINDS[i]+'</div></div>'+
+        '</div>'+
+        '<div class="sheetClose" data-close>✕</div>'+
+      '</div>'+
+      '<div class="kicker">score the basics</div>'+
+      '<div style="display:flex;flex-direction:column;gap:9px;">'+rows+'</div>'+
+      '<div style="margin-top:2px;">'+
+        '<div class="rowline" style="justify-content:space-between;"><span class="kicker" style="text-transform:none;white-space:nowrap;">Would buy again?</span>'+
+        '<span style="font-family:\'Caveat\',cursive;font-weight:700;font-size:19px;" id="rate-pct">60%</span></div>'+
+        '<div class="slider" id="rate-slider" style="margin-top:8px;height:13px;"><div class="fill" style="width:60%;"></div><div class="knob" style="left:60%;"></div></div>'+
+      '</div>'+
+      '<div class="sketch" style="border-width:2px;padding:8px 10px;border-radius:12px;color:var(--ink-soft);font-size:14px;">+ tasting note <span class="mono" style="font-size:11px;">(optional)</span></div>'+
+      '<div style="margin-top:4px;display:flex;gap:9px;">'+
+        '<div class="btn" data-back style="flex:none;width:60px;cursor:pointer;">back</div>'+
+        '<div class="btn solid" data-save style="flex:1;cursor:pointer;">Save &amp; next →</div>'+
+      '</div>';
+
+    /* axis dots: click to set rating up to that dot */
+    viewRate.querySelectorAll('[data-axis]').forEach(function(row){
+      var dots = [].slice.call(row.children);
+      dots.forEach(function(d, di){
+        d.addEventListener('click', function(){
+          dots.forEach(function(x, xi){ x.classList.toggle('on', xi <= di); });
+        });
+      });
+    });
+
+    /* buy-again slider: click / drag to set % */
+    var slider = viewRate.querySelector('#rate-slider');
+    var fill = slider.querySelector('.fill');
+    var knob = slider.querySelector('.knob');
+    var pctLbl = viewRate.querySelector('#rate-pct');
+    function setPct(clientX){
+      var r = slider.getBoundingClientRect();
+      var p = Math.max(0, Math.min(1, (clientX - r.left) / r.width));
+      var pct = Math.round(p * 100);
+      fill.style.width = pct + '%';
+      knob.style.left = pct + '%';
+      pctLbl.textContent = pct + '%';
+    }
+    var dragging = false;
+    slider.addEventListener('pointerdown', function(e){ dragging = true; slider.setPointerCapture(e.pointerId); setPct(e.clientX); });
+    slider.addEventListener('pointermove', function(e){ if(dragging) setPct(e.clientX); });
+    slider.addEventListener('pointerup', function(){ dragging = false; });
+
+    /* save → mark tasted, update home, back to picker */
+    viewRate.querySelectorAll('[data-save]').forEach(function(b){
+      b.addEventListener('click', function(){ markTasted(i); openSheet(); });
+    });
+    viewRate.querySelectorAll('[data-back]').forEach(function(b){
+      b.addEventListener('click', function(){ openSheet(); });
+    });
+  }
+
+  function markTasted(i){
+    if(tasted[i]) return;
+    tasted[i] = true;
+    var blob = document.querySelector('#home-grid [data-tea="'+i+'"]');
+    if(blob) blob.style.opacity = '1';
+    var n = Object.keys(tasted).length;
+    var counter = document.getElementById('home-count');
+    if(counter) counter.firstChild.textContent = n;
+    var prog = document.getElementById('home-prog');
+    if(prog) prog.style.width = Math.round(n/12*100) + '%';
+  }
+
+  cta.addEventListener('click', openSheet);
+  scrim.addEventListener('click', function(e){
+    if(e.target === scrim) closeSheet();
+    if(e.target.hasAttribute && e.target.hasAttribute('data-close')) closeSheet();
+  });
+  /* delegate close on the ✕ buttons inside */
+  sheet.addEventListener('click', function(e){
+    var t = e.target.closest('[data-close]');
+    if(t) closeSheet();
+  });
+})();
+</script>
+</body>
+</html>
