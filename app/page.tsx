@@ -191,7 +191,7 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard }: {
   const progressPct = (tastedCount / 11) * 100;
 
   return (
-    <div className="flex flex-col h-full" style={{ background: "#F7F6F3" }}>
+    <div className="h-full overflow-y-auto" style={{ background: "#F7F6F3" }}>
       <StatusBar />
 
       {/* Header */}
@@ -216,7 +216,7 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard }: {
       </div>
 
       {/* Grid */}
-      <div className="flex-1 overflow-y-auto px-4" style={{ paddingTop: 20, paddingBottom: 88 }}>
+      <div className="px-4" style={{ paddingTop: 20, paddingBottom: 110 }}>
         <div className="grid grid-cols-3 gap-3">
           {TEAS.map((tea) => (
             <TeaCard key={tea.id} tea={tea} rated={ratings.has(tea.id)}
@@ -227,11 +227,18 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard }: {
 
       {/* Leaderboard button */}
       {tastedCount > 0 && (
-        <div className="absolute bottom-0 inset-x-0 px-5 pb-8 pt-3" style={{ background: "linear-gradient(to top, #F7F6F3 70%, transparent)" }}>
+        <div className="absolute bottom-0 inset-x-0 flex justify-center pb-8 pt-6 pointer-events-none">
           <button
             onClick={onViewLeaderboard}
-            className="w-full flex items-center justify-center gap-2 font-semibold text-white transition-opacity active:opacity-80"
-            style={{ height: 52, borderRadius: 16, background: "linear-gradient(135deg,#1a1a1a,#3a3a3a)", fontSize: 15 }}
+            className="flex items-center justify-center gap-2 font-semibold text-white transition-opacity active:opacity-80 pointer-events-auto"
+            style={{
+              height: 52, paddingInline: 32, borderRadius: 9999,
+              background: "rgba(26,26,26,0.85)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              boxShadow: "0 8px 32px rgba(0,0,0,0.25)",
+              fontSize: 15,
+            }}
           >
             View leaderboard
             <span style={{ opacity: 0.6 }}>→</span>
@@ -549,7 +556,7 @@ function CompletionScreen({ ratings, onDone }: {
 
         <div className="flex gap-3 mt-6">
           {top3.map((tea, i) => (
-            <div key={tea.id} className="flex-1 flex flex-col items-center gap-3">
+            <div key={tea.id} className="flex-1 flex flex-col items-center">
               {/* Rank badge */}
               <div className="flex items-center justify-center font-bold" style={{
                 width: 26, height: 26, borderRadius: 13,
@@ -560,26 +567,26 @@ function CompletionScreen({ ratings, onDone }: {
               </div>
 
               {/* Photo */}
-              <div className="relative w-full" style={{ aspectRatio: "1", borderRadius: 18, overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.4)" }}>
+              <div className="relative w-full mt-3" style={{ aspectRatio: "1", borderRadius: 18, overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.4)" }}>
                 <Image src={tea.image} alt={tea.name} fill className="object-cover" sizes="33vw" />
               </div>
 
-              {/* Name */}
-              <p className="font-semibold text-center leading-tight" style={{ color: "#fff", fontSize: 11 }}>
+              {/* Name + score */}
+              <p className="font-semibold text-center leading-tight mt-3" style={{ color: "#fff", fontSize: 11 }}>
                 {tea.name}
               </p>
-              <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 11 }}>
+              <p className="mt-1" style={{ color: "rgba(255,255,255,0.5)", fontSize: 11 }}>
                 {ranked[i].buyAgainPct}%
               </p>
 
-              {/* Buy button */}
+              {/* Buy button — pushed to bottom so all three align */}
               <a
                 href={tea.t2url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center font-semibold w-full"
+                className="flex items-center justify-center font-semibold w-full mt-auto"
                 style={{
-                  height: 38, borderRadius: 12, fontSize: 12,
+                  height: 38, borderRadius: 12, fontSize: 12, marginTop: 12,
                   background: "rgba(255,255,255,0.15)", color: "#fff",
                   border: "1px solid rgba(255,255,255,0.25)",
                 }}
