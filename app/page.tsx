@@ -1,26 +1,52 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
+import Image from "next/image";
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 
 const TEAS = [
-  { id: "melb-breakfast", name: "Melbourne Breakfast", color: "#c8a97e" },
-  { id: "jasmine", name: "Jasmine", color: "#d4e8a0" },
-  { id: "earl-grey", name: "Earl Grey", color: "#b8c8e8" },
-  { id: "peppermint", name: "Peppermint", color: "#a8dcc8" },
-  { id: "sencha", name: "Sencha", color: "#8fc88f" },
-  { id: "oolong", name: "Oolong", color: "#c8b490" },
-  { id: "chai", name: "Chai", color: "#d4a870" },
-  { id: "rooibos", name: "Rooibos", color: "#c87050" },
-  { id: "hibiscus", name: "Hibiscus", color: "#d870a0" },
-  { id: "chamomile", name: "Chamomile", color: "#e8d870" },
-  { id: "lemon-ginger", name: "Lemon Ginger", color: "#e8e070" },
-  { id: "darjeeling", name: "Darjeeling", color: "#d4b890" },
+  { id: "adelaide-breakfast", name: "Adelaide Breakfast", image: "/images/adelaide-breakfast.png", color: "#C0442A" },
+  { id: "sydney-breakfast", name: "Sydney Breakfast", image: "/images/sydney-breakfast.jpg", color: "#1C3A6B" },
+  { id: "melbourne-breakfast", name: "Melbourne Breakfast", image: "/images/melbourne-breakfast.jpg", color: "#2A3A2C" },
+  { id: "irish-breakfast", name: "Irish Breakfast", image: "/images/irish-breakfast.jpg", color: "#1E4A3A" },
+  { id: "singapore-breakfast", name: "Singapore Breakfast", image: "/images/singapore-breakfast.jpg", color: "#6B3FA0" },
+  { id: "canberra-breakfast", name: "Canberra Breakfast", image: "/images/canberra-breakfast.png", color: "#E8C030" },
+  { id: "brisbane-breakfast", name: "Brisbane Breakfast", image: "/images/brisbane-breakfast.jpg", color: "#E07820" },
+  { id: "english-breakfast", name: "English Breakfast", image: "/images/english-breakfast.jpg", color: "#C8202A" },
+  { id: "scots-breakfast", name: "Scots Breakfast", image: "/images/scots-breakfast.png", color: "#C85820" },
+  { id: "new-zealand-breakfast", name: "New Zealand Breakfast", image: "/images/new-zealand-breakfast.jpg", color: "#7AB028" },
+  { id: "new-york-breakfast", name: "New York Breakfast", image: "/images/new-york-breakfast.jpg", color: "#D4A020" },
 ];
 
-const AXES = ["Aroma", "Body", "Sweetness", "Bitterness", "Finish"] as const;
-type Axis = (typeof AXES)[number];
+const AXES = [
+  {
+    id: "strength",
+    label: "Strength",
+    prompt: "How strong does it feel?",
+    scaleLabels: ["Light", "Medium", "Strong"],
+  },
+  {
+    id: "aroma",
+    label: "Aroma",
+    prompt: "Smell when brewed",
+    scaleLabels: ["Weak", "Pleasant", "Rich / strong"],
+  },
+  {
+    id: "smoothness",
+    label: "Smoothness",
+    prompt: "How easy is it to drink?",
+    scaleLabels: ["Harsh", "OK", "Very smooth"],
+  },
+  {
+    id: "bitterness",
+    label: "Bitterness",
+    prompt: "Bitterness level",
+    scaleLabels: ["Low", "Medium", "High"],
+  },
+] as const;
+
+type Axis = (typeof AXES)[number]["id"];
 
 interface Rating {
   teaId: string;
@@ -58,84 +84,123 @@ function DotRating({
   );
 }
 
+function TeaCard({
+  tea,
+  rated,
+  animating,
+  onClick,
+}: {
+  tea: (typeof TEAS)[number];
+  rated: boolean;
+  animating: boolean;
+  onClick: () => void;
+}) {
+  const showRated = rated || animating;
+
+  return (
+    <button
+      onClick={onClick}
+      className="relative aspect-square rounded-xl border overflow-hidden border-zinc-200 shadow-sm hover:shadow-md active:scale-95 transition-shadow"
+    >
+      {/* Photo layer */}
+      <div
+        className="absolute inset-0"
+        style={{
+          opacity: showRated ? 0 : 1,
+          transition: "opacity 0.6s ease",
+        }}
+      >
+        <Image src={tea.image} alt={tea.name} fill className="object-cover" sizes="33vw" />
+      </div>
+
+      {/* Rated colour layer */}
+      <div
+        className="absolute inset-0 flex items-center justify-center"
+        style={{
+          opacity: showRated ? 1 : 0,
+          transition: "opacity 0.6s ease",
+        }}
+      >
+        <div className="absolute inset-0" style={{ backgroundColor: tea.color, opacity: 0.5 }} />
+        <div className="relative flex flex-col items-center gap-1">
+          <span className="text-[9px] font-medium text-white text-center leading-tight px-1 drop-shadow">
+            {tea.name}
+          </span>
+          <span className="text-xs font-semibold tracking-widest uppercase text-white drop-shadow">
+            rated
+          </span>
+        </div>
+      </div>
+    </button>
+  );
+}
+
 // ── Screens ───────────────────────────────────────────────────────────────────
 
 function HomeScreen({
   ratings,
+  animatingId,
   onSelectTea,
   onViewLeaderboard,
 }: {
   ratings: Map<string, Rating>;
+  animatingId: string | null;
   onSelectTea: (id: string) => void;
   onViewLeaderboard: () => void;
 }) {
   const tastedCount = ratings.size;
-  const progressPct = (tastedCount / 12) * 100;
+  const progressPct = (tastedCount / 11) * 100;
 
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="px-4 pt-12 pb-4">
+      <div className="px-4 pb-4 text-center" style={{ paddingTop: "8px" }}>
         <h1 className="text-2xl font-semibold tracking-tight">Rate my tea</h1>
-        <p className="text-sm text-zinc-500 mt-1">
-          {tastedCount === 0
-            ? "pick whatever sounds good"
-            : "keep going, or view the leaderboard"}
-        </p>
-      </div>
-
-      {/* Progress bar (shown after first rating) */}
-      {tastedCount > 0 && (
-        <div className="px-4 pb-4">
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-zinc-500 w-12">tasted</span>
-            <div className="flex-1 h-2 rounded-full bg-zinc-100 overflow-hidden">
-              <div
-                className="h-full rounded-full bg-zinc-800 transition-all duration-500"
-                style={{ width: `${progressPct}%` }}
-              />
-            </div>
-            <span className="text-xs text-zinc-500 w-8 text-right">
-              {tastedCount}/12
-            </span>
-          </div>
-        </div>
-      )}
-
-      {/* Grid */}
-      <div className="flex-1 overflow-y-auto px-4">
-        <div className="grid grid-cols-3 gap-3 pb-4">
-          {TEAS.map((tea) => {
-            const rated = ratings.has(tea.id);
-            return (
-              <button
-                key={tea.id}
-                onClick={() => onSelectTea(tea.id)}
-                className={`relative aspect-square rounded-xl border flex flex-col items-center justify-center gap-2 p-2 transition-all active:scale-95 ${
-                  rated
-                    ? "opacity-40 border-zinc-200 bg-zinc-50"
-                    : "border-zinc-200 bg-white shadow-sm hover:shadow-md"
-                }`}
-              >
-                {rated && (
-                  <span className="absolute top-1.5 right-1.5 text-xs text-zinc-400 leading-none">
-                    ✕
-                  </span>
-                )}
+        {tastedCount === 0 ? (
+          <p className="text-sm text-zinc-400 mt-1">pick whatever sounds good</p>
+        ) : (
+          <div className="mt-3 space-y-2">
+            {/* Progress row */}
+            <div className="flex items-center gap-3 px-2">
+              <div className="flex-1 rounded-full bg-zinc-100 overflow-hidden" style={{ height: "15px" }}>
                 <div
-                  className="w-8 h-8 rounded-full"
-                  style={{ backgroundColor: tea.color }}
+                  className="h-full rounded-full transition-all duration-500"
+                  style={{
+                    width: `${progressPct}%`,
+                    background: "linear-gradient(90deg, #3b82f6, #06b6d4)",
+                  }}
                 />
-                <span className="text-[11px] text-center leading-tight text-zinc-700 font-medium">
-                  {tea.name}
-                </span>
-              </button>
-            );
-          })}
+              </div>
+              <span className="text-lg font-bold tabular-nums text-zinc-800 leading-none">
+                {tastedCount}/11
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Grid — pushed down 50px via top padding */}
+      <div className="flex-1 overflow-y-auto px-4 pt-[50px] pb-[72px]">
+        <div className="grid grid-cols-3 gap-3 pb-4">
+          {[...TEAS]
+            .sort((a, b) => {
+              const aRated = ratings.has(a.id) ? 1 : 0;
+              const bRated = ratings.has(b.id) ? 1 : 0;
+              return aRated - bRated;
+            })
+            .map((tea) => (
+              <TeaCard
+                key={tea.id}
+                tea={tea}
+                rated={ratings.has(tea.id)}
+                animating={animatingId === tea.id}
+                onClick={() => onSelectTea(tea.id)}
+              />
+            ))}
         </div>
       </div>
 
-      {/* View leaderboard CTA */}
+      {/* View leaderboard button */}
       {tastedCount > 0 && (
         <div className="px-4 py-4 border-t border-zinc-100">
           <button
@@ -154,22 +219,23 @@ function RateScreen({
   teaId,
   existing,
   onSubmit,
+  onUnrate,
   onDismiss,
 }: {
   teaId: string;
   existing?: Rating;
   onSubmit: (r: Rating) => void;
+  onUnrate: (teaId: string) => void;
   onDismiss: () => void;
 }) {
   const tea = TEAS.find((t) => t.id === teaId)!;
 
   const [axes, setAxes] = useState<Record<Axis, number>>(
     existing?.axes ?? {
-      Aroma: 0,
-      Body: 0,
-      Sweetness: 0,
-      Bitterness: 0,
-      Finish: 0,
+      strength: 0,
+      aroma: 0,
+      smoothness: 0,
+      bitterness: 0,
     }
   );
   const [buyAgainPct, setBuyAgainPct] = useState(existing?.buyAgainPct ?? 50);
@@ -196,10 +262,9 @@ function RateScreen({
           ←
         </button>
         <div className="flex items-center gap-2">
-          <div
-            className="w-6 h-6 rounded-full flex-shrink-0"
-            style={{ backgroundColor: tea.color }}
-          />
+          <div className="relative w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">
+            <Image src={tea.image} alt={tea.name} fill className="object-cover" sizes="32px" />
+          </div>
           <h1 className="text-xl font-semibold tracking-tight">{tea.name}</h1>
         </div>
       </div>
@@ -208,17 +273,36 @@ function RateScreen({
       <div className="flex-1 overflow-y-auto px-4 space-y-6 pb-4">
         {/* Axis ratings */}
         <section>
-          <h2 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-3">
+          <h2 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-4">
             Score the basics
           </h2>
-          <div className="space-y-3">
+          <div className="space-y-5">
             {AXES.map((axis) => (
-              <div key={axis} className="flex items-center justify-between">
-                <span className="text-sm text-zinc-700 w-24">{axis}</span>
+              <div key={axis.id}>
+                <div className="flex items-baseline justify-between mb-1">
+                  <span className="text-sm font-semibold text-zinc-800">{axis.label}</span>
+                  <span className="text-xs text-zinc-400">{axis.prompt}</span>
+                </div>
                 <DotRating
-                  value={axes[axis]}
-                  onChange={(v) => setAxis(axis, v)}
+                  value={axes[axis.id]}
+                  onChange={(v) => setAxis(axis.id, v)}
                 />
+                <div className="flex justify-between mt-1.5">
+                  {axis.scaleLabels.map((l, i) => (
+                    <span
+                      key={i}
+                      className={`text-[10px] ${
+                        i === 0
+                          ? "text-left"
+                          : i === axis.scaleLabels.length - 1
+                          ? "text-right"
+                          : "text-center flex-1"
+                      } text-zinc-400 ${i === 0 || i === axis.scaleLabels.length - 1 ? "w-16" : ""}`}
+                    >
+                      {l}
+                    </span>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
@@ -264,13 +348,21 @@ function RateScreen({
       </div>
 
       {/* Submit */}
-      <div className="px-4 py-4 border-t border-zinc-100">
+      <div className="px-4 py-4 border-t border-zinc-100 space-y-2">
         <button
           onClick={handleSubmit}
           className="w-full h-12 rounded-xl bg-zinc-800 text-white text-sm font-semibold tracking-widest uppercase hover:bg-zinc-700 transition-colors"
         >
           Submit
         </button>
+        {existing && (
+          <button
+            onClick={() => onUnrate(teaId)}
+            className="w-full h-10 text-sm text-zinc-400 hover:text-red-500 transition-colors"
+          >
+            Remove rating
+          </button>
+        )}
       </div>
     </div>
   );
@@ -285,9 +377,14 @@ function LeaderboardScreen({
   onEditTea: (id: string) => void;
   onClose: () => void;
 }) {
+  const [tab, setTab] = useState<"top5" | "all">("all");
+
   const ranked = [...ratings.values()].sort(
     (a, b) => b.buyAgainPct - a.buyAgainPct
   );
+
+  const showTabs = ranked.length >= 6;
+  const displayed = showTabs && tab === "top5" ? ranked.slice(0, 3) : ranked;
 
   return (
     <div className="flex flex-col h-full">
@@ -307,6 +404,25 @@ function LeaderboardScreen({
         </button>
       </div>
 
+      {/* Tabs — only shown at 6+ ratings */}
+      {showTabs && (
+        <div className="flex mx-4 mb-2 rounded-xl bg-zinc-100 p-1 gap-1">
+          {(["top5", "all"] as const).map((t) => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={`flex-1 h-8 rounded-lg text-sm font-medium transition-all ${
+                tab === t
+                  ? "bg-white text-zinc-800 shadow-sm"
+                  : "text-zinc-500 hover:text-zinc-700"
+              }`}
+            >
+              {t === "top5" ? "My top 3" : "All"}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* List */}
       <div className="flex-1 overflow-y-auto px-4 space-y-2 pb-4">
         {ranked.length === 0 && (
@@ -315,7 +431,7 @@ function LeaderboardScreen({
           </div>
         )}
 
-        {ranked.map((r, i) => {
+        {displayed.map((r, i) => {
           const tea = TEAS.find((t) => t.id === r.teaId)!;
           return (
             <button
@@ -326,10 +442,9 @@ function LeaderboardScreen({
               <span className="text-sm font-semibold text-zinc-400 w-5 text-right">
                 {i + 1}
               </span>
-              <div
-                className="w-7 h-7 rounded-full flex-shrink-0"
-                style={{ backgroundColor: tea.color }}
-              />
+              <div className="relative w-7 h-7 rounded-md overflow-hidden flex-shrink-0">
+                <Image src={tea.image} alt={tea.name} fill className="object-cover" sizes="28px" />
+              </div>
               <span className="flex-1 text-sm font-medium text-zinc-700 text-left">
                 {tea.name}
               </span>
@@ -363,6 +478,7 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>("home");
   const [activeTeaId, setActiveTeaId] = useState<string | null>(null);
   const [ratings, setRatings] = useState<Map<string, Rating>>(new Map());
+  const [animatingId, setAnimatingId] = useState<string | null>(null);
 
   // Slide-up: rate screen sits on top of home
   const rateVisible = screen === "rate";
@@ -373,10 +489,26 @@ export default function App() {
     setScreen("rate");
   };
 
+  const handleUnrate = (teaId: string) => {
+    setRatings((prev) => {
+      const next = new Map(prev);
+      next.delete(teaId);
+      return next;
+    });
+    setScreen("home");
+    setActiveTeaId(null);
+  };
+
   const handleSubmit = (rating: Rating) => {
     setRatings((prev) => new Map(prev).set(rating.teaId, rating));
     setScreen("home");
     setActiveTeaId(null);
+    // Wait for slide-down to finish, then run the ripple (550ms total)
+    const id = rating.teaId;
+    setTimeout(() => {
+      setAnimatingId(id);
+      setTimeout(() => setAnimatingId(null), 550);
+    }, 320);
   };
 
   const handleDismissRate = () => {
@@ -397,6 +529,7 @@ export default function App() {
         <div className="absolute inset-0">
           <HomeScreen
             ratings={ratings}
+            animatingId={animatingId}
             onSelectTea={openRate}
             onViewLeaderboard={() => setScreen("leaderboard")}
           />
@@ -415,6 +548,7 @@ export default function App() {
               teaId={activeTeaId}
               existing={ratings.get(activeTeaId)}
               onSubmit={handleSubmit}
+              onUnrate={handleUnrate}
               onDismiss={handleDismissRate}
             />
           )}

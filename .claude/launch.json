@@ -5,6 +5,7 @@
       "name": "rate-my-tea",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
+      "cwd": "/Users/jeremylaycock/Documents/AI/rate-my-tea",
       "port": 3000
     }
   ]
