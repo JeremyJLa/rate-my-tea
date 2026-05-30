@@ -216,7 +216,7 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard }: {
       </div>
 
       {/* Grid */}
-      <div className="flex-1 overflow-y-auto px-4" style={{ paddingTop: 0, paddingBottom: 88 }}>
+      <div className="flex-1 overflow-y-auto px-4" style={{ paddingTop: 20, paddingBottom: 88 }}>
         <div className="grid grid-cols-3 gap-3">
           {TEAS.map((tea) => (
             <TeaCard key={tea.id} tea={tea} rated={ratings.has(tea.id)}
