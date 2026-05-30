@@ -107,7 +107,9 @@ function TeaCard({
         className="absolute inset-0"
         style={{
           opacity: showRated ? 0 : 1,
-          transition: "opacity 0.6s ease",
+          transform: showRated ? "scale(1.08)" : "scale(1)",
+          filter: showRated ? "blur(4px)" : "blur(0px)",
+          transition: "opacity 0.75s cubic-bezier(0.4,0,0.2,1), transform 0.75s cubic-bezier(0.4,0,0.2,1), filter 0.75s cubic-bezier(0.4,0,0.2,1)",
         }}
       >
         <Image src={tea.image} alt={tea.name} fill className="object-cover" sizes="33vw" />
@@ -118,7 +120,8 @@ function TeaCard({
         className="absolute inset-0 flex items-center justify-center"
         style={{
           opacity: showRated ? 1 : 0,
-          transition: "opacity 0.6s ease",
+          transform: showRated ? "scale(1)" : "scale(0.92)",
+          transition: "opacity 0.75s cubic-bezier(0.4,0,0.2,1), transform 0.75s cubic-bezier(0.4,0,0.2,1)",
         }}
       >
         <div className="absolute inset-0" style={{ backgroundColor: tea.color, opacity: 0.5 }} />
@@ -154,12 +157,12 @@ function HomeScreen({
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="px-4 pb-4 text-center" style={{ paddingTop: "8px" }}>
-        <h1 className="text-2xl font-semibold tracking-tight">Rate my tea</h1>
+      <div className="px-4 pb-4 text-center" style={{ paddingTop: "58px" }}>
+        <h1 className="text-4xl font-bold tracking-tight">Rate my tea</h1>
         {tastedCount === 0 ? (
-          <p className="text-sm text-zinc-400 mt-1">pick whatever sounds good</p>
+          <p className="text-sm text-zinc-400 mt-1">pick any of your samples and start rating</p>
         ) : (
-          <div className="mt-3 space-y-2">
+          <div className="space-y-2" style={{ marginTop: "28px" }}>
             {/* Progress row */}
             <div className="flex items-center gap-3 px-2">
               <div className="flex-1 rounded-full bg-zinc-100 overflow-hidden" style={{ height: "15px" }}>
@@ -182,13 +185,7 @@ function HomeScreen({
       {/* Grid — pushed down 50px via top padding */}
       <div className="flex-1 overflow-y-auto px-4 pt-[50px] pb-[72px]">
         <div className="grid grid-cols-3 gap-3 pb-4">
-          {[...TEAS]
-            .sort((a, b) => {
-              const aRated = ratings.has(a.id) ? 1 : 0;
-              const bRated = ratings.has(b.id) ? 1 : 0;
-              return aRated - bRated;
-            })
-            .map((tea) => (
+          {TEAS.map((tea) => (
               <TeaCard
                 key={tea.id}
                 tea={tea}
@@ -254,19 +251,19 @@ function RateScreen({
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center gap-3 px-4 pt-12 pb-6">
-        <button
-          onClick={onDismiss}
-          className="w-8 h-8 flex items-center justify-center rounded-full border border-zinc-200 text-zinc-500 hover:bg-zinc-50"
-        >
-          ←
-        </button>
+      <div className="flex items-center justify-between px-4 pt-12 pb-6">
         <div className="flex items-center gap-2">
           <div className="relative w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">
             <Image src={tea.image} alt={tea.name} fill className="object-cover" sizes="32px" />
           </div>
           <h1 className="text-xl font-semibold tracking-tight">{tea.name}</h1>
         </div>
+        <button
+          onClick={onDismiss}
+          className="w-9 h-9 flex items-center justify-center rounded-full border border-zinc-200 text-zinc-500 hover:bg-zinc-50 text-lg"
+        >
+          ✕
+        </button>
       </div>
 
       {/* Scrollable body */}
