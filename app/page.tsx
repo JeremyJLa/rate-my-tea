@@ -196,7 +196,7 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard }: {
 
       {/* Header */}
       <div className="px-5 pb-4 text-center" style={{ paddingTop: 8 }}>
-        <p style={{ fontSize: 14, color: "#aaa", fontWeight: 500, marginBottom: 4 }}>Hi Kate</p>
+        <p style={{ fontSize: 24, color: "#aaa", fontWeight: 500, marginBottom: 4 }}>Hi Kate</p>
         <h1 className="font-bold" style={{ fontSize: 36, letterSpacing: -1, color: "#111" }}>Rate my tea</h1>
         {tastedCount === 0 ? (
           <p className="mt-2" style={{ fontSize: 14, color: "#888" }}>pick any of your samples and start rating</p>
