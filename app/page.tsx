@@ -52,7 +52,7 @@ function DotRating({ value, onChange }: { value: number; onChange: (v: number) =
             className="block w-5 h-5 rounded-full transition-all duration-200"
             style={{
               background: n <= value
-                ? "linear-gradient(135deg,#3b82f6,#06b6d4)"
+                ? "linear-gradient(135deg,#4ade80,#16a34a)"
                 : "transparent",
               border: n <= value ? "none" : "2px solid #d1d5db",
               transform: n <= value ? "scale(1.1)" : "scale(1)",
@@ -85,7 +85,7 @@ function Slider({ value, onChange }: { value: number; onChange: (v: number) => v
       <div className="w-full rounded-full overflow-hidden" style={{ height: 8, background: "#e5e7eb" }}>
         <div
           className="h-full rounded-full"
-          style={{ width: `${value}%`, background: "linear-gradient(90deg,#3b82f6,#06b6d4)", transition: "width 0.05s" }}
+          style={{ width: `${value}%`, background: "linear-gradient(90deg,#4ade80,#16a34a)", transition: "width 0.05s" }}
         />
       </div>
       {/* Thumb */}
@@ -94,11 +94,11 @@ function Slider({ value, onChange }: { value: number; onChange: (v: number) => v
         style={{
           width: 28, height: 28,
           left: `calc(${value}% - 14px)`,
-          boxShadow: "0 2px 8px rgba(59,130,246,0.35), 0 0 0 2px #3b82f6",
+          boxShadow: "0 2px 8px rgba(22,163,74,0.35), 0 0 0 2px #16a34a",
           transition: "left 0.05s",
         }}
       >
-        <div className="w-2 h-2 rounded-full" style={{ background: "linear-gradient(135deg,#3b82f6,#06b6d4)" }} />
+        <div className="w-2 h-2 rounded-full" style={{ background: "linear-gradient(135deg,#4ade80,#16a34a)" }} />
       </div>
     </div>
   );
@@ -121,7 +121,7 @@ function TeaCard({ tea, rated, animating, onClick }: {
         filter: showRated ? "blur(6px)" : "blur(0px)",
         transition: "opacity 0.75s cubic-bezier(0.4,0,0.2,1), transform 0.75s cubic-bezier(0.4,0,0.2,1), filter 0.75s cubic-bezier(0.4,0,0.2,1)",
       }}>
-        <Image src={tea.image} alt={tea.name} fill className="object-cover" sizes="33vw" />
+        <Image src={tea.image} alt={tea.name} fill className="object-cover" sizes="33vw" style={{ transform: "scale(1.35)", transformOrigin: "center center" }} />
       </div>
 
       {/* Rated overlay */}
@@ -199,13 +199,13 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard }: {
         <p style={{ fontSize: 24, color: "#aaa", fontWeight: 500, marginBottom: 4 }}>Hi Kate</p>
         <h1 className="font-bold" style={{ fontSize: 36, letterSpacing: -1, color: "#111" }}>Rate my tea</h1>
         {tastedCount === 0 ? (
-          <p className="mt-2" style={{ fontSize: 14, color: "#888" }}>pick any of your samples and start rating</p>
+          <p style={{ fontSize: 14, color: "#888" }}>pick any of your samples and start rating</p>
         ) : (
           <div style={{ marginTop: 28 }}>
             <div className="flex items-center gap-3 px-1">
               <div className="flex-1 rounded-full overflow-hidden" style={{ height: 15, background: "#e2e2e2" }}>
                 <div className="h-full rounded-full transition-all duration-500"
-                  style={{ width: `${progressPct}%`, background: "linear-gradient(90deg,#3b82f6,#06b6d4)" }} />
+                  style={{ width: `${progressPct}%`, background: "linear-gradient(90deg,#4ade80,#16a34a)" }} />
               </div>
               <span className="font-bold tabular-nums" style={{ fontSize: 18, color: "#111", minWidth: 46 }}>
                 {tastedCount}/11
@@ -260,23 +260,38 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
   const [buyAgainPct, setBuyAgainPct] = useState(existing?.buyAgainPct ?? 50);
   const [note, setNote] = useState(existing?.note ?? "");
 
+  const [shareOpen, setShareOpen] = useState(false);
+
   const setAxis = useCallback(
     (axis: Axis, v: number) => setAxes((p) => ({ ...p, [axis]: v })), []
   );
+
+  const sharePayload = () => btoa(JSON.stringify({ teaId, axes, buyAgainPct, note }));
+  const shareUrl = () => `${window.location.origin}/?share=${sharePayload()}`;
 
   return (
     <div className="flex flex-col h-full" style={{ background: "#fff" }}>
       <StatusBar />
 
-      {/* Header */}
-      <div className="flex items-center justify-between px-5 pb-5" style={{ paddingTop: 14 }}>
+      {/* Header — anchored */}
+      <div className="flex items-center justify-between px-5 pb-5 shrink-0" style={{ paddingTop: 14, background: "#fff", zIndex: 10 }}>
         <div className="flex items-center gap-3">
           <div className="relative overflow-hidden" style={{ width: 44, height: 44, borderRadius: 12, flexShrink: 0 }}>
             <Image src={tea.image} alt={tea.name} fill className="object-cover" sizes="44px" />
           </div>
           <div>
-            <p style={{ fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: 1, fontWeight: 600 }}>Rating</p>
-            <h1 className="font-bold" style={{ fontSize: 18, color: "#111", letterSpacing: -0.4 }}>{tea.name}</h1>
+            <div className="flex items-center gap-2">
+              <h1 className="font-bold" style={{ fontSize: 22, color: "#111", letterSpacing: -0.4 }}>{tea.name}</h1>
+              {existing && (
+                <button onClick={() => setShareOpen(true)} className="flex items-center justify-center active:opacity-60 transition-opacity" style={{ width: 28, height: 28, borderRadius: 8, background: "#f3f4f6", color: "#555", lineHeight: 0 }}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                    <polyline points="16 6 12 2 8 6"/>
+                    <line x1="12" y1="2" x2="12" y2="15"/>
+                  </svg>
+                </button>
+              )}
+            </div>
           </div>
         </div>
         <button
@@ -288,7 +303,7 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
         </button>
       </div>
 
-      {/* Body */}
+      {/* Body — scrollable */}
       <div className="flex-1 overflow-y-auto px-5 space-y-6 pb-4">
 
         {/* Axis ratings */}
@@ -301,10 +316,12 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
                 <span style={{ fontSize: 12, color: "#aaa" }}>{axis.prompt}</span>
               </div>
               <DotRating value={axes[axis.id]} onChange={(v) => setAxis(axis.id, v)} />
-              <div className="flex justify-between mt-1" style={{ fontSize: 11, color: "#bbb" }}>
-                <span>{axis.scaleLabels[0]}</span>
-                <span>{axis.scaleLabels[1]}</span>
-                <span>{axis.scaleLabels[2]}</span>
+              <div className="flex gap-2.5 mt-1" style={{ fontSize: 15, color: "#888" }}>
+                <span className="w-9 shrink-0 text-center">{axis.scaleLabels[0]}</span>
+                <span className="w-9 shrink-0" />
+                <span className="w-9 shrink-0 text-center" style={{ marginLeft: -5 }}>{axis.scaleLabels[1]}</span>
+                <span className="w-9 shrink-0" />
+                <span className="w-9 shrink-0 text-center">{axis.scaleLabels[2]}</span>
               </div>
             </div>
           ))}
@@ -314,7 +331,7 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
         <div className="rounded-2xl p-4" style={{ background: "#F7F6F3" }}>
           <div className="flex items-center justify-between mb-1">
             <p className="font-semibold" style={{ fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: 1 }}>Would you buy this tea?</p>
-            <span className="font-bold tabular-nums" style={{ fontSize: 22, background: "linear-gradient(135deg,#3b82f6,#06b6d4)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            <span className="font-bold tabular-nums" style={{ fontSize: 22, background: "linear-gradient(135deg,#4ade80,#16a34a)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               {buyAgainPct}%
             </span>
           </div>
@@ -339,8 +356,8 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
         </div>
       </div>
 
-      {/* Footer */}
-      <div className="px-5 pb-8 pt-3 space-y-2" style={{ borderTop: "1px solid #f0f0f0" }}>
+      {/* Footer — anchored */}
+      <div className="px-5 pb-8 pt-3 space-y-2 shrink-0" style={{ borderTop: "1px solid #f0f0f0", background: "#fff" }}>
         <button
           onClick={() => onSubmit({ teaId, axes, buyAgainPct, note })}
           className="w-full font-semibold text-white transition-opacity active:opacity-80"
@@ -359,6 +376,64 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
             Remove rating
           </button>
         )}
+      </div>
+
+      {/* Share bottom drawer */}
+      {/* Backdrop */}
+      <div
+        onClick={() => setShareOpen(false)}
+        className="absolute inset-0"
+        style={{ background: "rgba(0,0,0,0.4)", opacity: shareOpen ? 1 : 0, pointerEvents: shareOpen ? "auto" : "none", transition: "opacity 0.25s ease", zIndex: 40 }}
+      />
+      {/* Sheet */}
+      <div
+        className="absolute inset-x-0 bottom-0"
+        style={{ background: "#fff", borderRadius: "24px 24px 0 0", padding: "12px 20px 40px", zIndex: 50, transform: shareOpen ? "translateY(0)" : "translateY(100%)", transition: "transform 0.3s cubic-bezier(0.32,0.72,0,1)" }}
+      >
+        {/* Handle */}
+        <div className="flex justify-center mb-5">
+          <div className="rounded-full" style={{ width: 36, height: 4, background: "#e0e0e0" }} />
+        </div>
+        <p className="font-semibold mb-1" style={{ fontSize: 16, color: "#111" }}>Share Kate&apos;s rating</p>
+        <p style={{ fontSize: 13, color: "#aaa", marginBottom: 20 }}>{tea.name} · {buyAgainPct}% likely to buy</p>
+
+        {/* Send via Messages / native share */}
+        <button
+          onClick={() => {
+            const url = shareUrl();
+            if (navigator.share) {
+              navigator.share({ title: `Kate rated ${tea.name}`, text: `Kate tried ${tea.name} and gave it a ${buyAgainPct}% likely-to-buy score. See her full rating:`, url });
+            }
+            setShareOpen(false);
+          }}
+          className="w-full flex items-center gap-4 active:opacity-70 transition-opacity"
+          style={{ height: 56, borderRadius: 16, background: "#f3f4f6", paddingLeft: 18, paddingRight: 18, marginBottom: 10 }}
+        >
+          <span style={{ fontSize: 22 }}>💬</span>
+          <div className="text-left">
+            <p className="font-medium" style={{ fontSize: 15, color: "#111" }}>Send via Messages</p>
+            <p style={{ fontSize: 12, color: "#aaa" }}>Share with a friend</p>
+          </div>
+          <svg className="ml-auto" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+
+        {/* Copy link */}
+        <button
+          onClick={() => {
+            navigator.clipboard.writeText(shareUrl()).then(() => {
+              setShareOpen(false);
+            });
+          }}
+          className="w-full flex items-center gap-4 active:opacity-70 transition-opacity"
+          style={{ height: 56, borderRadius: 16, background: "#f3f4f6", paddingLeft: 18, paddingRight: 18 }}
+        >
+          <span style={{ fontSize: 22 }}>🔗</span>
+          <div className="text-left">
+            <p className="font-medium" style={{ fontSize: 15, color: "#111" }}>Copy link</p>
+            <p style={{ fontSize: 12, color: "#aaa" }}>Paste anywhere</p>
+          </div>
+          <svg className="ml-auto" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
       </div>
     </div>
   );
@@ -506,7 +581,7 @@ function CompletionScreen({ ratings, onDone }: {
         </h3>
 
         <div className="relative mt-8" style={{ width: 180, height: 180, borderRadius: 28, overflow: "hidden", boxShadow: "0 20px 60px rgba(0,0,0,0.35)" }}>
-          <Image src={top.image} alt={top.name} fill className="object-cover" sizes="180px" />
+          <Image src={top.image} alt={top.name} fill className="object-cover" sizes="180px" style={{ transform: "scale(1.35)", transformOrigin: "center center" }} />
         </div>
 
         <p className="font-bold mt-4 text-center" style={{ color: "#fff", fontSize: 20, letterSpacing: -0.3 }}>
@@ -533,10 +608,9 @@ function CompletionScreen({ ratings, onDone }: {
 
         <button
           onClick={goToPhase2}
-          className="mt-4"
-          style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", textDecoration: "underline", textUnderlineOffset: 3, marginTop: 50 }}
+          style={{ fontSize: 17, color: "#ffffff", textDecoration: "none", marginTop: 50, display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer", padding: 0 }}
         >
-          See your top 3 →
+          See your top 3 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 3.5L10.5 8L6 12.5" stroke="#ffffff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
         </button>
       </div>
 
@@ -550,7 +624,7 @@ function CompletionScreen({ ratings, onDone }: {
           paddingTop: 72,
         }}
       >
-        <p className="font-semibold" style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, letterSpacing: 1, textTransform: "uppercase" }}>
+        <p className="font-semibold" style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, letterSpacing: 0.3 }}>
           Kate, your top 3 favourite teas are
         </p>
 
@@ -568,7 +642,7 @@ function CompletionScreen({ ratings, onDone }: {
 
               {/* Photo */}
               <div className="relative w-full mt-3" style={{ aspectRatio: "1", borderRadius: 18, overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.4)" }}>
-                <Image src={tea.image} alt={tea.name} fill className="object-cover" sizes="33vw" />
+                <Image src={tea.image} alt={tea.name} fill className="object-cover" sizes="33vw" style={{ transform: "scale(1.35)", transformOrigin: "center center" }} />
               </div>
 
               {/* Name + score */}
@@ -618,11 +692,103 @@ function CompletionScreen({ ratings, onDone }: {
   );
 }
 
+// ── Shared rating view ────────────────────────────────────────────────────────
+
+function SharedRatingView({ rating, onClose }: { rating: Rating; onClose: () => void }) {
+  const tea = TEAS.find((t) => t.id === rating.teaId);
+  if (!tea) return null;
+  return (
+    <div className="flex flex-col h-full" style={{ background: "#fff" }}>
+      <StatusBar />
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 pb-5 shrink-0" style={{ paddingTop: 14, background: "#fff" }}>
+        <div className="flex items-center gap-3">
+          <div className="relative overflow-hidden" style={{ width: 44, height: 44, borderRadius: 12, flexShrink: 0 }}>
+            <Image src={tea.image} alt={tea.name} fill className="object-cover" sizes="44px" style={{ transform: "scale(1.35)", transformOrigin: "center center" }} />
+          </div>
+          <div>
+            <p style={{ fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: 1, fontWeight: 600 }}>Kate rated this</p>
+            <h1 className="font-bold" style={{ fontSize: 22, color: "#111", letterSpacing: -0.4 }}>{tea.name}</h1>
+          </div>
+        </div>
+        <button onClick={onClose} className="flex items-center justify-center"
+          style={{ width: 36, height: 36, borderRadius: 18, background: "#f3f4f6", color: "#555", fontSize: 16 }}>✕</button>
+      </div>
+
+      <div className="flex-1 overflow-y-auto px-5 space-y-6 pb-8">
+        {/* Axes */}
+        <div className="rounded-2xl p-4 space-y-5" style={{ background: "#F7F6F3" }}>
+          <p className="font-semibold" style={{ fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: 1 }}>Score the basics</p>
+          {AXES.map((axis) => (
+            <div key={axis.id}>
+              <div className="flex items-baseline justify-between mb-2">
+                <span className="font-semibold" style={{ fontSize: 15, color: "#111" }}>{axis.label}</span>
+              </div>
+              {/* Read-only dots */}
+              <div className="flex gap-2.5">
+                {[1,2,3,4,5].map((n) => (
+                  <div key={n} className="w-9 h-9 flex items-center justify-center">
+                    <span className="block w-5 h-5 rounded-full" style={{
+                      background: n <= rating.axes[axis.id] ? "linear-gradient(135deg,#4ade80,#16a34a)" : "transparent",
+                      border: n <= rating.axes[axis.id] ? "none" : "2px solid #d1d5db",
+                      transform: n <= rating.axes[axis.id] ? "scale(1.1)" : "scale(1)",
+                    }} />
+                  </div>
+                ))}
+              </div>
+              <div className="flex gap-2.5 mt-1" style={{ fontSize: 15, color: "#888" }}>
+                <span className="w-9 shrink-0 text-center">{axis.scaleLabels[0]}</span>
+                <span className="w-9 shrink-0" />
+                <span className="w-9 shrink-0 text-center" style={{ marginLeft: -5 }}>{axis.scaleLabels[1]}</span>
+                <span className="w-9 shrink-0" />
+                <span className="w-9 shrink-0 text-center">{axis.scaleLabels[2]}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Buy-again */}
+        <div className="rounded-2xl p-4" style={{ background: "#F7F6F3" }}>
+          <div className="flex items-center justify-between">
+            <p className="font-semibold" style={{ fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: 1 }}>Would you buy this tea?</p>
+            <span className="font-bold tabular-nums" style={{ fontSize: 22, background: "linear-gradient(135deg,#4ade80,#16a34a)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              {rating.buyAgainPct}%
+            </span>
+          </div>
+          {/* Read-only track */}
+          <div className="w-full rounded-full overflow-hidden mt-3" style={{ height: 8, background: "#e5e7eb" }}>
+            <div className="h-full rounded-full" style={{ width: `${rating.buyAgainPct}%`, background: "linear-gradient(90deg,#4ade80,#16a34a)" }} />
+          </div>
+          <div className="flex justify-between mt-1" style={{ fontSize: 11, color: "#bbb" }}>
+            <span>Wouldn&apos;t buy</span><span>Definitely buying</span>
+          </div>
+        </div>
+
+        {/* Note */}
+        {rating.note ? (
+          <div className="rounded-2xl p-4" style={{ background: "#F7F6F3" }}>
+            <p className="font-semibold mb-2" style={{ fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: 1 }}>Tasting note</p>
+            <p style={{ fontSize: 14, color: "#333", lineHeight: 1.6 }}>{rating.note}</p>
+          </div>
+        ) : null}
+
+        {/* CTA */}
+        <a href={tea.t2url} target="_blank" rel="noopener noreferrer"
+          className="flex items-center justify-center font-semibold text-white w-full"
+          style={{ height: 52, borderRadius: 16, background: "linear-gradient(135deg,#1a1a1a,#3a3a3a)", fontSize: 15, textDecoration: "none" }}>
+          Buy {tea.name} from T2 →
+        </a>
+      </div>
+    </div>
+  );
+}
+
 // ── App shell ─────────────────────────────────────────────────────────────────
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("home");
   const [activeTeaId, setActiveTeaId] = useState<string | null>(null);
+  const [sharedRating, setSharedRating] = useState<Rating | null>(null);
   const [ratings, setRatings] = useState<Map<string, Rating>>(() => {
     if (typeof window === "undefined") return new Map();
     try {
@@ -636,6 +802,18 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem("rmt-ratings", JSON.stringify([...ratings]));
   }, [ratings]);
+
+  // Detect shared rating in URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const encoded = params.get("share");
+    if (encoded) {
+      try {
+        const rating = JSON.parse(atob(encoded)) as Rating;
+        setSharedRating(rating);
+      } catch { /* ignore malformed */ }
+    }
+  }, []);
 
   const rateVisible = screen === "rate";
   const leaderboardVisible = screen === "leaderboard";
@@ -706,6 +884,11 @@ export default function App() {
               onDone={() => setScreen("leaderboard")}
             />
           )}
+        </div>
+
+        {/* Shared rating overlay — slides up when opened via link */}
+        <div className="absolute inset-0 transition-transform duration-300 ease-in-out" style={{ transform: sharedRating ? "translateY(0)" : "translateY(100%)", background: "#fff", zIndex: 50 }}>
+          {sharedRating && <SharedRatingView rating={sharedRating} onClose={() => setSharedRating(null)} />}
         </div>
 
         {/* Home indicator bar */}
