@@ -836,10 +836,10 @@ export default function App() {
   const handleEditFromLeaderboard = (teaId: string) => { setActiveTeaId(teaId); setScreen("rate"); };
 
   return (
-    <div className="flex items-center justify-center min-h-screen sm:bg-[#d1d5db] bg-[#F7F6F3] sm:p-4">
+    <div className="flex items-center justify-center sm:bg-[#d1d5db] bg-[#F7F6F3] sm:p-4" style={{ minHeight: "100dvh" }}>
       <div
-        className="relative overflow-hidden w-full h-screen sm:h-[844px] sm:w-[390px] sm:rounded-[50px] sm:shadow-2xl"
-        style={{ background: "#F7F6F3" }}
+        className="relative overflow-hidden w-full sm:h-[844px] sm:w-[390px] sm:rounded-[50px] sm:shadow-2xl"
+        style={{ height: "100dvh", background: "#F7F6F3" } as React.CSSProperties}
       >
 
         {/* Home */}
