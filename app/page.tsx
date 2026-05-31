@@ -241,7 +241,7 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard }: {
             }}
           >
             View leaderboard
-            <span style={{ opacity: 0.6 }}>→</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity: 0.6 }}><path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </button>
         </div>
       )}
@@ -249,8 +249,8 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard }: {
   );
 }
 
-function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
-  teaId: string; existing?: Rating;
+function RateScreen({ teaId, existing, fromLeaderboard, onSubmit, onUnrate, onDismiss }: {
+  teaId: string; existing?: Rating; fromLeaderboard?: boolean;
   onSubmit: (r: Rating) => void; onUnrate: (id: string) => void; onDismiss: () => void;
 }) {
   const tea = TEAS.find((t) => t.id === teaId)!;
@@ -287,7 +287,17 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
       {/* ── Fixed header ───────────────────────────────────────────────── */}
       <div style={{ flexShrink: 0, background: "#fff", zIndex: 20 }}>
         <StatusBar />
-        <div className="flex items-center justify-between px-5" style={{ paddingTop: 14, paddingBottom: headerPb, transition: "padding-bottom 0.1s" }}>
+        <div className={`flex items-center px-5 ${fromLeaderboard ? "" : "justify-between"}`} style={{ paddingTop: 14, paddingBottom: headerPb, transition: "padding-bottom 0.1s", gap: fromLeaderboard ? 20 : 0 }}>
+          {/* Back chevron (leaderboard) or tea info (home) on left */}
+          {fromLeaderboard ? (
+            <button onClick={onDismiss} className="flex items-center justify-center" style={{ width: 40, height: 40, borderRadius: 20, color: "#111", flexShrink: 0 }}>
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M15 18l-6-6 6-6"/>
+              </svg>
+            </button>
+          ) : null}
+
+          {/* Tea image + name — always shown */}
           <div className="flex items-center gap-3">
             <div className="relative overflow-hidden" style={{ width: imgSize, height: imgSize, borderRadius: 14 - p * 4, flexShrink: 0, transition: "width 0.1s, height 0.1s, border-radius 0.1s" }}>
               <Image src={tea.image} alt={tea.name} fill className="object-cover" sizes="64px" style={{ transform: "scale(1.35)", transformOrigin: "center center" }} />
@@ -297,22 +307,26 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
               <span style={{ fontSize: subSize, fontWeight: 500, color: inline ? "#111" : "#888", lineHeight: 1.15, transition: "font-size 0.1s, color 0.15s" }}>{tea.name.split(" ").pop()}</span>
             </h1>
           </div>
-          <div className="flex items-center" style={{ gap: 30 }}>
-            {existing && (
-              <button onClick={() => setShareOpen(true)} className="flex items-center justify-center active:opacity-60 transition-opacity" style={{ width: 35, height: 35, borderRadius: 8, background: "#f3f4f6", color: "#555", lineHeight: 0 }}>
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-                  <polyline points="16 6 12 2 8 6"/>
-                  <line x1="12" y1="2" x2="12" y2="15"/>
+
+          {/* Share + X (home only) */}
+          {!fromLeaderboard && (
+            <div className="flex items-center" style={{ gap: 30 }}>
+              {existing && (
+                <button onClick={() => setShareOpen(true)} className="flex items-center justify-center active:opacity-60 transition-opacity" style={{ width: 35, height: 35, borderRadius: 8, background: "#f3f4f6", color: "#555", lineHeight: 0 }}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                    <polyline points="16 6 12 2 8 6"/>
+                    <line x1="12" y1="2" x2="12" y2="15"/>
+                  </svg>
+                </button>
+              )}
+              <button onClick={onDismiss} className="flex items-center justify-center" style={{ width: 40, height: 40, borderRadius: 20, color: "#111" }}>
+                <svg width="30" height="30" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/>
                 </svg>
               </button>
-            )}
-            <button onClick={onDismiss} className="flex items-center justify-center" style={{ width: 40, height: 40, borderRadius: 20, color: "#111" }}>
-              <svg width="30" height="30" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/>
-              </svg>
-            </button>
-          </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -345,7 +359,7 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
           <div className="rounded-2xl p-4" style={{ background: "#F7F6F3" }}>
             <div className="flex items-center justify-between mb-1">
               <p className="font-semibold" style={{ fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: 1 }}>Would you buy this tea?</p>
-              <span className="font-bold tabular-nums" style={{ fontSize: 22, background: "linear-gradient(135deg,#4ade80,#16a34a)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              <span className="font-bold tabular-nums" style={{ fontSize: 22, color: "#16a34a" }}>
                 {buyAgainPct}%
               </span>
             </div>
@@ -371,24 +385,36 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
       </div>
 
       {/* ── Fixed footer ───────────────────────────────────────────────── */}
-      <div className="flex items-center gap-4 px-5 pt-3 pb-8" style={{ flexShrink: 0, background: "#fff", borderTop: "1px solid #f0f0f0", zIndex: 20 }}>
-        <button
-          onClick={() => onSubmit({ teaId, axes, buyAgainPct, note })}
-          className="font-semibold text-white transition-opacity active:opacity-80 shrink-0"
-          style={{ height: 52, width: 220, borderRadius: 16, background: "linear-gradient(135deg,#1a1a1a,#3a3a3a)", fontSize: 15 }}
-        >
-          Save rating
-        </button>
-        {existing && (
-          <button
-            onClick={() => onUnrate(teaId)}
-            className="transition-colors flex-1 text-center"
-            style={{ fontSize: 14, color: "#bbb", background: "none", border: "none", padding: 0 }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#ef4444")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#bbb")}
-          >
-            Remove rating
-          </button>
+      <div className="pt-3 pb-8 px-5" style={{ flexShrink: 0, background: "#fff", borderTop: "1px solid #f0f0f0", zIndex: 20 }}>
+        {existing ? (
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => onSubmit({ teaId, axes, buyAgainPct, note })}
+              className="font-semibold text-white transition-opacity active:opacity-80 shrink-0"
+              style={{ height: 52, width: 220, borderRadius: 16, background: "linear-gradient(135deg,#1a1a1a,#3a3a3a)", fontSize: 15 }}
+            >
+              Save rating
+            </button>
+            <button
+              onClick={() => onUnrate(teaId)}
+              className="transition-colors flex-1 text-center"
+              style={{ fontSize: 14, color: "#bbb", background: "none", border: "none", padding: 0 }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#ef4444")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#bbb")}
+            >
+              Remove rating
+            </button>
+          </div>
+        ) : (
+          <div className="flex justify-center">
+            <button
+              onClick={() => onSubmit({ teaId, axes, buyAgainPct, note })}
+              className="flex items-center justify-center font-semibold text-white transition-opacity active:opacity-80"
+              style={{ height: 52, paddingInline: 56, borderRadius: 9999, background: "linear-gradient(135deg,#1a1a1a,#3a3a3a)", fontSize: 15 }}
+            >
+              Save rating
+            </button>
+          </div>
         )}
       </div>
 
@@ -466,9 +492,11 @@ function LeaderboardScreen({ ratings, onEditTea, onClose }: {
         <button
           onClick={onClose}
           className="flex items-center justify-center"
-          style={{ width: 36, height: 36, borderRadius: 18, background: "#ebebeb", color: "#555", fontSize: 16 }}
+          style={{ width: 40, height: 40, borderRadius: 20, color: "#111" }}
         >
-          ✕
+          <svg width="30" height="30" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/>
+          </svg>
         </button>
       </div>
 
@@ -834,7 +862,8 @@ export default function App() {
   const handleSubmit = (rating: Rating) => {
     const newRatings = new Map(ratings).set(rating.teaId, rating);
     setRatings(newRatings);
-    setScreen("home"); setActiveTeaId(null);
+    setScreen("home");
+    setTimeout(() => setActiveTeaId(null), 320);
     const id = rating.teaId;
     setTimeout(() => {
       setAnimatingId(id);
@@ -847,8 +876,22 @@ export default function App() {
     }, 320);
   };
 
-  const handleDismissRate = () => { setScreen("home"); setActiveTeaId(null); };
-  const handleEditFromLeaderboard = (teaId: string) => { setActiveTeaId(teaId); setScreen("rate"); };
+  const [rateSlideDir, setRateSlideDir] = useState<"up" | "right">("up");
+
+  const handleDismissRate = () => {
+    setScreen(rateSlideDir === "right" ? "leaderboard" : "home");
+    // Delay clearing so the slide-out animation completes before unmounting
+    setTimeout(() => setActiveTeaId(null), 320);
+  };
+  const handleEditFromLeaderboard = (teaId: string) => {
+    setRateSlideDir("right");
+    setActiveTeaId(teaId);
+    setScreen("rate");
+  };
+  const handleOpenFromHome = (teaId: string) => {
+    setRateSlideDir("up");
+    openRate(teaId);
+  };
 
   return (
     <div className="flex items-center justify-center sm:bg-[#d1d5db] bg-[#F7F6F3] sm:p-4" style={{ minHeight: "100dvh" }}>
@@ -859,20 +902,26 @@ export default function App() {
 
         {/* Home */}
         <div className="absolute inset-0">
-          <HomeScreen ratings={ratings} animatingId={animatingId} onSelectTea={openRate} onViewLeaderboard={() => setScreen("leaderboard")} />
+          <HomeScreen ratings={ratings} animatingId={animatingId} onSelectTea={handleOpenFromHome} onViewLeaderboard={() => setScreen("leaderboard")} />
         </div>
 
-        {/* Rate — slides up */}
-        <div className="absolute inset-0 transition-transform duration-300 ease-in-out" style={{ transform: rateVisible ? "translateY(0)" : "translateY(100%)", background: "#fff" }}>
+        {/* Leaderboard — slides up, stays put when rate slides over it from right */}
+        <div className="absolute inset-0 transition-transform duration-300 ease-in-out" style={{ transform: (leaderboardVisible || (rateVisible && rateSlideDir === "right")) ? "translateY(0)" : "translateY(100%)", background: "#F7F6F3" }}>
+          <LeaderboardScreen ratings={ratings} onEditTea={handleEditFromLeaderboard} onClose={() => setScreen("home")} />
+        </div>
+
+        {/* Rate — slides up from home, slides in from right over leaderboard */}
+        <div className="absolute inset-0" style={{
+          transform: rateVisible ? "translate(0,0)" : rateSlideDir === "right" ? "translateX(100%)" : "translateY(100%)",
+          transition: "transform 0.3s ease-in-out",
+          background: "#fff",
+          zIndex: rateSlideDir === "right" ? 10 : "auto",
+        }}>
           {activeTeaId && (
             <RateScreen key={activeTeaId} teaId={activeTeaId} existing={ratings.get(activeTeaId)}
+              fromLeaderboard={rateSlideDir === "right"}
               onSubmit={handleSubmit} onUnrate={handleUnrate} onDismiss={handleDismissRate} />
           )}
-        </div>
-
-        {/* Leaderboard — slides up */}
-        <div className="absolute inset-0 transition-transform duration-300 ease-in-out" style={{ transform: leaderboardVisible ? "translateY(0)" : "translateY(100%)", background: "#F7F6F3" }}>
-          <LeaderboardScreen ratings={ratings} onEditTea={handleEditFromLeaderboard} onClose={() => setScreen("home")} />
         </div>
 
         {/* Completion screen — fades in over everything */}
