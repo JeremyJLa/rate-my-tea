@@ -261,6 +261,18 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
   const [note, setNote] = useState(existing?.note ?? "");
 
   const [shareOpen, setShareOpen] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+
+  const COLLAPSE = 70; // px of scroll to fully collapse
+  const p = Math.min(scrollY / COLLAPSE, 1); // 0 = expanded, 1 = collapsed
+
+  // Interpolated header values
+  const imgSize    = Math.round(64 - p * 34);          // 64 → 30
+  const titleSize  = Math.round(30 - p * 14);          // 30 → 16
+  const collapsedSize = titleSize;                      // breakfast matches city when collapsed
+  const subSize    = p < 0.5 ? Math.round(19 - p * 6) : collapsedSize;
+  const headerPb   = Math.round(20 - p * 8);           // padding-bottom 20 → 12
+  const inline     = p > 0.55;                         // switch to same-line layout
 
   const setAxis = useCallback(
     (axis: Axis, v: number) => setAxes((p) => ({ ...p, [axis]: v })), []
@@ -275,14 +287,14 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
       {/* ── Fixed header ───────────────────────────────────────────────── */}
       <div style={{ flexShrink: 0, background: "#fff", zIndex: 20 }}>
         <StatusBar />
-        <div className="flex items-center justify-between px-5 pb-5" style={{ paddingTop: 14 }}>
+        <div className="flex items-center justify-between px-5" style={{ paddingTop: 14, paddingBottom: headerPb, transition: "padding-bottom 0.1s" }}>
           <div className="flex items-center gap-3">
-            <div className="relative overflow-hidden" style={{ width: 64, height: 64, borderRadius: 14, flexShrink: 0 }}>
+            <div className="relative overflow-hidden" style={{ width: imgSize, height: imgSize, borderRadius: 14 - p * 4, flexShrink: 0, transition: "width 0.1s, height 0.1s, border-radius 0.1s" }}>
               <Image src={tea.image} alt={tea.name} fill className="object-cover" sizes="64px" style={{ transform: "scale(1.35)", transformOrigin: "center center" }} />
             </div>
-            <h1 className="font-bold leading-tight" style={{ color: "#111", letterSpacing: -0.4 }}>
-              <span style={{ fontSize: 30, display: "block" }}>{tea.name.replace(/\s+\S+$/, "")}</span>
-              <span style={{ fontSize: 19, fontWeight: 500, color: "#888", display: "block" }}>{tea.name.split(" ").pop()}</span>
+            <h1 className="font-bold" style={{ color: "#111", letterSpacing: -0.4, display: "flex", flexDirection: inline ? "row" : "column", alignItems: inline ? "baseline" : "flex-start", gap: inline ? 5 : 0 }}>
+              <span style={{ fontSize: titleSize, lineHeight: 1.15, transition: "font-size 0.1s" }}>{tea.name.replace(/\s+\S+$/, "")}</span>
+              <span style={{ fontSize: subSize, fontWeight: 500, color: inline ? "#111" : "#888", lineHeight: 1.15, transition: "font-size 0.1s, color 0.15s" }}>{tea.name.split(" ").pop()}</span>
             </h1>
           </div>
           <div className="flex items-center" style={{ gap: 30 }}>
@@ -305,7 +317,10 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
       </div>
 
       {/* ── Scrollable body ─────────────────────────────────────────────── */}
-      <div style={{ flex: 1, minHeight: 0, overflowY: "auto", WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
+      <div
+        onScroll={(e) => setScrollY((e.currentTarget as HTMLDivElement).scrollTop)}
+        style={{ flex: 1, minHeight: 0, overflowY: "auto", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
+      >
         <div className="px-5 space-y-6 py-4">
           <div className="rounded-2xl p-4 space-y-5" style={{ background: "#F7F6F3" }}>
             <p className="font-semibold" style={{ fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: 1 }}>Score the basics</p>
