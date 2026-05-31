@@ -133,7 +133,10 @@ function TeaCard({ tea, rated, animating, onClick }: {
         <div className="absolute inset-0" style={{ backgroundColor: tea.color, opacity: 0.45 }} />
         <div className="relative flex flex-col items-center gap-0.5 px-1">
           <span className="text-[9px] font-medium text-white/80 text-center leading-tight">{tea.name}</span>
-          <span className="text-[10px] font-bold tracking-widest uppercase text-white">rated</span>
+          <div className="flex items-center gap-1.5">
+            <svg width="16" height="16" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5L4.5 8.5L9.5 2.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            <span className="font-bold tracking-widest uppercase text-white" style={{ fontSize: 13 }}>rated</span>
+          </div>
         </div>
       </div>
     </button>
@@ -196,8 +199,8 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard }: {
 
       {/* Header */}
       <div className="px-5 pb-4 text-center" style={{ paddingTop: 8 }}>
-        <p style={{ fontSize: 24, color: "#aaa", fontWeight: 500, marginBottom: 4 }}>Hi Kate</p>
-        <h1 className="font-bold" style={{ fontSize: 36, letterSpacing: -1, color: "#111" }}>Rate my tea</h1>
+        <p style={{ fontSize: 24, color: "#aaa", fontWeight: 500, marginBottom: 0 }}>Hi Kate</p>
+        <h1 className="font-bold" style={{ fontSize: 36, letterSpacing: -1, color: "#111" }}>Rate Your Tea</h1>
         {tastedCount === 0 ? (
           <p style={{ fontSize: 14, color: "#888" }}>pick any of your samples and start rating</p>
         ) : (
@@ -485,8 +488,8 @@ function LeaderboardScreen({ ratings, onEditTea, onClose }: {
 
       {/* Header */}
       <div className="flex items-center justify-between px-5 pb-4" style={{ paddingTop: 14 }}>
-        <div>
-          <h1 className="font-bold" style={{ fontSize: 26, color: "#111", letterSpacing: -0.6 }}>Tea board</h1>
+        <div className="flex-1 text-center">
+          <h1 className="font-bold" style={{ fontSize: 26, color: "#111", letterSpacing: -0.6 }}>Leaderboard</h1>
           <p style={{ fontSize: 13, color: "#aaa", marginTop: 1 }}>ranked by would-buy-again</p>
         </div>
         <button
@@ -502,15 +505,17 @@ function LeaderboardScreen({ ratings, onEditTea, onClose }: {
 
       {/* Tabs */}
       {showTabs && (
-        <div className="mx-5 mb-3 flex rounded-2xl p-1 gap-1" style={{ background: "#ebebeb" }}>
+        <div className="flex justify-center mx-5 mb-4 gap-2" style={{ marginTop: 10 }}>
           {(["top5", "all"] as const).map((t) => (
             <button key={t} onClick={() => setTab(t)}
-              className="flex-1 font-medium transition-all"
+              className="font-semibold transition-all duration-200"
               style={{
-                height: 36, borderRadius: 14, fontSize: 14,
-                background: tab === t ? "#fff" : "transparent",
-                color: tab === t ? "#111" : "#999",
-                boxShadow: tab === t ? "0 1px 4px rgba(0,0,0,0.08)" : "none",
+                width: 120, height: 34, borderRadius: 999,
+                fontSize: 13,
+                background: tab === t ? "#111" : "transparent",
+                color: tab === t ? "#fff" : "#999",
+                border: tab === t ? "none" : "1.5px solid #e0e0e0",
+                letterSpacing: 0.1,
               }}>
               {t === "top5" ? "My top 3" : "All"}
             </button>
@@ -557,7 +562,7 @@ function LeaderboardScreen({ ratings, onEditTea, onClose }: {
           <span style={{ fontSize: 14, color: "#ccc" }}>next tea…</span>
         </div>
 
-        <p className="text-center" style={{ fontSize: 12, color: "#ccc", paddingTop: 4 }}>tap a row to edit its rating</p>
+        <p className="text-center" style={{ fontSize: 12, color: "#000000", paddingTop: 4 }}>tap a row to edit its rating</p>
       </div>
     </div>
   );
