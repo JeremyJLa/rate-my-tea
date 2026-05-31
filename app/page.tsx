@@ -270,7 +270,7 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
   const shareUrl = () => `${window.location.origin}/?share=${sharePayload()}`;
 
   return (
-    <div className="absolute inset-0 overflow-hidden" style={{ background: "#fff" }}>
+    <div className="absolute inset-0 overflow-y-auto" style={{ background: "#fff", WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
       {/* Sticky header */}
       <div style={{ position: "sticky", top: 0, zIndex: 20, background: "#fff" }}>
         <StatusBar />
@@ -309,8 +309,8 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
         </div>
       </div>
 
-      {/* Single scrollable area */}
-      <div className="overflow-y-auto" style={{ WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
+      {/* Scrollable content */}
+      <div>
         <div className="px-5 space-y-6 pb-4">
 
           {/* Axis ratings */}
@@ -368,7 +368,7 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
       </div>
 
       {/* Sticky footer */}
-      <div className="flex items-center gap-4 px-5 pt-3 pb-8" style={{ position: "sticky", bottom: 0, background: "#fff", borderTop: "1px solid #f0f0f0", zIndex: 20 }}>
+      <div className="flex items-center gap-4 px-5 pt-3 pb-8" style={{ position: "sticky", bottom: 0, background: "#fff", borderTop: "1px solid #f0f0f0", zIndex: 20, marginTop: "auto" }}>
         <button
           onClick={() => onSubmit({ teaId, axes, buyAgainPct, note })}
           className="font-semibold text-white transition-opacity active:opacity-80 shrink-0"
