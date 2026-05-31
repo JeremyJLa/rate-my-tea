@@ -270,12 +270,12 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
   const shareUrl = () => `${window.location.origin}/?share=${sharePayload()}`;
 
   return (
-    <div className="absolute inset-0 overflow-y-auto" style={{ background: "#fff", WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
-      {/* Sticky header */}
-      <div style={{ position: "sticky", top: 0, zIndex: 20, background: "#fff" }}>
+    <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", overflow: "hidden", background: "#fff" }}>
+
+      {/* ── Fixed header ───────────────────────────────────────────────── */}
+      <div style={{ flexShrink: 0, background: "#fff", zIndex: 20 }}>
         <StatusBar />
         <div className="flex items-center justify-between px-5 pb-5" style={{ paddingTop: 14 }}>
-          {/* Left: image + name */}
           <div className="flex items-center gap-3">
             <div className="relative overflow-hidden" style={{ width: 64, height: 64, borderRadius: 14, flexShrink: 0 }}>
               <Image src={tea.image} alt={tea.name} fill className="object-cover" sizes="64px" style={{ transform: "scale(1.35)", transformOrigin: "center center" }} />
@@ -285,7 +285,6 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
               <span style={{ fontSize: 19, fontWeight: 500, color: "#888", display: "block" }}>{tea.name.split(" ").pop()}</span>
             </h1>
           </div>
-          {/* Right: share + close */}
           <div className="flex items-center" style={{ gap: 30 }}>
             {existing && (
               <button onClick={() => setShareOpen(true)} className="flex items-center justify-center active:opacity-60 transition-opacity" style={{ width: 35, height: 35, borderRadius: 8, background: "#f3f4f6", color: "#555", lineHeight: 0 }}>
@@ -296,11 +295,7 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
                 </svg>
               </button>
             )}
-            <button
-              onClick={onDismiss}
-              className="flex items-center justify-center"
-              style={{ width: 40, height: 40, borderRadius: 20, color: "#111" }}
-            >
+            <button onClick={onDismiss} className="flex items-center justify-center" style={{ width: 40, height: 40, borderRadius: 20, color: "#111" }}>
               <svg width="30" height="30" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/>
               </svg>
@@ -309,11 +304,9 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
         </div>
       </div>
 
-      {/* Scrollable content */}
-      <div>
-        <div className="px-5 space-y-6 pb-4">
-
-          {/* Axis ratings */}
+      {/* ── Scrollable body ─────────────────────────────────────────────── */}
+      <div style={{ flex: 1, minHeight: 0, overflowY: "auto", WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
+        <div className="px-5 space-y-6 py-4">
           <div className="rounded-2xl p-4 space-y-5" style={{ background: "#F7F6F3" }}>
             <p className="font-semibold" style={{ fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: 1 }}>Score the basics</p>
             {AXES.map((axis) => (
@@ -334,7 +327,6 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
             ))}
           </div>
 
-          {/* Buy-again slider */}
           <div className="rounded-2xl p-4" style={{ background: "#F7F6F3" }}>
             <div className="flex items-center justify-between mb-1">
               <p className="font-semibold" style={{ fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: 1 }}>Would you buy this tea?</p>
@@ -349,7 +341,6 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
             </div>
           </div>
 
-          {/* Tasting note */}
           <div className="rounded-2xl p-4" style={{ background: "#F7F6F3" }}>
             <p className="font-semibold mb-2" style={{ fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: 1 }}>Tasting note</p>
             <textarea
@@ -361,14 +352,11 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
               style={{ background: "transparent", fontSize: 14, color: "#333", lineHeight: 1.6 }}
             />
           </div>
-
-          {/* Spacer so content isn't hidden behind sticky footer */}
-          <div style={{ height: 88 }} />
         </div>
       </div>
 
-      {/* Sticky footer */}
-      <div className="flex items-center gap-4 px-5 pt-3 pb-8" style={{ position: "sticky", bottom: 0, background: "#fff", borderTop: "1px solid #f0f0f0", zIndex: 20, marginTop: "auto" }}>
+      {/* ── Fixed footer ───────────────────────────────────────────────── */}
+      <div className="flex items-center gap-4 px-5 pt-3 pb-8" style={{ flexShrink: 0, background: "#fff", borderTop: "1px solid #f0f0f0", zIndex: 20 }}>
         <button
           onClick={() => onSubmit({ teaId, axes, buyAgainPct, note })}
           className="font-semibold text-white transition-opacity active:opacity-80 shrink-0"
@@ -389,26 +377,23 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
         )}
       </div>
 
-      {/* Share bottom drawer */}
-      {/* Backdrop */}
+      {/* ── Share drawer — absolute siblings, anchored to outer container ─ */}
+
+      {/* ── Share drawer — outside scroll, anchors to screen ───────────── */}
       <div
         onClick={() => setShareOpen(false)}
         className="absolute inset-0"
         style={{ background: "rgba(0,0,0,0.4)", opacity: shareOpen ? 1 : 0, pointerEvents: shareOpen ? "auto" : "none", transition: "opacity 0.25s ease", zIndex: 40 }}
       />
-      {/* Sheet */}
       <div
         className="absolute inset-x-0 bottom-0"
         style={{ background: "#fff", borderRadius: "24px 24px 0 0", padding: "12px 20px 40px", zIndex: 50, transform: shareOpen ? "translateY(0)" : "translateY(100%)", transition: "transform 0.3s cubic-bezier(0.32,0.72,0,1)" }}
       >
-        {/* Handle */}
         <div className="flex justify-center mb-5">
           <div className="rounded-full" style={{ width: 36, height: 4, background: "#e0e0e0" }} />
         </div>
         <p className="font-semibold mb-1" style={{ fontSize: 16, color: "#111" }}>Share Kate&apos;s rating</p>
         <p style={{ fontSize: 13, color: "#aaa", marginBottom: 20 }}>{tea.name} · {buyAgainPct}% likely to buy</p>
-
-        {/* Send via Messages / native share */}
         <button
           onClick={() => {
             const url = shareUrl();
@@ -427,14 +412,8 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
           </div>
           <svg className="ml-auto" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </button>
-
-        {/* Copy link */}
         <button
-          onClick={() => {
-            navigator.clipboard.writeText(shareUrl()).then(() => {
-              setShareOpen(false);
-            });
-          }}
+          onClick={() => { navigator.clipboard.writeText(shareUrl()).then(() => setShareOpen(false)); }}
           className="w-full flex items-center gap-4 active:opacity-70 transition-opacity"
           style={{ height: 56, borderRadius: 16, background: "#f3f4f6", paddingLeft: 18, paddingRight: 18 }}
         >
@@ -446,6 +425,7 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
           <svg className="ml-auto" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </button>
       </div>
+
     </div>
   );
 }
