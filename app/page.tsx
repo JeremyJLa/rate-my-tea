@@ -270,96 +270,105 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
   const shareUrl = () => `${window.location.origin}/?share=${sharePayload()}`;
 
   return (
-    <div className="absolute inset-0 flex flex-col overflow-hidden" style={{ background: "#fff" }}>
-      <StatusBar />
-
-      {/* Header — anchored */}
-      <div className="flex items-center justify-between px-5 pb-5 shrink-0" style={{ paddingTop: 14, background: "#fff", zIndex: 10 }}>
-        <div className="flex items-center gap-3">
-          <div className="relative overflow-hidden" style={{ width: 44, height: 44, borderRadius: 12, flexShrink: 0 }}>
-            <Image src={tea.image} alt={tea.name} fill className="object-cover" sizes="44px" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="font-bold" style={{ fontSize: 22, color: "#111", letterSpacing: -0.4 }}>{tea.name}</h1>
-              {existing && (
-                <button onClick={() => setShareOpen(true)} className="flex items-center justify-center active:opacity-60 transition-opacity" style={{ width: 35, height: 35, borderRadius: 8, background: "#f3f4f6", color: "#555", lineHeight: 0, marginLeft: 10 }}>
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-                    <polyline points="16 6 12 2 8 6"/>
-                    <line x1="12" y1="2" x2="12" y2="15"/>
-                  </svg>
-                </button>
-              )}
+    <div className="absolute inset-0 overflow-hidden" style={{ background: "#fff" }}>
+      {/* Sticky header */}
+      <div style={{ position: "sticky", top: 0, zIndex: 20, background: "#fff" }}>
+        <StatusBar />
+        <div className="flex items-center justify-between px-5 pb-5" style={{ paddingTop: 14 }}>
+          {/* Left: image + name */}
+          <div className="flex items-center gap-3">
+            <div className="relative overflow-hidden" style={{ width: 64, height: 64, borderRadius: 14, flexShrink: 0 }}>
+              <Image src={tea.image} alt={tea.name} fill className="object-cover" sizes="64px" style={{ transform: "scale(1.35)", transformOrigin: "center center" }} />
             </div>
+            <h1 className="font-bold leading-tight" style={{ color: "#111", letterSpacing: -0.4 }}>
+              <span style={{ fontSize: 30, display: "block" }}>{tea.name.replace(/\s+\S+$/, "")}</span>
+              <span style={{ fontSize: 19, fontWeight: 500, color: "#888", display: "block" }}>{tea.name.split(" ").pop()}</span>
+            </h1>
           </div>
-        </div>
-        <button
-          onClick={onDismiss}
-          className="flex items-center justify-center"
-          style={{ width: 40, height: 40, borderRadius: 20, color: "#111" }}
-        >
-          <svg width="30" height="30" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/>
-          </svg>
-        </button>
-      </div>
-
-      {/* Body — scrollable */}
-      <div className="flex-1 min-h-0 overflow-y-auto px-5 space-y-6 pb-4">
-
-        {/* Axis ratings */}
-        <div className="rounded-2xl p-4 space-y-5" style={{ background: "#F7F6F3" }}>
-          <p className="font-semibold" style={{ fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: 1 }}>Score the basics</p>
-          {AXES.map((axis) => (
-            <div key={axis.id}>
-              <div className="flex items-baseline justify-between mb-2">
-                <span className="font-semibold" style={{ fontSize: 15, color: "#111" }}>{axis.label}</span>
-                <span style={{ fontSize: 12, color: "#aaa" }}>{axis.prompt}</span>
-              </div>
-              <DotRating value={axes[axis.id]} onChange={(v) => setAxis(axis.id, v)} />
-              <div className="flex gap-2.5 mt-1" style={{ fontSize: 15, color: "#888" }}>
-                <span className="w-9 shrink-0 text-center">{axis.scaleLabels[0]}</span>
-                <span className="w-9 shrink-0" />
-                <span className="w-9 shrink-0 text-center" style={{ marginLeft: -5 }}>{axis.scaleLabels[1]}</span>
-                <span className="w-9 shrink-0" />
-                <span className="w-9 shrink-0 text-center">{axis.scaleLabels[2]}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Buy-again slider */}
-        <div className="rounded-2xl p-4" style={{ background: "#F7F6F3" }}>
-          <div className="flex items-center justify-between mb-1">
-            <p className="font-semibold" style={{ fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: 1 }}>Would you buy this tea?</p>
-            <span className="font-bold tabular-nums" style={{ fontSize: 22, background: "linear-gradient(135deg,#4ade80,#16a34a)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              {buyAgainPct}%
-            </span>
+          {/* Right: share + close */}
+          <div className="flex items-center" style={{ gap: 30 }}>
+            {existing && (
+              <button onClick={() => setShareOpen(true)} className="flex items-center justify-center active:opacity-60 transition-opacity" style={{ width: 35, height: 35, borderRadius: 8, background: "#f3f4f6", color: "#555", lineHeight: 0 }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                  <polyline points="16 6 12 2 8 6"/>
+                  <line x1="12" y1="2" x2="12" y2="15"/>
+                </svg>
+              </button>
+            )}
+            <button
+              onClick={onDismiss}
+              className="flex items-center justify-center"
+              style={{ width: 40, height: 40, borderRadius: 20, color: "#111" }}
+            >
+              <svg width="30" height="30" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/>
+              </svg>
+            </button>
           </div>
-          <Slider value={buyAgainPct} onChange={setBuyAgainPct} />
-          <div className="flex justify-between" style={{ fontSize: 11, color: "#ffffff", marginTop: 2 }}>
-            <span>Wouldn&apos;t buy</span>
-            <span>Definitely buying</span>
-          </div>
-        </div>
-
-        {/* Tasting note */}
-        <div className="rounded-2xl p-4" style={{ background: "#F7F6F3" }}>
-          <p className="font-semibold mb-2" style={{ fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: 1 }}>Tasting note</p>
-          <textarea
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder="Optional — anything you noticed…"
-            rows={3}
-            className="w-full resize-none focus:outline-none"
-            style={{ background: "transparent", fontSize: 14, color: "#333", lineHeight: 1.6 }}
-          />
         </div>
       </div>
 
-      {/* Footer — anchored */}
-      <div className="px-5 pb-8 pt-3 shrink-0 flex items-center gap-4" style={{ borderTop: "1px solid #f0f0f0", background: "#fff" }}>
+      {/* Single scrollable area */}
+      <div className="overflow-y-auto" style={{ WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
+        <div className="px-5 space-y-6 pb-4">
+
+          {/* Axis ratings */}
+          <div className="rounded-2xl p-4 space-y-5" style={{ background: "#F7F6F3" }}>
+            <p className="font-semibold" style={{ fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: 1 }}>Score the basics</p>
+            {AXES.map((axis) => (
+              <div key={axis.id}>
+                <div className="flex items-baseline justify-between mb-2">
+                  <span className="font-semibold" style={{ fontSize: 15, color: "#111" }}>{axis.label}</span>
+                  <span style={{ fontSize: 12, color: "#aaa" }}>{axis.prompt}</span>
+                </div>
+                <DotRating value={axes[axis.id]} onChange={(v) => setAxis(axis.id, v)} />
+                <div className="flex gap-2.5 mt-1" style={{ fontSize: 15, color: "#888" }}>
+                  <span className="w-9 shrink-0 text-center">{axis.scaleLabels[0]}</span>
+                  <span className="w-9 shrink-0" />
+                  <span className="w-9 shrink-0 text-center" style={{ marginLeft: -5 }}>{axis.scaleLabels[1]}</span>
+                  <span className="w-9 shrink-0" />
+                  <span className="w-9 shrink-0 text-center">{axis.scaleLabels[2]}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Buy-again slider */}
+          <div className="rounded-2xl p-4" style={{ background: "#F7F6F3" }}>
+            <div className="flex items-center justify-between mb-1">
+              <p className="font-semibold" style={{ fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: 1 }}>Would you buy this tea?</p>
+              <span className="font-bold tabular-nums" style={{ fontSize: 22, background: "linear-gradient(135deg,#4ade80,#16a34a)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                {buyAgainPct}%
+              </span>
+            </div>
+            <Slider value={buyAgainPct} onChange={setBuyAgainPct} />
+            <div className="flex justify-between" style={{ fontSize: 11, color: "#ffffff", marginTop: 2 }}>
+              <span>Wouldn&apos;t buy</span>
+              <span>Definitely buying</span>
+            </div>
+          </div>
+
+          {/* Tasting note */}
+          <div className="rounded-2xl p-4" style={{ background: "#F7F6F3" }}>
+            <p className="font-semibold mb-2" style={{ fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: 1 }}>Tasting note</p>
+            <textarea
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder="Optional — anything you noticed…"
+              rows={3}
+              className="w-full resize-none focus:outline-none"
+              style={{ background: "transparent", fontSize: 14, color: "#333", lineHeight: 1.6 }}
+            />
+          </div>
+
+          {/* Spacer so content isn't hidden behind sticky footer */}
+          <div style={{ height: 88 }} />
+        </div>
+      </div>
+
+      {/* Sticky footer */}
+      <div className="flex items-center gap-4 px-5 pt-3 pb-8" style={{ position: "sticky", bottom: 0, background: "#fff", borderTop: "1px solid #f0f0f0", zIndex: 20 }}>
         <button
           onClick={() => onSubmit({ teaId, axes, buyAgainPct, note })}
           className="font-semibold text-white transition-opacity active:opacity-80 shrink-0"
