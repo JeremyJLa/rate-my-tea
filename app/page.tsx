@@ -11,10 +11,10 @@ const TEAS = [
   { id: "melbourne-breakfast",  name: "Melbourne Breakfast",  image: "/images/melbourne-breakfast.jpg",  color: "#2A3A2C", t2url: "https://www.t2tea.com/search?q=melbourne+breakfast"   },
   { id: "irish-breakfast",      name: "Irish Breakfast",      image: "/images/irish-breakfast.jpg",      color: "#1E4A3A", t2url: "https://www.t2tea.com/search?q=irish+breakfast"       },
   { id: "singapore-breakfast",  name: "Singapore Breakfast",  image: "/images/singapore-breakfast.jpg",  color: "#6B3FA0", t2url: "https://www.t2tea.com/search?q=singapore+breakfast"   },
-  { id: "canberra-breakfast",   name: "Canberra Breakfast",   image: "/images/canberra-breakfast.png",   color: "#E8C030", t2url: "https://www.t2tea.com/search?q=canberra+breakfast"    },
+  { id: "canberra-breakfast",   name: "Canberra Breakfast",   image: "/images/canberra-breakfast.png",   color: "#2563B0", t2url: "https://www.t2tea.com/search?q=canberra+breakfast"    },
   { id: "brisbane-breakfast",   name: "Brisbane Breakfast",   image: "/images/brisbane-breakfast.jpg",   color: "#E07820", t2url: "https://www.t2tea.com/search?q=brisbane+breakfast"    },
   { id: "english-breakfast",    name: "English Breakfast",    image: "/images/english-breakfast.jpg",    color: "#C8202A", t2url: "https://www.t2tea.com/search?q=english+breakfast"     },
-  { id: "scots-breakfast",      name: "Scots Breakfast",      image: "/images/scots-breakfast.png",      color: "#C85820", t2url: "https://www.t2tea.com/search?q=scots+breakfast"       },
+  { id: "scots-breakfast",      name: "Scots Breakfast",      image: "/images/scots-breakfast.png",      color: "#1A4F8A", t2url: "https://www.t2tea.com/search?q=scots+breakfast"       },
   { id: "new-zealand-breakfast",name: "New Zealand Breakfast",image: "/images/new-zealand-breakfast.jpg",color: "#7AB028", t2url: "https://www.t2tea.com/search?q=new+zealand+breakfast" },
   { id: "new-york-breakfast",   name: "New York Breakfast",   image: "/images/new-york-breakfast.jpg",   color: "#D4A020", t2url: "https://www.t2tea.com/search?q=new+york+breakfast"    },
 ];
@@ -877,18 +877,28 @@ export default function App() {
   };
 
   const [rateSlideDir, setRateSlideDir] = useState<"up" | "right">("up");
+  const rateSlideDirRef = useRef<"up" | "right">("up");
+  const [rateTransition, setRateTransition] = useState(true);
 
   const handleDismissRate = () => {
-    setScreen(rateSlideDir === "right" ? "leaderboard" : "home");
+    setScreen(rateSlideDirRef.current === "right" ? "leaderboard" : "home");
     // Delay clearing so the slide-out animation completes before unmounting
     setTimeout(() => setActiveTeaId(null), 320);
   };
   const handleEditFromLeaderboard = (teaId: string) => {
+    rateSlideDirRef.current = "right";
+    // Snap to off-screen-right instantly (no transition while repositioning)
+    setRateTransition(false);
     setRateSlideDir("right");
     setActiveTeaId(teaId);
-    setScreen("rate");
+    // After the snap paint, re-enable transition and slide in
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      setRateTransition(true);
+      setScreen("rate");
+    }));
   };
   const handleOpenFromHome = (teaId: string) => {
+    rateSlideDirRef.current = "up";
     setRateSlideDir("up");
     openRate(teaId);
   };
@@ -913,7 +923,7 @@ export default function App() {
         {/* Rate — slides up from home, slides in from right over leaderboard */}
         <div className="absolute inset-0" style={{
           transform: rateVisible ? "translate(0,0)" : rateSlideDir === "right" ? "translateX(100%)" : "translateY(100%)",
-          transition: "transform 0.3s ease-in-out",
+          transition: rateTransition ? "transform 0.3s ease-in-out" : "none",
           background: "#fff",
           zIndex: rateSlideDir === "right" ? 10 : "auto",
         }}>
