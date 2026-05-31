@@ -114,21 +114,49 @@ function TeaCard({ tea, rated, animating, onClick }: {
       className="relative overflow-hidden"
       style={{ borderRadius: 16, aspectRatio: "1", boxShadow: "0 2px 12px rgba(0,0,0,0.10)" }}
     >
-      {/* Photo */}
-      <div className="absolute inset-0" style={{
-        opacity: showRated ? 0 : 1,
-        transform: showRated ? "scale(1.08)" : "scale(1)",
-        filter: showRated ? "blur(6px)" : "blur(0px)",
-        transition: "opacity 0.75s cubic-bezier(0.4,0,0.2,1), transform 0.75s cubic-bezier(0.4,0,0.2,1), filter 0.75s cubic-bezier(0.4,0,0.2,1)",
-      }}>
-        <Image src={tea.image} alt={tea.name} fill className="object-cover" sizes="33vw" style={{ transform: "scale(1.35)", transformOrigin: "center center" }} />
+      {/* Bag card — foil texture + colour tint */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        {/* Solid tea colour base */}
+        <div className="absolute inset-0" style={{ backgroundColor: tea.color }} />
+        {/* Greyscale foil texture faded over the top */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        {(() => {
+          const hash = tea.id.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+          const rotate = ((hash * 37) % 80) - 40; // -40 to +40 deg
+          const rad = (Math.abs(rotate) * Math.PI) / 180;
+          const minScale = Math.abs(Math.cos(rad)) + Math.abs(Math.sin(rad)) + 0.15;
+          const scale = minScale + (hash % 5) * 0.08;
+          const tx = ((hash * 13) % 20) - 10;      // shift x
+          const ty = ((hash * 17) % 20) - 10;      // shift y
+          return (
+            <img src="/images/foil-texture.png" alt="" className="absolute inset-0 w-full h-full object-cover"
+              style={{ filter: "grayscale(1) contrast(2.2) brightness(0.8)", opacity: 0.65, mixBlendMode: "overlay",
+                transform: `rotate(${rotate}deg) scale(${scale}) translate(${tx}px,${ty}px)`,
+                transformOrigin: "center center" }} />
+          );
+        })()}
+        {/* Edge vignette */}
+        <div className="absolute inset-0" style={{
+          background: "radial-gradient(ellipse 120% 120% at 50% 50%, transparent 35%, rgba(0,0,0,0.4) 100%)",
+        }} />
+        {/* Tea name */}
+        <div className="relative flex flex-col items-center justify-center px-2" style={{ gap: 1 }}>
+          <span className="font-bold text-white text-center leading-tight" style={{
+            fontSize: 17, letterSpacing: -0.3, textShadow: "0 2px 10px rgba(0,0,0,0.6)",
+          }}>
+            {tea.name.replace(/\s+\S+$/, "")}
+          </span>
+          <span className="font-medium text-center" style={{ fontSize: 12, color: "rgba(255,255,255,0.72)", textShadow: "0 1px 6px rgba(0,0,0,0.5)" }}>
+            {tea.name.split(" ").pop()}
+          </span>
+        </div>
       </div>
 
-      {/* Rated overlay */}
+      {/* Rated overlay — light tint style (original) */}
       <div className="absolute inset-0 flex items-center justify-center" style={{
         opacity: showRated ? 1 : 0,
-        transform: showRated ? "scale(1)" : "scale(0.9)",
-        transition: "opacity 0.75s cubic-bezier(0.4,0,0.2,1), transform 0.75s cubic-bezier(0.4,0,0.2,1)",
+        transition: "opacity 0.75s cubic-bezier(0.4,0,0.2,1)",
+        background: "#fff",
       }}>
         <div className="absolute inset-0" style={{ backgroundColor: tea.color, opacity: 0.45 }} />
         <div className="relative flex flex-col items-center gap-0.5 px-1">
