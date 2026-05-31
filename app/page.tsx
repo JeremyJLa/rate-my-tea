@@ -270,7 +270,7 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
   const shareUrl = () => `${window.location.origin}/?share=${sharePayload()}`;
 
   return (
-    <div className="flex flex-col h-full" style={{ background: "#fff" }}>
+    <div className="relative flex flex-col h-full overflow-hidden" style={{ background: "#fff" }}>
       <StatusBar />
 
       {/* Header — anchored */}
@@ -304,7 +304,7 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
       </div>
 
       {/* Body — scrollable */}
-      <div className="flex-1 overflow-y-auto px-5 space-y-6 pb-4">
+      <div className="flex-1 min-h-0 overflow-y-auto px-5 space-y-6 pb-4">
 
         {/* Axis ratings */}
         <div className="rounded-2xl p-4 space-y-5" style={{ background: "#F7F6F3" }}>
@@ -336,7 +336,7 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
             </span>
           </div>
           <Slider value={buyAgainPct} onChange={setBuyAgainPct} />
-          <div className="flex justify-between" style={{ fontSize: 11, color: "#bbb", marginTop: 2 }}>
+          <div className="flex justify-between" style={{ fontSize: 11, color: "#ffffff", marginTop: 2 }}>
             <span>Wouldn&apos;t buy</span>
             <span>Definitely buying</span>
           </div>
