@@ -52,7 +52,7 @@ function DotRating({ value, onChange }: { value: number; onChange: (v: number) =
             className="block w-5 h-5 rounded-full transition-all duration-200"
             style={{
               background: n <= value
-                ? "linear-gradient(135deg,#4ade80,#16a34a)"
+                ? "#16a34a"
                 : "transparent",
               border: n <= value ? "none" : "2px solid #d1d5db",
               transform: n <= value ? "scale(1.1)" : "scale(1)",
@@ -283,7 +283,7 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
             <div className="flex items-center gap-2">
               <h1 className="font-bold" style={{ fontSize: 22, color: "#111", letterSpacing: -0.4 }}>{tea.name}</h1>
               {existing && (
-                <button onClick={() => setShareOpen(true)} className="flex items-center justify-center active:opacity-60 transition-opacity" style={{ width: 28, height: 28, borderRadius: 8, background: "#f3f4f6", color: "#555", lineHeight: 0 }}>
+                <button onClick={() => setShareOpen(true)} className="flex items-center justify-center active:opacity-60 transition-opacity" style={{ width: 35, height: 35, borderRadius: 8, background: "#f3f4f6", color: "#555", lineHeight: 0, marginLeft: 10 }}>
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
                     <polyline points="16 6 12 2 8 6"/>
@@ -297,9 +297,11 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
         <button
           onClick={onDismiss}
           className="flex items-center justify-center"
-          style={{ width: 36, height: 36, borderRadius: 18, background: "#f3f4f6", color: "#555", fontSize: 16 }}
+          style={{ width: 40, height: 40, borderRadius: 20, color: "#111" }}
         >
-          ✕
+          <svg width="30" height="30" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/>
+          </svg>
         </button>
       </div>
 
@@ -357,19 +359,19 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
       </div>
 
       {/* Footer — anchored */}
-      <div className="px-5 pb-8 pt-3 space-y-2 shrink-0" style={{ borderTop: "1px solid #f0f0f0", background: "#fff" }}>
+      <div className="px-5 pb-8 pt-3 shrink-0 flex items-center gap-4" style={{ borderTop: "1px solid #f0f0f0", background: "#fff" }}>
         <button
           onClick={() => onSubmit({ teaId, axes, buyAgainPct, note })}
-          className="w-full font-semibold text-white transition-opacity active:opacity-80"
-          style={{ height: 52, borderRadius: 16, background: "linear-gradient(135deg,#1a1a1a,#3a3a3a)", fontSize: 15 }}
+          className="font-semibold text-white transition-opacity active:opacity-80 shrink-0"
+          style={{ height: 52, width: 220, borderRadius: 16, background: "linear-gradient(135deg,#1a1a1a,#3a3a3a)", fontSize: 15 }}
         >
           Save rating
         </button>
         {existing && (
           <button
             onClick={() => onUnrate(teaId)}
-            className="w-full transition-colors"
-            style={{ height: 40, fontSize: 14, color: "#bbb" }}
+            className="transition-colors flex-1 text-center"
+            style={{ fontSize: 14, color: "#bbb", background: "none", border: "none", padding: 0 }}
             onMouseEnter={(e) => (e.currentTarget.style.color = "#ef4444")}
             onMouseLeave={(e) => (e.currentTarget.style.color = "#bbb")}
           >
