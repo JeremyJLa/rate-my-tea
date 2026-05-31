@@ -310,7 +310,7 @@ function RateScreen({ teaId, existing, fromLeaderboard, onSubmit, onUnrate, onDi
 
           {/* Share + X (home only) */}
           {!fromLeaderboard && (
-            <div className="flex items-center" style={{ gap: 30 }}>
+            <div className="flex items-center" style={{ gap: 10 }}>
               {existing && (
                 <button onClick={() => setShareOpen(true)} className="flex items-center justify-center active:opacity-60 transition-opacity" style={{ width: 35, height: 35, borderRadius: 8, background: "#f3f4f6", color: "#555", lineHeight: 0 }}>
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
