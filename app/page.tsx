@@ -270,7 +270,7 @@ function RateScreen({ teaId, existing, onSubmit, onUnrate, onDismiss }: {
   const shareUrl = () => `${window.location.origin}/?share=${sharePayload()}`;
 
   return (
-    <div className="relative flex flex-col h-full overflow-hidden" style={{ background: "#fff" }}>
+    <div className="absolute inset-0 flex flex-col overflow-hidden" style={{ background: "#fff" }}>
       <StatusBar />
 
       {/* Header — anchored */}
