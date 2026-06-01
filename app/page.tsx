@@ -854,284 +854,262 @@ function SharedRatingView({ rating, onClose }: { rating: Rating; onClose: () => 
 
 // ── Splash Screen ─────────────────────────────────────────────────────────────
 
-const VERT_SRC = `
-attribute vec2 a_position;
-void main() {
-  gl_Position = vec4(a_position, 0.0, 1.0);
-}`;
-
-const FRAG_SRC = `
-precision mediump float;
-uniform float uTime;
-uniform vec2 uResolution;
-
-float time, flash, glow;
-
-struct MarchData { float d; vec3 mat; bool isCloud; };
-
-float noise(vec3 p) {
-  const vec3 s = vec3(7, 157, 113);
-  vec3 ip = floor(p);
-  vec4 h = vec4(0, s.yz, s.y + s.z) + dot(ip, s);
-  p -= ip;
-  h = mix(fract(sin(h) * 43758.545), fract(sin(h + s.x) * 43758.545), p.x);
-  h.xy = mix(h.xz, h.yw, p.y);
-  return mix(h.x, h.y, p.z);
-}
-float noise(float n) {
-  float flr = floor(n);
-  vec2 r = fract(sin(vec2(flr, flr + 1.0) * 12.9898) * 43758.545);
-  return mix(r.x, r.y, fract(n));
-}
-float smin(float a, float b, float k) {
-  float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0);
-  return mix(b, a, h) - k * h * (1.0 - h);
-}
-MarchData minResult(MarchData a, MarchData b) { if (a.d < b.d) return a; return b; }
-mat2 rot(float a) { float c = cos(a), s = sin(a); return mat2(c, s, -s, c); }
-float sdBox(vec3 p, vec3 b) { vec3 q = abs(p) - b; return length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0); }
-float sdCappedCylinder(vec3 p, float h, float r) {
-  vec2 d = abs(vec2(length(p.xy), p.z)) - vec2(h, r);
-  return min(max(d.x, d.y), 0.0) + length(max(d, 0.0));
-}
-MarchData sdSea(vec3 p, const float bowlInner) {
-  MarchData result; result.isCloud = false;
-  mat2 r = rot(23.23); vec2 af = vec2(1);
-  float t = time * 0.4, wave = noise(p.x);
-  for (int i = 0; i < 8; i++) {
-    wave += (1.0 - abs(sin((p.x + t) * af.y))) * af.x;
-    p.xz *= r; af *= vec2(0.5, 1.64);
-  }
-  result.d = max(p.y + 1.0 - wave * 0.3, bowlInner);
-  result.mat = vec3(0.03, 0.09, 0.12) * wave;
-  return result;
-}
-MarchData sdCup(vec3 p) {
-  MarchData result; result.mat = vec3(1); result.isCloud = false;
-  float bowlInner = length(p) + p.y * 0.1 - 2.0;
-  result.d = smin(max(abs(bowlInner) - 0.06, p.y), max(max(abs(length(p.xy - vec2(2.0, p.x * p.x * 0.1 - 1.1)) - 0.5) - 0.06, abs(p.z) - 0.06), -bowlInner), 0.1);
-  return minResult(result, sdSea(p, bowlInner));
-}
-float sdSaucer(vec3 p) {
-  float l = length(p.xz);
-  p.y += 1.9 - l * (0.1 + 0.02 * smoothstep(0.0, 0.1, l - 2.05));
-  return sdCappedCylinder(p.xzy, 2.6, 0.01) - 0.02;
-}
-vec3 getRayDir(vec3 ro, vec2 uv) {
-  vec3 forward = normalize(-ro), right = normalize(cross(vec3(0, 1, 0), forward));
-  return normalize(forward + right * uv.x + cross(forward, right) * uv.y);
-}
-float sdCloud(vec3 p) {
-  p.y -= 1.3;
-  float d = min(length(p + vec3(0.4, 0, 0)), length(p - vec3(0.4, 0, 0)));
-  if (d < 2.0) d -= abs(smoothstep(0.0, 1.0, (noise(p * 4.0) + noise(p * 9.292 - vec3(0, time, 0)) * 0.4) * 0.3) - 0.4) + 0.55;
-  return d;
-}
-MarchData sdPlane(vec3 p) {
-  MarchData result; result.mat = vec3(0.29, 0.33, 0.13); result.isCloud = false;
-  p *= 1.5; p.xz *= rot(time * 0.6); p.xy -= vec2(1.5, 0.4); p.xy *= rot(sin(time * 3.0) * 0.1);
-  vec3 ppp, pp = p + vec3(0, 0, 0.15);
-  result.d = sdBox(pp, vec2(0.04 + pp.z * 0.05, 0.3).xxy);
-  if (result.d > 2.0) return result;
-  ppp = pp; ppp.z -= 0.33; ppp.xy *= rot(time * 8.0);
-  float d = sdBox(ppp, vec3(0.09, 0.01 * sin(length(p.xy) * 34.0), 0.005));
-  pp.yz += vec2(-0.05, 0.26);
-  result.d = min(min(result.d, sdBox(pp, vec3(0.01, 0.06 * cos(pp.z * 25.6), 0.03))), sdBox(pp + vec3(0, 0.05, 0), vec3(0.15 * cos(pp.z * 12.0), 0.01, 0.03)));
-  p.y = abs(p.y) - 0.08;
-  result.d = min(result.d, sdBox(p, vec3(0.3, 0.01, 0.1)));
-  if (d < result.d) { result.d = d; result.mat = vec3(0.05); }
-  result.d = (result.d - 0.005) * 0.4;
-  return result;
-}
-
-bool hideCloud;
-MarchData map(vec3 p) {
-  MarchData result = sdCup(p);
-  result.d = min(result.d, sdSaucer(p));
-  result = minResult(result, sdPlane(p));
-  float d, gnd = length(p.y + 1.7);
-  if (flash > 0.0) {
-    d = max(length(p.xz * rot(fract(time) * 3.141) + vec2(noise(p.y * 6.5) * 0.08) - vec2(0.5, 0)), p.y - 0.7);
-    glow += 0.001 / (0.01 + 2.0 * d * d);
-    if (d < result.d) result.d = d;
-  }
-  if (gnd < result.d) { result.d = gnd; result.mat = vec3(0.2); }
-  if (!hideCloud) {
-    d = sdCloud(p);
-    if (d < result.d) { result.d = d * 0.7; result.isCloud = true; }
-  }
-  return result;
-}
-
-vec3 calcNormal(vec3 p, float t) {
-  vec2 e = vec2(0.5773, -0.5773) * t * 1e-4;
-  return normalize(e.xyy * map(p + e.xyy).d + e.yyx * map(p + e.yyx).d + e.yxy * map(p + e.yxy).d + e.xxx * map(p + e.xxx).d);
-}
-vec3 cloudNormal(vec3 p) {
-  const vec2 e = vec2(0.5773, -0.5773);
-  return normalize(e.xyy * sdCloud(p + e.xyy) + e.yyx * sdCloud(p + e.yyx) + e.yxy * sdCloud(p + e.yxy) + e.xxx * sdCloud(p + e.xxx));
-}
-float calcShadow(vec3 p, vec3 lightPos) {
-  vec3 rd = normalize(lightPos - p); float res = 1.0, t = 0.1;
-  for (float i = 0.0; i < 32.0; i++) {
-    float h = map(p + rd * t).d; res = min(res, 10.0 * h / t); t += h;
-    if (res < 0.001 || t > 3.0) break;
-  }
-  return clamp(res, 0.0, 1.0);
-}
-float ao(vec3 p, vec3 n, float h) { return map(p + h * n).d / h; }
-float cloudAo(vec3 p, vec3 n, float h) { return sdCloud(p + h * n) / h; }
-vec3 vignette(vec3 col, vec2 fc) {
-  vec2 q = fc / uResolution;
-  col *= 0.5 + 0.5 * pow(16.0 * q.x * q.y * (1.0 - q.x) * (1.0 - q.y), 0.4);
-  return col;
-}
-vec3 applyLighting(vec3 p, vec3 rd, float d, MarchData data) {
-  vec3 sunDir = normalize(vec3(6, 10, -4) - p), n = calcNormal(p, d);
-  return data.mat * (max(0.0, dot(sunDir, n)) * mix(0.4, 1.0, calcShadow(p, vec3(6, 10, -4))) + max(0.0, dot(sunDir * vec3(-1, 0, -1), n)) * 0.3) * dot(vec3(ao(p, n, 0.2), ao(p, n, 0.5), ao(p, n, 2.0)), vec3(0.2, 0.3, 0.5)) * vec3(2, 1.6, 1.4) * exp(-length(p) * 0.14);
-}
-vec3 cloudLighting(vec3 p, float den) {
-  vec3 n = cloudNormal(p), col = vec3(2, 1.6, 1.4) * (1.0 + flash);
-  return min(0.75, den) * max(0.1, dot(normalize(vec3(6, 10, -4) - p), n)) * cloudAo(p, n, 1.0) * col;
-}
-vec3 getSceneColor(vec3 ro, vec3 rd) {
-  MarchData h; float d = 0.01, den = 0.0, maxCloudD = 0.0;
-  hideCloud = false;
-  vec3 p, cloudP;
-  for (float steps = 0.0; steps < 120.0; steps++) {
-    p = ro + rd * d; h = map(p);
-    if (h.d < 0.0015) {
-      if (!h.isCloud) break;
-      hideCloud = true; cloudP = p; maxCloudD = 20.0 - sdCloud(p + rd * 20.0);
-    }
-    if (d > 55.0) break;
-    d += h.d;
-  }
-  if (hideCloud) {
-    for (float i = 0.0; i < 20.0; i++)
-      den += clamp(-sdCloud(cloudP + rd * maxCloudD * i / 20.0) * 0.2, 0.0, 1.0);
-  }
-  hideCloud = false;
-  return applyLighting(p, rd, d, h) + cloudLighting(cloudP, den) + glow + flash * 0.05;
-}
-
-void mainImage(out vec4 fragColor, vec2 fragCoord) {
-  time = mod(uTime, 120.0);
-  flash = step(0.55, pow(noise(time * 8.0), 5.0));
-  vec3 col = vec3(0), ro = vec3(0, 2, -5);
-  ro.xz *= rot(-0.6);
-  vec2 uv = (fragCoord - 0.5 * uResolution) / uResolution.y;
-  col += getSceneColor(ro, getRayDir(ro, uv));
-  fragColor = vec4(vignette(pow(col, vec3(0.4545)), fragCoord), 1);
-}
-
-void main() {
-  vec4 col;
-  mainImage(col, gl_FragCoord.xy);
-  gl_FragColor = col;
-}`;
-
 function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const playThunderRef = useRef<(() => void) | null>(null);
   const [fading, setFading] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-
-    const gl = canvas.getContext("webgl");
-    if (!gl) return;
-
-    const compile = (type: number, src: string) => {
-      const s = gl.createShader(type)!;
-      gl.shaderSource(s, src); gl.compileShader(s);
-      return s;
-    };
-    const prog = gl.createProgram()!;
-    gl.attachShader(prog, compile(gl.VERTEX_SHADER, VERT_SRC));
-    gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FRAG_SRC));
-    gl.linkProgram(prog); gl.useProgram(prog);
-
-    const buf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
-    const loc = gl.getAttribLocation(prog, "a_position");
-    gl.enableVertexAttribArray(loc);
-    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-
-    const uTime = gl.getUniformLocation(prog, "uTime");
-    const uRes  = gl.getUniformLocation(prog, "uResolution");
-    gl.uniform2f(uRes, canvas.width, canvas.height);
-
-    // ── Audio: replicate shader's flash logic to trigger thunder ──────────────
-    const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
-    audioCtxRef.current = audioCtx;
-
-    const playThunder = () => {
-      const now = audioCtx.currentTime;
-      const bufLen = audioCtx.sampleRate * 2.5;
-      const buf = audioCtx.createBuffer(1, bufLen, audioCtx.sampleRate);
-      const data = buf.getChannelData(0);
-      for (let i = 0; i < bufLen; i++) data[i] = (Math.random() * 2 - 1);
-
-      const src = audioCtx.createBufferSource();
-      src.buffer = buf;
-
-      const crack = audioCtx.createBiquadFilter();
-      crack.type = "highpass"; crack.frequency.value = 800;
-
-      const rumble = audioCtx.createBiquadFilter();
-      rumble.type = "lowpass"; rumble.frequency.value = 160;
-      rumble.frequency.exponentialRampToValueAtTime(60, now + 2.5);
-
-      const gain = audioCtx.createGain();
-      gain.gain.setValueAtTime(0, now);
-      gain.gain.linearRampToValueAtTime(0.9, now + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.25, now + 0.18);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 2.4);
-
-      src.connect(rumble); rumble.connect(gain);
-      src.connect(crack);  crack.connect(gain);
-      gain.connect(audioCtx.destination);
-      src.start(now);
-    };
-    playThunderRef.current = playThunder;
-
-    // Mirror shader noise(float n) in JS — no Math.abs, matching GLSL fract(sin(...))
-    const jsNoise = (n: number) => {
-      const flr = Math.floor(n);
-      const fract = (x: number) => x - Math.floor(x);
-      const sinHash = (v: number) => fract(Math.sin(v * 12.9898) * 43758.545);
-      return sinHash(flr) + (sinHash(flr + 1) - sinHash(flr)) * fract(n);
-    };
-    const jsFlash = (t: number) => {
-      const n = jsNoise((t % 120) * 8);
-      return Math.pow(Math.max(0, n), 5) >= 0.55 ? 1 : 0;
-    };
-
-    let prevFlash = 0;
-    // ─────────────────────────────────────────────────────────────────────────
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = canvas.offsetWidth * dpr;
+    canvas.height = canvas.offsetHeight * dpr;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.scale(dpr, dpr);
+    const W = canvas.offsetWidth;
+    const H = canvas.offsetHeight;
 
     let raf: number;
     const start = performance.now();
+
+    const draw = (t: number) => {
+      ctx.clearRect(0, 0, W, H);
+
+      // Background: deep jungle night
+      const bg = ctx.createLinearGradient(0, 0, 0, H);
+      bg.addColorStop(0, "#0a0500");
+      bg.addColorStop(0.45, "#1e0d00");
+      bg.addColorStop(1, "#4a2200");
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // Stars
+      for (let i = 0; i < 35; i++) {
+        const sx = (i * 137.5) % W;
+        const sy = (i * 79.3) % (H * 0.45);
+        const blink = 0.4 + 0.4 * Math.sin(t * 1.8 + i * 1.1);
+        ctx.fillStyle = `rgba(255,240,200,${blink * 0.7})`;
+        ctx.beginPath();
+        ctx.arc(sx, sy, 1.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Monkey position + gentle bob
+      const bob = Math.sin(t * 1.4) * 6;
+      const cx = W / 2;
+      const cy = H * 0.37 + bob;
+
+      // Sip cycle every 5 seconds
+      const sipPhase = (t % 5) / 5;
+      const sipping = sipPhase > 0.68 && sipPhase < 0.84;
+      const sipAngle = sipping ? Math.sin(((sipPhase - 0.68) / 0.16) * Math.PI) * 0.32 : 0;
+
+      // Body
+      ctx.fillStyle = "#7a4520";
+      ctx.beginPath();
+      ctx.ellipse(cx, cy + 112, 60, 54, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Left ear
+      ctx.fillStyle = "#7a4520";
+      ctx.beginPath();
+      ctx.arc(cx - 70, cy - 6, 23, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#d48860";
+      ctx.beginPath();
+      ctx.arc(cx - 70, cy - 6, 14, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Right ear
+      ctx.fillStyle = "#7a4520";
+      ctx.beginPath();
+      ctx.arc(cx + 70, cy - 6, 23, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#d48860";
+      ctx.beginPath();
+      ctx.arc(cx + 70, cy - 6, 14, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Head
+      ctx.fillStyle = "#8a4e28";
+      ctx.beginPath();
+      ctx.arc(cx, cy, 74, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Muzzle
+      ctx.fillStyle = "#d48860";
+      ctx.beginPath();
+      ctx.ellipse(cx, cy + 16, 48, 42, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Eye whites
+      ctx.fillStyle = "#fff";
+      ctx.beginPath();
+      ctx.ellipse(cx - 22, cy - 8, 12, 14, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(cx + 22, cy - 8, 12, 14, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Pupils — look slightly down at tea
+      ctx.fillStyle = "#1a0800";
+      ctx.beginPath();
+      ctx.arc(cx - 20, cy - 5, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(cx + 24, cy - 5, 7, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Eye highlights
+      ctx.fillStyle = "#fff";
+      ctx.beginPath();
+      ctx.arc(cx - 17, cy - 8, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(cx + 27, cy - 8, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Eyebrows (raised, happy)
+      ctx.strokeStyle = "#4a2010";
+      ctx.lineWidth = 3.5;
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(cx - 34, cy - 26);
+      ctx.quadraticCurveTo(cx - 20, cy - 34, cx - 6, cy - 26);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(cx + 6, cy - 26);
+      ctx.quadraticCurveTo(cx + 20, cy - 34, cx + 34, cy - 26);
+      ctx.stroke();
+
+      // Nostrils
+      ctx.fillStyle = "#5a2c10";
+      ctx.beginPath();
+      ctx.ellipse(cx - 7, cy + 9, 4.5, 3.5, -0.2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(cx + 7, cy + 9, 4.5, 3.5, 0.2, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Smile (bigger when sipping)
+      ctx.strokeStyle = "#5a2c10";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(cx, cy + 24, sipping ? 22 : 17, 0.1 * Math.PI, 0.9 * Math.PI);
+      ctx.stroke();
+
+      // Left arm
+      ctx.strokeStyle = "#7a4520";
+      ctx.lineWidth = 22;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.beginPath();
+      ctx.moveTo(cx - 52, cy + 60);
+      ctx.quadraticCurveTo(cx - 74, cy + 100, cx - 40, cy + 130);
+      ctx.stroke();
+
+      // Right arm
+      ctx.beginPath();
+      ctx.moveTo(cx + 52, cy + 60);
+      ctx.quadraticCurveTo(cx + 74, cy + 100, cx + 40, cy + 130);
+      ctx.stroke();
+
+      // Tea cup (tilts when sipping)
+      ctx.save();
+      ctx.translate(cx, cy + 154);
+      ctx.rotate(sipAngle);
+
+      // Saucer
+      ctx.fillStyle = "#eee0c8";
+      ctx.beginPath();
+      ctx.ellipse(0, 28, 44, 10, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = "#c0a070";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Cup body
+      ctx.fillStyle = "#fff8ee";
+      ctx.beginPath();
+      ctx.moveTo(-32, -20);
+      ctx.lineTo(-28, 22);
+      ctx.quadraticCurveTo(0, 30, 28, 22);
+      ctx.lineTo(32, -20);
+      ctx.quadraticCurveTo(0, -13, -32, -20);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = "#c0a070";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Tea surface
+      ctx.fillStyle = "#b86820";
+      ctx.beginPath();
+      ctx.ellipse(0, -17, 27, 7.5, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Handle
+      ctx.strokeStyle = "#c0a070";
+      ctx.lineWidth = 5;
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.arc(38, 2, 14, -0.42 * Math.PI, 0.42 * Math.PI);
+      ctx.stroke();
+
+      // T2 logo on cup
+      ctx.fillStyle = "#b86820";
+      ctx.font = "bold 11px sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("T2", 0, 9);
+
+      ctx.restore();
+
+      // Steam wisps
+      if (!sipping) {
+        for (let i = 0; i < 3; i++) {
+          const sx = cx + (i - 1) * 16;
+          const baseY = cy + 120 + bob;
+          const phase = t * 1.9 + i * 1.4;
+          ctx.strokeStyle = `rgba(255,255,255,${0.10 + 0.05 * Math.sin(phase)})`;
+          ctx.lineWidth = 2.5;
+          ctx.lineCap = "round";
+          ctx.beginPath();
+          ctx.moveTo(sx, baseY);
+          for (let j = 1; j <= 10; j++) {
+            ctx.lineTo(sx + Math.sin(phase + j * 0.75) * 7, baseY - j * 9);
+          }
+          ctx.stroke();
+        }
+      }
+
+      // "mmm!" speech bubble when sipping
+      if (sipping) {
+        const bx = cx + 78;
+        const by = cy - 30;
+        ctx.fillStyle = "rgba(255,248,230,0.95)";
+        ctx.beginPath();
+        ctx.roundRect(bx - 8, by - 24, 82, 34, 10);
+        ctx.fill();
+        // tail
+        ctx.beginPath();
+        ctx.moveTo(bx, by + 8);
+        ctx.lineTo(bx - 14, by + 18);
+        ctx.lineTo(bx + 10, by + 8);
+        ctx.fill();
+        ctx.fillStyle = "#7a4520";
+        ctx.font = "bold 18px sans-serif";
+        ctx.textAlign = "left";
+        ctx.fillText("mmm! ☕", bx, by);
+      }
+    };
+
     const render = () => {
-      const t = (performance.now() - start) / 1000;
-      gl.uniform1f(uTime, t);
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-
-      // Detect rising edge of lightning flash → play thunder
-      const f = jsFlash(t);
-      if (f === 1 && prevFlash === 0) playThunder();
-      prevFlash = f;
-
+      draw((performance.now() - start) / 1000);
       raf = requestAnimationFrame(render);
     };
     raf = requestAnimationFrame(render);
-    return () => { cancelAnimationFrame(raf); audioCtx.close(); audioCtxRef.current = null; };
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   const handleDismiss = () => {
@@ -1140,16 +1118,16 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
   };
 
   return (
-    <div className="absolute inset-0" style={{ opacity: fading ? 0 : 1, transition: "opacity 0.7s ease", zIndex: 100 }}
-      onClick={() => audioCtxRef.current?.resume().then(() => playThunderRef.current?.())}>
+    <div className="absolute inset-0" style={{ opacity: fading ? 0 : 1, transition: "opacity 0.7s ease", zIndex: 100 }}>
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
-      <div className="absolute inset-0 flex flex-col items-center justify-end pb-20" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%)" }}>
-        <p className="font-medium text-white/70 mb-1" style={{ fontSize: 14, letterSpacing: 2, textTransform: "uppercase" }}>Welcome</p>
-        <h1 className="font-bold text-white mb-8" style={{ fontSize: 38, letterSpacing: -1, textShadow: "0 2px 20px rgba(0,0,0,0.5)" }}>Rate Your Tea</h1>
+      <div className="absolute inset-0 flex flex-col items-center justify-end pb-20"
+        style={{ background: "linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 50%)" }}>
+        <p className="font-medium mb-1" style={{ color: "rgba(255,210,140,0.85)", fontSize: 14, letterSpacing: 2, textTransform: "uppercase" }}>Welcome</p>
+        <h1 className="font-bold mb-8" style={{ color: "#fff8ec", fontSize: 38, letterSpacing: -1, textShadow: "0 2px 20px rgba(0,0,0,0.6)" }}>Rate Your Tea</h1>
         <button
           onClick={handleDismiss}
-          className="font-semibold text-white"
-          style={{ paddingInline: 40, height: 52, borderRadius: 999, background: "rgba(255,255,255,0.2)", backdropFilter: "blur(12px)", border: "1.5px solid rgba(255,255,255,0.35)", fontSize: 16 }}
+          className="font-semibold"
+          style={{ paddingInline: 40, height: 52, borderRadius: 999, background: "rgba(180,100,30,0.35)", backdropFilter: "blur(12px)", border: "1.5px solid rgba(200,130,60,0.55)", fontSize: 16, color: "#fff8ec" }}
         >
           Start tasting
         </button>
