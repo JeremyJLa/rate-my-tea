@@ -906,7 +906,7 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
       // Monkey position + gentle bob
       const bob = Math.sin(t * 1.4) * 6;
       const cx = W / 2;
-      const cy = H * 0.37 + bob;
+      const cy = H * 0.28 + bob;
 
       // Sip cycle every 5 seconds
       const sipPhase = (t % 5) / 5;
