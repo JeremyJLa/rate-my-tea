@@ -1125,7 +1125,7 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
       <div className="absolute inset-0 flex flex-col items-center justify-end pb-24"
         style={{ background: "linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 50%)" }}>
-        <p className="font-medium mb-2" style={{ color: "rgba(255,210,140,0.75)", fontSize: 13, letterSpacing: 3, textTransform: "uppercase" }}>Welcome</p>
+        <p className="font-medium mb-2" style={{ color: "rgba(255,210,140,0.75)", fontSize: 13, letterSpacing: 3, textTransform: "uppercase" }}>Hi Kate</p>
         <h1 className="font-bold" style={{ color: "#fff8ec", fontSize: 38, letterSpacing: -1, textShadow: "0 2px 20px rgba(0,0,0,0.6)" }}>Rate Your Tea</h1>
       </div>
     </div>
