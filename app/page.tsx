@@ -859,6 +859,14 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
   const [fading, setFading] = useState(false);
 
   useEffect(() => {
+    const fadeTimer = setTimeout(() => {
+      setFading(true);
+      setTimeout(onDismiss, 700);
+    }, 4500);
+    return () => clearTimeout(fadeTimer);
+  }, [onDismiss]);
+
+  useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const dpr = window.devicePixelRatio || 1;
@@ -1112,25 +1120,13 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  const handleDismiss = () => {
-    setFading(true);
-    setTimeout(onDismiss, 700);
-  };
-
   return (
     <div className="absolute inset-0" style={{ opacity: fading ? 0 : 1, transition: "opacity 0.7s ease", zIndex: 100 }}>
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
-      <div className="absolute inset-0 flex flex-col items-center justify-end pb-20"
+      <div className="absolute inset-0 flex flex-col items-center justify-end pb-24"
         style={{ background: "linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 50%)" }}>
-        <p className="font-medium mb-1" style={{ color: "rgba(255,210,140,0.85)", fontSize: 14, letterSpacing: 2, textTransform: "uppercase" }}>Welcome</p>
-        <h1 className="font-bold mb-8" style={{ color: "#fff8ec", fontSize: 38, letterSpacing: -1, textShadow: "0 2px 20px rgba(0,0,0,0.6)" }}>Rate Your Tea</h1>
-        <button
-          onClick={handleDismiss}
-          className="font-semibold"
-          style={{ paddingInline: 40, height: 52, borderRadius: 999, background: "rgba(180,100,30,0.35)", backdropFilter: "blur(12px)", border: "1.5px solid rgba(200,130,60,0.55)", fontSize: 16, color: "#fff8ec" }}
-        >
-          Start tasting
-        </button>
+        <p className="font-medium mb-2" style={{ color: "rgba(255,210,140,0.75)", fontSize: 13, letterSpacing: 3, textTransform: "uppercase" }}>Welcome</p>
+        <h1 className="font-bold" style={{ color: "#fff8ec", fontSize: 38, letterSpacing: -1, textShadow: "0 2px 20px rgba(0,0,0,0.6)" }}>Rate Your Tea</h1>
       </div>
     </div>
   );
