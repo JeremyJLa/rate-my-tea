@@ -1034,6 +1034,7 @@ void main() {
 function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
+  const playThunderRef = useRef<(() => void) | null>(null);
   const [fading, setFading] = useState(false);
 
   useEffect(() => {
@@ -1080,33 +1081,31 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
       const src = audioCtx.createBufferSource();
       src.buffer = buf;
 
-      // Sharp crack filter (high-freq)
       const crack = audioCtx.createBiquadFilter();
       crack.type = "highpass"; crack.frequency.value = 800;
 
-      // Low rumble filter
       const rumble = audioCtx.createBiquadFilter();
       rumble.type = "lowpass"; rumble.frequency.value = 160;
       rumble.frequency.exponentialRampToValueAtTime(60, now + 2.5);
 
-      // Gain envelope: sharp attack, long rumble decay
       const gain = audioCtx.createGain();
       gain.gain.setValueAtTime(0, now);
-      gain.gain.linearRampToValueAtTime(0.9, now + 0.02);   // crack
-      gain.gain.exponentialRampToValueAtTime(0.25, now + 0.18); // settle
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 2.4);  // rumble out
+      gain.gain.linearRampToValueAtTime(0.9, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.25, now + 0.18);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 2.4);
 
       src.connect(rumble); rumble.connect(gain);
       src.connect(crack);  crack.connect(gain);
       gain.connect(audioCtx.destination);
       src.start(now);
     };
+    playThunderRef.current = playThunder;
 
-    // Mirror shader noise(float n) in JS
+    // Mirror shader noise(float n) in JS — no Math.abs, matching GLSL fract(sin(...))
     const jsNoise = (n: number) => {
       const flr = Math.floor(n);
       const fract = (x: number) => x - Math.floor(x);
-      const sinHash = (v: number) => fract(Math.abs(Math.sin(v * 12.9898) * 43758.545));
+      const sinHash = (v: number) => fract(Math.sin(v * 12.9898) * 43758.545);
       return sinHash(flr) + (sinHash(flr + 1) - sinHash(flr)) * fract(n);
     };
     const jsFlash = (t: number) => {
@@ -1142,7 +1141,7 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
 
   return (
     <div className="absolute inset-0" style={{ opacity: fading ? 0 : 1, transition: "opacity 0.7s ease", zIndex: 100 }}
-      onClick={() => audioCtxRef.current?.resume()}>
+      onClick={() => audioCtxRef.current?.resume().then(() => playThunderRef.current?.())}>
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
       <div className="absolute inset-0 flex flex-col items-center justify-end pb-20" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%)" }}>
         <p className="font-medium text-white/70 mb-1" style={{ fontSize: 14, letterSpacing: 2, textTransform: "uppercase" }}>Welcome</p>
