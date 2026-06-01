@@ -158,12 +158,12 @@ function TeaCard({ tea, rated, animating, onClick }: {
         transition: "opacity 0.75s cubic-bezier(0.4,0,0.2,1)",
         background: "#fff",
       }}>
-        <div className="absolute inset-0" style={{ backgroundColor: tea.color, opacity: 0.45 }} />
+        <div className="absolute inset-0" style={{ backgroundColor: tea.color, opacity: 0.30 }} />
         <div className="relative flex flex-col items-center gap-0.5 px-1">
-          <span className="text-[9px] font-medium text-white/80 text-center leading-tight">{tea.name}</span>
+          <span className="text-[9px] font-medium text-center leading-tight" style={{ color: "#000" }}>{tea.name}</span>
           <div className="flex items-center gap-1.5">
-            <svg width="16" height="16" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5L4.5 8.5L9.5 2.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-            <span className="font-bold tracking-widest uppercase text-white" style={{ fontSize: 13 }}>rated</span>
+            <svg width="16" height="16" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5L4.5 8.5L9.5 2.5" stroke="#000" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            <span className="font-bold tracking-widest uppercase" style={{ fontSize: 13, color: "#000" }}>rated</span>
           </div>
         </div>
       </div>
