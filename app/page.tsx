@@ -1033,6 +1033,7 @@ void main() {
 
 function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
   const [fading, setFading] = useState(false);
 
   useEffect(() => {
@@ -1067,6 +1068,7 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
 
     // ── Audio: replicate shader's flash logic to trigger thunder ──────────────
     const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    audioCtxRef.current = audioCtx;
 
     const playThunder = () => {
       const now = audioCtx.currentTime;
@@ -1130,7 +1132,7 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
       raf = requestAnimationFrame(render);
     };
     raf = requestAnimationFrame(render);
-    return () => { cancelAnimationFrame(raf); audioCtx.close(); };
+    return () => { cancelAnimationFrame(raf); audioCtx.close(); audioCtxRef.current = null; };
   }, []);
 
   const handleDismiss = () => {
@@ -1139,7 +1141,8 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
   };
 
   return (
-    <div className="absolute inset-0" style={{ opacity: fading ? 0 : 1, transition: "opacity 0.7s ease", zIndex: 100 }}>
+    <div className="absolute inset-0" style={{ opacity: fading ? 0 : 1, transition: "opacity 0.7s ease", zIndex: 100 }}
+      onClick={() => audioCtxRef.current?.resume()}>
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
       <div className="absolute inset-0 flex flex-col items-center justify-end pb-20" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%)" }}>
         <p className="font-medium text-white/70 mb-1" style={{ fontSize: 14, letterSpacing: 2, textTransform: "uppercase" }}>Welcome</p>
