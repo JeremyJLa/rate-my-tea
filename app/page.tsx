@@ -164,26 +164,16 @@ function TeaCard({ tea, rated, animating, onClick }: {
         }}
       >
         <div style={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          {/* teatag.png used as mask — tea brand colour fills only the tag shape, no box */}
-          <div style={{
-            position: "absolute", width: "100%", height: "100%",
-            backgroundColor: tea.color,
-            WebkitMaskImage: "url(/images/teatag.png)",
-            maskImage: "url(/images/teatag.png)",
-            WebkitMaskSize: "contain",
-            maskSize: "contain",
-            WebkitMaskRepeat: "no-repeat",
-            maskRepeat: "no-repeat",
-            WebkitMaskPosition: "center",
-            maskPosition: "center",
-          } as React.CSSProperties} />
+          {/* Teatag at its natural light colour — unaltered */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/teatag.png" alt="" aria-hidden style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }} />
           {/* Content */}
           <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, pointerEvents: "none" }}>
             <svg width="20" height="16" viewBox="0 0 20 16" fill="none">
-              <path d="M2 8L7.5 14L18 2" stroke="#fff" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M2 8L7.5 14L18 2" stroke="#111" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            <span style={{ fontWeight: 800, fontSize: 13, letterSpacing: 1.5, color: "#fff", textTransform: "uppercase", textShadow: "0 1px 4px rgba(0,0,0,0.3)" }}>Rated</span>
-            <span style={{ fontSize: 10, fontWeight: 500, color: "rgba(255,255,255,0.85)", textAlign: "center", lineHeight: 1.4, marginTop: 1, textShadow: "0 1px 3px rgba(0,0,0,0.3)" }}>{city}<br/>Breakfast</span>
+            <span style={{ fontWeight: 800, fontSize: 13, letterSpacing: 1.5, color: "#111", textTransform: "uppercase" }}>Rated</span>
+            <span style={{ fontSize: 10, fontWeight: 400, color: "#333", textAlign: "center", lineHeight: 1.4, marginTop: 1 }}>{city}<br/>Breakfast</span>
           </div>
         </div>
       </button>
