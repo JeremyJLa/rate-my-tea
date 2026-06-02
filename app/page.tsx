@@ -882,60 +882,62 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
   const handleDismiss = () => { setFading(true); setTimeout(onDismiss, 600); };
 
   return (
-    <div className="absolute inset-0 flex flex-col" style={{
+    <div className="absolute inset-0" style={{
       opacity: fading ? 0 : 1, transition: "opacity 0.6s ease",
       zIndex: 100, background: "#fff", overflow: "hidden",
     }}>
-      {/* Hi Kate — white strip at top */}
-      <div style={{ flexShrink: 0, height: 80, display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: 8 }}>
+      {/* Cup images — scaled past screen edges so they bleed off */}
+      {CUP_IMAGES.map((src, i) => (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img key={src} src={src} alt="" style={{
+          position: "absolute",
+          width: "130%", height: "130%",
+          top: "-15%", left: "-15%",
+          objectFit: "cover",
+          objectPosition: "center top",
+          opacity: imgIdx === i ? 1 : 0,
+          transition: "opacity 0.9s ease",
+        }} />
+      ))}
+
+      {/* Hi Kate */}
+      <div style={{
+        position: "absolute", top: 0, left: 0, right: 0, height: 90, zIndex: 1,
+        display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: 10,
+      }}>
         <p className="font-medium" style={{ fontSize: 15, color: "#aaa", letterSpacing: 0.3 }}>Hi Kate</p>
       </div>
 
-      {/* Cup images — fill remaining space, cropped */}
-      <div style={{ position: "relative", flex: 1, overflow: "hidden" }}>
-        {CUP_IMAGES.map((src, i) => (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img key={src} src={src} alt="" style={{
-            position: "absolute", inset: 0,
-            width: "100%", height: "100%",
-            objectFit: "cover",
-            objectPosition: "center top",
-            opacity: imgIdx === i ? 1 : 0,
-            transition: "opacity 0.9s ease",
-          }} />
-        ))}
-
-        {/* Rate your Tea — custom SVG logotype */}
-        <div style={{
-          position: "absolute", inset: 0,
-          display: "flex", alignItems: "flex-start", justifyContent: "center",
-          paddingTop: "28%",
-          opacity: textVisible ? 1 : 0,
-          transition: "opacity 0.8s ease",
-          pointerEvents: "none",
-        }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/images/splash-text.svg" alt="Rate your Tea" style={{ width: "70%", maxWidth: 260, filter: "drop-shadow(0 2px 12px rgba(0,0,0,0.35))" }} />
-        </div>
-
-        {/* Start button — anchored to bottom of cup area */}
-        <div style={{
-          position: "absolute", bottom: 48, left: 0, right: 0,
-          display: "flex", justifyContent: "center",
-          opacity: btnVisible ? 1 : 0,
-          transform: btnVisible ? "translateY(0)" : "translateY(16px)",
-          transition: "opacity 0.5s ease, transform 0.5s ease",
-        }}>
-          <button onClick={handleDismiss} className="font-semibold" style={{
-              paddingInline: 48, height: 52, borderRadius: 999,
-              background: "#111", color: "#fff", fontSize: 16,
-              boxShadow: "0 4px 20px rgba(0,0,0,0.18)",
-            }}>
-              Start tasting
-            </button>
-          </div>
-        </div>
+      {/* Rate your Tea SVG */}
+      <div style={{
+        position: "absolute", inset: 0, zIndex: 1,
+        display: "flex", alignItems: "flex-start", justifyContent: "center",
+        paddingTop: "28%",
+        opacity: textVisible ? 1 : 0,
+        transition: "opacity 0.8s ease",
+        pointerEvents: "none",
+      }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/images/splash-text.svg" alt="Rate your Tea" style={{ width: "70%", maxWidth: 260, filter: "drop-shadow(0 2px 12px rgba(0,0,0,0.35))" }} />
       </div>
+
+      {/* Start tasting button */}
+      <div style={{
+        position: "absolute", bottom: 48, left: 0, right: 0, zIndex: 1,
+        display: "flex", justifyContent: "center",
+        opacity: btnVisible ? 1 : 0,
+        transform: btnVisible ? "translateY(0)" : "translateY(16px)",
+        transition: "opacity 0.5s ease, transform 0.5s ease",
+      }}>
+        <button onClick={handleDismiss} className="font-semibold" style={{
+          paddingInline: 48, height: 52, borderRadius: 999,
+          background: "#111", color: "#fff", fontSize: 16,
+          boxShadow: "0 4px 20px rgba(0,0,0,0.18)",
+        }}>
+          Start tasting
+        </button>
+      </div>
+    </div>
   );
 }
 
