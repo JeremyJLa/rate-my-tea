@@ -163,12 +163,21 @@ function TeaCard({ tea, rated, animating, onClick }: {
           pointerEvents: showRated ? "auto" : "none",
         }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/images/teatag.png"
-          alt={`${tea.name} rated`}
-          style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
-        />
+        <div style={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", isolation: "isolate" }}>
+          {/* Teatag image — unaltered, contained */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/teatag.png" alt="" aria-hidden style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }} />
+          {/* Tea colour tint over the tag */}
+          <div style={{ position: "absolute", inset: 0, backgroundColor: tea.color, mixBlendMode: "multiply", opacity: 0.45, pointerEvents: "none" }} />
+          {/* Content */}
+          <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, pointerEvents: "none" }}>
+            <svg width="20" height="16" viewBox="0 0 20 16" fill="none">
+              <path d="M2 8L7.5 14L18 2" stroke="#111" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <span style={{ fontWeight: 800, fontSize: 13, letterSpacing: 1.5, color: "#111", textTransform: "uppercase" }}>Rated</span>
+            <span style={{ fontSize: 10, fontWeight: 400, color: "#333", textAlign: "center", lineHeight: 1.4, marginTop: 1 }}>{city}<br/>Breakfast</span>
+          </div>
+        </div>
       </button>
 
     </div>
