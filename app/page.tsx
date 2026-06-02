@@ -108,65 +108,64 @@ function TeaCard({ tea, rated, animating, onClick }: {
   tea: (typeof TEAS)[number]; rated: boolean; animating: boolean; onClick: () => void;
 }) {
   const showRated = rated || animating;
-  return (
-    <button
-      onClick={onClick}
-      className="relative overflow-hidden"
-      style={{ borderRadius: 16, aspectRatio: "1", boxShadow: "0 2px 12px rgba(0,0,0,0.10)" }}
-    >
-      {/* Bag card — foil texture + colour tint */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        {/* Solid tea colour base */}
-        <div className="absolute inset-0" style={{ backgroundColor: tea.color }} />
-        {/* Greyscale foil texture faded over the top */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        {(() => {
-          const hash = tea.id.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-          const rotate = ((hash * 37) % 80) - 40; // -40 to +40 deg
-          const rad = (Math.abs(rotate) * Math.PI) / 180;
-          const minScale = Math.abs(Math.cos(rad)) + Math.abs(Math.sin(rad)) + 0.15;
-          const scale = minScale + (hash % 5) * 0.08;
-          const tx = ((hash * 13) % 20) - 10;      // shift x
-          const ty = ((hash * 17) % 20) - 10;      // shift y
-          return (
-            <img src="/images/foil-texture.png" alt="" className="absolute inset-0 w-full h-full object-cover"
-              style={{ filter: "grayscale(1) contrast(2.2) brightness(0.8)", opacity: 0.65, mixBlendMode: "overlay",
-                transform: `rotate(${rotate}deg) scale(${scale}) translate(${tx}px,${ty}px)`,
-                transformOrigin: "center center" }} />
-          );
-        })()}
-        {/* Edge vignette */}
-        <div className="absolute inset-0" style={{
-          background: "radial-gradient(ellipse 120% 120% at 50% 50%, transparent 35%, rgba(0,0,0,0.4) 100%)",
-        }} />
-        {/* Tea name */}
-        <div className="relative flex flex-col items-center justify-center px-2" style={{ gap: 1 }}>
-          <span className="font-bold text-white text-center leading-tight" style={{
-            fontSize: 17, letterSpacing: -0.3, textShadow: "0 2px 10px rgba(0,0,0,0.6)",
-          }}>
-            {tea.name.replace(/\s+\S+$/, "")}
-          </span>
-          <span className="font-medium text-center" style={{ fontSize: 12, color: "rgba(255,255,255,0.72)", textShadow: "0 1px 6px rgba(0,0,0,0.5)" }}>
-            {tea.name.split(" ").pop()}
-          </span>
-        </div>
-      </div>
+  const city = tea.name.replace(/\s+\S+$/, "");
+  const type = tea.name.split(" ").pop()!;
 
-      {/* Rated overlay — light tint style (original) */}
-      <div className="absolute inset-0 flex items-center justify-center" style={{
-        opacity: showRated ? 1 : 0,
-        transition: "opacity 0.75s cubic-bezier(0.4,0,0.2,1)",
+  if (showRated) {
+    // Teabag-tag shape — chamfered corners + notch top & bottom
+    return (
+      <button onClick={onClick} className="flex flex-col items-center gap-1.5">
+        <div style={{
+          width: "100%", aspectRatio: "1",
+          clipPath: "polygon(18% 0%,38% 0%,50% 7%,62% 0%,82% 0%,100% 18%,100% 82%,82% 100%,62% 100%,50% 93%,38% 100%,18% 100%,0% 82%,0% 18%)",
+          background: "#bfc9da",
+          display: "flex", flexDirection: "column",
+          alignItems: "center", justifyContent: "center",
+          gap: 2,
+          transition: "opacity 0.5s ease",
+        }}>
+          {/* Tick */}
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path d="M4 11.5L9 16.5L18 7" stroke="#111" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          {/* RATED */}
+          <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: 1.5, color: "#111", textTransform: "uppercase" }}>Rated</span>
+          {/* Tea name */}
+          <span style={{ fontSize: 9, fontWeight: 400, color: "#333", textAlign: "center", lineHeight: 1.3, marginTop: 1 }}>
+            {city}{"\n"}{type}
+          </span>
+        </div>
+        <span style={{ fontSize: 10, color: "#aaa", textAlign: "center", lineHeight: 1.2 }}>
+          {city}
+        </span>
+      </button>
+    );
+  }
+
+  // Unrated — circular image + coloured stroke ring
+  return (
+    <button onClick={onClick} className="flex flex-col items-center gap-1.5">
+      {/* Stroke ring: tea.color border, 1px white gap via padding, circle image */}
+      <div style={{
+        width: "100%", aspectRatio: "1",
+        borderRadius: "50%",
+        padding: 3,                          // 1px white gap + 2px border space
+        border: `2px solid ${tea.color}`,
         background: "#fff",
+        boxSizing: "border-box",
       }}>
-        <div className="absolute inset-0" style={{ backgroundColor: tea.color, opacity: 0.30 }} />
-        <div className="relative flex flex-col items-center gap-0.5 px-1">
-          <span className="text-[9px] font-medium text-center leading-tight" style={{ color: "#000" }}>{tea.name}</span>
-          <div className="flex items-center gap-1.5">
-            <svg width="16" height="16" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5L4.5 8.5L9.5 2.5" stroke="#000" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-            <span className="font-bold tracking-widest uppercase" style={{ fontSize: 13, color: "#000" }}>rated</span>
-          </div>
+        <div style={{ width: "100%", height: "100%", borderRadius: "50%", overflow: "hidden" }}>
+          <Image
+            src={tea.image} alt={tea.name} width={120} height={120}
+            className="w-full h-full object-cover"
+            style={{ transform: "scale(1.25)", transformOrigin: "center center" }}
+          />
         </div>
       </div>
+      {/* Tea name below */}
+      <span style={{ fontSize: 10, color: "#555", textAlign: "center", lineHeight: 1.2, fontWeight: 500 }}>
+        {city}
+      </span>
     </button>
   );
 }
@@ -854,281 +853,84 @@ function SharedRatingView({ rating, onClose }: { rating: Rating; onClose: () => 
 
 // ── Splash Screen ─────────────────────────────────────────────────────────────
 
+const CUP_IMAGES = [
+  "/images/teahcup1.png",
+  "/images/teahcup2.png",
+  "/images/teahcup3.png",
+  "/images/teahcup4.png",
+  "/images/teahcup5.png",
+];
+
 function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [imgIdx, setImgIdx] = useState(0);
+  const [btnVisible, setBtnVisible] = useState(false);
   const [fading, setFading] = useState(false);
 
-  useEffect(() => {
-    const fadeTimer = setTimeout(() => {
-      setFading(true);
-      setTimeout(onDismiss, 700);
-    }, 4500);
-    return () => clearTimeout(fadeTimer);
-  }, [onDismiss]);
+  const textVisible = imgIdx >= 1;
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width = canvas.offsetWidth * dpr;
-    canvas.height = canvas.offsetHeight * dpr;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    ctx.scale(dpr, dpr);
-    const W = canvas.offsetWidth;
-    const H = canvas.offsetHeight;
-
-    let raf: number;
-    const start = performance.now();
-
-    const draw = (t: number) => {
-      ctx.clearRect(0, 0, W, H);
-
-      // Background: deep jungle night
-      const bg = ctx.createLinearGradient(0, 0, 0, H);
-      bg.addColorStop(0, "#0a0500");
-      bg.addColorStop(0.45, "#1e0d00");
-      bg.addColorStop(1, "#4a2200");
-      ctx.fillStyle = bg;
-      ctx.fillRect(0, 0, W, H);
-
-      // Stars
-      for (let i = 0; i < 35; i++) {
-        const sx = (i * 137.5) % W;
-        const sy = (i * 79.3) % (H * 0.45);
-        const blink = 0.4 + 0.4 * Math.sin(t * 1.8 + i * 1.1);
-        ctx.fillStyle = `rgba(255,240,200,${blink * 0.7})`;
-        ctx.beginPath();
-        ctx.arc(sx, sy, 1.2, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // Monkey position + gentle bob
-      const bob = Math.sin(t * 1.4) * 6;
-      const cx = W / 2;
-      const cy = H * 0.28 + bob;
-
-      // Sip cycle every 5 seconds
-      const sipPhase = (t % 5) / 5;
-      const sipping = sipPhase > 0.68 && sipPhase < 0.84;
-      const sipAngle = sipping ? Math.sin(((sipPhase - 0.68) / 0.16) * Math.PI) * 0.32 : 0;
-
-      // Body
-      ctx.fillStyle = "#7a4520";
-      ctx.beginPath();
-      ctx.ellipse(cx, cy + 112, 60, 54, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Left ear
-      ctx.fillStyle = "#7a4520";
-      ctx.beginPath();
-      ctx.arc(cx - 70, cy - 6, 23, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = "#d48860";
-      ctx.beginPath();
-      ctx.arc(cx - 70, cy - 6, 14, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Right ear
-      ctx.fillStyle = "#7a4520";
-      ctx.beginPath();
-      ctx.arc(cx + 70, cy - 6, 23, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = "#d48860";
-      ctx.beginPath();
-      ctx.arc(cx + 70, cy - 6, 14, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Head
-      ctx.fillStyle = "#8a4e28";
-      ctx.beginPath();
-      ctx.arc(cx, cy, 74, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Muzzle
-      ctx.fillStyle = "#d48860";
-      ctx.beginPath();
-      ctx.ellipse(cx, cy + 16, 48, 42, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Eye whites
-      ctx.fillStyle = "#fff";
-      ctx.beginPath();
-      ctx.ellipse(cx - 22, cy - 8, 12, 14, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.ellipse(cx + 22, cy - 8, 12, 14, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Pupils — look slightly down at tea
-      ctx.fillStyle = "#1a0800";
-      ctx.beginPath();
-      ctx.arc(cx - 20, cy - 5, 7, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(cx + 24, cy - 5, 7, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Eye highlights
-      ctx.fillStyle = "#fff";
-      ctx.beginPath();
-      ctx.arc(cx - 17, cy - 8, 2.5, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(cx + 27, cy - 8, 2.5, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Eyebrows (raised, happy)
-      ctx.strokeStyle = "#4a2010";
-      ctx.lineWidth = 3.5;
-      ctx.lineCap = "round";
-      ctx.beginPath();
-      ctx.moveTo(cx - 34, cy - 26);
-      ctx.quadraticCurveTo(cx - 20, cy - 34, cx - 6, cy - 26);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(cx + 6, cy - 26);
-      ctx.quadraticCurveTo(cx + 20, cy - 34, cx + 34, cy - 26);
-      ctx.stroke();
-
-      // Nostrils
-      ctx.fillStyle = "#5a2c10";
-      ctx.beginPath();
-      ctx.ellipse(cx - 7, cy + 9, 4.5, 3.5, -0.2, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.ellipse(cx + 7, cy + 9, 4.5, 3.5, 0.2, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Smile (bigger when sipping)
-      ctx.strokeStyle = "#5a2c10";
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.arc(cx, cy + 24, sipping ? 22 : 17, 0.1 * Math.PI, 0.9 * Math.PI);
-      ctx.stroke();
-
-      // Left arm
-      ctx.strokeStyle = "#7a4520";
-      ctx.lineWidth = 22;
-      ctx.lineCap = "round";
-      ctx.lineJoin = "round";
-      ctx.beginPath();
-      ctx.moveTo(cx - 52, cy + 60);
-      ctx.quadraticCurveTo(cx - 74, cy + 100, cx - 40, cy + 130);
-      ctx.stroke();
-
-      // Right arm
-      ctx.beginPath();
-      ctx.moveTo(cx + 52, cy + 60);
-      ctx.quadraticCurveTo(cx + 74, cy + 100, cx + 40, cy + 130);
-      ctx.stroke();
-
-      // Tea cup (tilts when sipping)
-      ctx.save();
-      ctx.translate(cx, cy + 154);
-      ctx.rotate(sipAngle);
-
-      // Saucer
-      ctx.fillStyle = "#eee0c8";
-      ctx.beginPath();
-      ctx.ellipse(0, 28, 44, 10, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = "#c0a070";
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-
-      // Cup body
-      ctx.fillStyle = "#fff8ee";
-      ctx.beginPath();
-      ctx.moveTo(-32, -20);
-      ctx.lineTo(-28, 22);
-      ctx.quadraticCurveTo(0, 30, 28, 22);
-      ctx.lineTo(32, -20);
-      ctx.quadraticCurveTo(0, -13, -32, -20);
-      ctx.closePath();
-      ctx.fill();
-      ctx.strokeStyle = "#c0a070";
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-
-      // Tea surface
-      ctx.fillStyle = "#b86820";
-      ctx.beginPath();
-      ctx.ellipse(0, -17, 27, 7.5, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Handle
-      ctx.strokeStyle = "#c0a070";
-      ctx.lineWidth = 5;
-      ctx.lineCap = "round";
-      ctx.beginPath();
-      ctx.arc(38, 2, 14, -0.42 * Math.PI, 0.42 * Math.PI);
-      ctx.stroke();
-
-      // T2 logo on cup
-      ctx.fillStyle = "#b86820";
-      ctx.font = "bold 11px sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText("T2", 0, 9);
-
-      ctx.restore();
-
-      // Steam wisps
-      if (!sipping) {
-        for (let i = 0; i < 3; i++) {
-          const sx = cx + (i - 1) * 16;
-          const baseY = cy + 120 + bob;
-          const phase = t * 1.9 + i * 1.4;
-          ctx.strokeStyle = `rgba(255,255,255,${0.10 + 0.05 * Math.sin(phase)})`;
-          ctx.lineWidth = 2.5;
-          ctx.lineCap = "round";
-          ctx.beginPath();
-          ctx.moveTo(sx, baseY);
-          for (let j = 1; j <= 10; j++) {
-            ctx.lineTo(sx + Math.sin(phase + j * 0.75) * 7, baseY - j * 9);
-          }
-          ctx.stroke();
-        }
-      }
-
-      // "mmm!" speech bubble when sipping
-      if (sipping) {
-        const bx = cx + 78;
-        const by = cy - 30;
-        ctx.fillStyle = "rgba(255,248,230,0.95)";
-        ctx.beginPath();
-        ctx.roundRect(bx - 8, by - 24, 82, 34, 10);
-        ctx.fill();
-        // tail
-        ctx.beginPath();
-        ctx.moveTo(bx, by + 8);
-        ctx.lineTo(bx - 14, by + 18);
-        ctx.lineTo(bx + 10, by + 8);
-        ctx.fill();
-        ctx.fillStyle = "#7a4520";
-        ctx.font = "bold 18px sans-serif";
-        ctx.textAlign = "left";
-        ctx.fillText("mmm! ☕", bx, by);
-      }
-    };
-
-    const render = () => {
-      draw((performance.now() - start) / 1000);
-      raf = requestAnimationFrame(render);
-    };
-    raf = requestAnimationFrame(render);
-    return () => cancelAnimationFrame(raf);
+    const interval = setInterval(() => setImgIdx(i => (i + 1) % CUP_IMAGES.length), 3500);
+    const t2 = setTimeout(() => setBtnVisible(true), 7500);
+    return () => { clearInterval(interval); clearTimeout(t2); };
   }, []);
 
+  const handleDismiss = () => { setFading(true); setTimeout(onDismiss, 600); };
+
   return (
-    <div className="absolute inset-0" style={{ opacity: fading ? 0 : 1, transition: "opacity 0.7s ease", zIndex: 100 }}>
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
-      <div className="absolute inset-0 flex flex-col items-center justify-end pb-24"
-        style={{ background: "linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 50%)" }}>
-        <p className="font-medium mb-2" style={{ color: "rgba(255,210,140,0.75)", fontSize: 13, letterSpacing: 3, textTransform: "uppercase" }}>Hi Kate</p>
-        <h1 className="font-bold" style={{ color: "#fff8ec", fontSize: 38, letterSpacing: -1, textShadow: "0 2px 20px rgba(0,0,0,0.6)" }}>Rate Your Tea</h1>
+    <div className="absolute inset-0 flex flex-col" style={{
+      opacity: fading ? 0 : 1, transition: "opacity 0.6s ease",
+      zIndex: 100, background: "#fff", overflow: "hidden",
+    }}>
+      {/* Hi Kate — white strip at top */}
+      <div style={{ flexShrink: 0, height: 80, display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: 8 }}>
+        <p className="font-medium" style={{ fontSize: 15, color: "#aaa", letterSpacing: 0.3 }}>Hi Kate</p>
       </div>
-    </div>
+
+      {/* Cup images — fill remaining space, cropped */}
+      <div style={{ position: "relative", flex: 1, overflow: "hidden" }}>
+        {CUP_IMAGES.map((src, i) => (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img key={src} src={src} alt="" style={{
+            position: "absolute", inset: 0,
+            width: "100%", height: "100%",
+            objectFit: "cover",
+            objectPosition: "center top",
+            opacity: imgIdx === i ? 1 : 0,
+            transition: "opacity 0.9s ease",
+          }} />
+        ))}
+
+        {/* Rate your Tea — custom SVG logotype */}
+        <div style={{
+          position: "absolute", inset: 0,
+          display: "flex", alignItems: "flex-start", justifyContent: "center",
+          paddingTop: "28%",
+          opacity: textVisible ? 1 : 0,
+          transition: "opacity 0.8s ease",
+          pointerEvents: "none",
+        }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/splash-text.svg" alt="Rate your Tea" style={{ width: "70%", maxWidth: 260, filter: "drop-shadow(0 2px 12px rgba(0,0,0,0.35))" }} />
+        </div>
+
+        {/* Start button — anchored to bottom of cup area */}
+        <div style={{
+          position: "absolute", bottom: 48, left: 0, right: 0,
+          display: "flex", justifyContent: "center",
+          opacity: btnVisible ? 1 : 0,
+          transform: btnVisible ? "translateY(0)" : "translateY(16px)",
+          transition: "opacity 0.5s ease, transform 0.5s ease",
+        }}>
+          <button onClick={handleDismiss} className="font-semibold" style={{
+              paddingInline: 48, height: 52, borderRadius: 999,
+              background: "#111", color: "#fff", fontSize: 16,
+              boxShadow: "0 4px 20px rgba(0,0,0,0.18)",
+            }}>
+              Start tasting
+            </button>
+          </div>
+        </div>
+      </div>
   );
 }
 
