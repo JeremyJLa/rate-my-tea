@@ -886,8 +886,8 @@ const CUP_IMAGES = [
   "/images/teahcup1.png",
   "/images/teahcup2.png",
   "/images/teahcup3.png",
-  "/images/teahcup4.png",
   "/images/teahcup5.png",
+  "/images/teahcup4.png", // last — green tea, matches expanding circle colour
 ];
 
 function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
@@ -895,19 +895,18 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
   const [expanding, setExpanding] = useState(false);
   const [fading, setFading] = useState(false);
   const [textVisible, setTextVisible] = useState(false);
+  const [showThumbs, setShowThumbs] = useState(false);
 
-  // Text fades in after 1s so it's fully visible well within 3s
   useEffect(() => {
     const t = setTimeout(() => setTextVisible(true), 1000);
     return () => clearTimeout(t);
   }, []);
 
-  // Rapid cycle through all cups for 5 seconds, then expand
   useEffect(() => {
     const intervalRef = { id: 0 };
     intervalRef.id = window.setInterval(() => {
       setImgIdx(i => (i + 1) % CUP_IMAGES.length);
-    }, 700);
+    }, 800);
     const tExpand = setTimeout(() => {
       window.clearInterval(intervalRef.id);
       setExpanding(true);
@@ -917,14 +916,15 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
 
   useEffect(() => {
     if (!expanding) return;
-    const tFade = setTimeout(() => setFading(true), 1600);
-    const tDismiss = setTimeout(onDismiss, 2300);
-    return () => { clearTimeout(tFade); clearTimeout(tDismiss); };
+    const tThumbs = setTimeout(() => setShowThumbs(true), 400);
+    const tFade = setTimeout(() => setFading(true), 1400);
+    const tDismiss = setTimeout(onDismiss, 2100);
+    return () => { clearTimeout(tThumbs); clearTimeout(tFade); clearTimeout(tDismiss); };
   }, [expanding, onDismiss]);
 
   return (
-    <div className="absolute inset-0" style={{ zIndex: 100, background: "#fff", overflow: "hidden", opacity: fading ? 0 : 1, transition: fading ? "opacity 0.6s ease" : "none" }}>
-      {/* Cup images — fast cycling, scale(1.15) from top-center */}
+    <div className="absolute inset-0" style={{ zIndex: 100, background: "#fff", overflow: "hidden", opacity: fading ? 0 : 1, transition: fading ? "opacity 0.65s ease" : "none" }}>
+      {/* Cup images — smooth crossfade cycling */}
       {CUP_IMAGES.map((src, i) => (
         // eslint-disable-next-line @next/next/no-img-element
         <img key={src} src={src} alt="" style={{
@@ -935,7 +935,7 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
           transform: "scale(1.15)",
           transformOrigin: "center top",
           opacity: imgIdx === i ? 1 : 0,
-          transition: "opacity 0.35s ease",
+          transition: "opacity 0.55s ease-in-out",
         }} />
       ))}
 
@@ -960,13 +960,29 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
         <img src="/images/splash-text.svg" alt="Rate your Tea" style={{ width: "70%", maxWidth: 260, filter: "brightness(0) invert(1) drop-shadow(0 2px 12px rgba(0,0,0,0.4))" }} />
       </div>
 
-      {/* Expanding circle — warm tea amber, grows slowly to consume the screen */}
+      {/* White thumbnail silhouettes — match home grid layout, fade in before reveal */}
+      <div style={{
+        position: "absolute", inset: 0, zIndex: 12, pointerEvents: "none",
+        opacity: showThumbs ? 1 : 0,
+        transition: "opacity 0.5s ease",
+      }}>
+        <div style={{ height: 160 }} />
+        <div style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 20 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+            {Array.from({ length: 11 }).map((_, i) => (
+              <div key={i} style={{ width: "100%", aspectRatio: "1", borderRadius: "50%", backgroundColor: "rgba(255,255,255,0.85)" }} />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Expanding circle — green to match teahcup4 */}
       <div style={{
         position: "absolute", zIndex: 10,
         width: "150vmax", height: "150vmax",
         top: "50%", left: "50%",
         borderRadius: "50%",
-        backgroundColor: "#C07A3C",
+        backgroundColor: "#5A8035",
         transform: expanding ? "translate(-50%, -50%) scale(1)" : "translate(-50%, -50%) scale(0)",
         transition: expanding ? "transform 1.8s cubic-bezier(0.22,1,0.36,1)" : "none",
         pointerEvents: "none",
