@@ -894,28 +894,29 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
   const [imgIdx, setImgIdx] = useState(0);
   const [expanding, setExpanding] = useState(false);
   const [fading, setFading] = useState(false);
+  const [textVisible, setTextVisible] = useState(false);
 
-  const textVisible = imgIdx >= 1;
+  // Text fades in after 1s so it's fully visible well within 3s
+  useEffect(() => {
+    const t = setTimeout(() => setTextVisible(true), 1000);
+    return () => clearTimeout(t);
+  }, []);
 
+  // Rapid cycle through all cups for 5 seconds, then expand
   useEffect(() => {
     const intervalRef = { id: 0 };
     intervalRef.id = window.setInterval(() => {
-      setImgIdx(i => {
-        if (i >= CUP_IMAGES.length - 2) {
-          // Reached the second-to-last image — advance to last and stop
-          window.clearInterval(intervalRef.id);
-          setTimeout(() => setExpanding(true), 2000);
-          return CUP_IMAGES.length - 1;
-        }
-        return i + 1;
-      });
-    }, 3500);
-    return () => window.clearInterval(intervalRef.id);
+      setImgIdx(i => (i + 1) % CUP_IMAGES.length);
+    }, 700);
+    const tExpand = setTimeout(() => {
+      window.clearInterval(intervalRef.id);
+      setExpanding(true);
+    }, 5000);
+    return () => { window.clearInterval(intervalRef.id); clearTimeout(tExpand); };
   }, []);
 
   useEffect(() => {
     if (!expanding) return;
-    // Start fading the splash after the circle has nearly filled the screen
     const tFade = setTimeout(() => setFading(true), 1600);
     const tDismiss = setTimeout(onDismiss, 2300);
     return () => { clearTimeout(tFade); clearTimeout(tDismiss); };
@@ -923,7 +924,7 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
 
   return (
     <div className="absolute inset-0" style={{ zIndex: 100, background: "#fff", overflow: "hidden", opacity: fading ? 0 : 1, transition: fading ? "opacity 0.6s ease" : "none" }}>
-      {/* Cup images — scale(1.15) from top-center, bleeds off edges slightly */}
+      {/* Cup images — fast cycling, scale(1.15) from top-center */}
       {CUP_IMAGES.map((src, i) => (
         // eslint-disable-next-line @next/next/no-img-element
         <img key={src} src={src} alt="" style={{
@@ -934,7 +935,7 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
           transform: "scale(1.15)",
           transformOrigin: "center top",
           opacity: imgIdx === i ? 1 : 0,
-          transition: "opacity 0.9s ease",
+          transition: "opacity 0.35s ease",
         }} />
       ))}
 
@@ -946,13 +947,13 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
         <p className="font-medium" style={{ fontSize: 15, color: "#aaa", letterSpacing: 0.3 }}>Hi Kate</p>
       </div>
 
-      {/* Rate your Tea SVG — fades in over the coloured tea circle */}
+      {/* Rate your Tea SVG — inside the tea colour area of the cup */}
       <div style={{
         position: "absolute", inset: 0, zIndex: 1,
         display: "flex", alignItems: "flex-start", justifyContent: "center",
-        paddingTop: "48%",
+        paddingTop: "57%",
         opacity: textVisible ? 1 : 0,
-        transition: "opacity 0.8s ease",
+        transition: "opacity 1.2s ease",
         pointerEvents: "none",
       }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
