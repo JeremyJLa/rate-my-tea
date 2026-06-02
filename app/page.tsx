@@ -894,7 +894,7 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
 
   return (
     <div className="absolute inset-0" style={{ zIndex: 100, background: "#fff", overflow: "hidden" }}>
-      {/* Cup images — scale(1.4) from top-center so they bleed off all edges with no gaps */}
+      {/* Cup images — scale(1.15) from top-center, bleeds off edges slightly */}
       {CUP_IMAGES.map((src, i) => (
         // eslint-disable-next-line @next/next/no-img-element
         <img key={src} src={src} alt="" style={{
@@ -902,7 +902,7 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
           width: "100%", height: "100%",
           objectFit: "cover",
           objectPosition: "center top",
-          transform: "scale(1.4)",
+          transform: "scale(1.15)",
           transformOrigin: "center top",
           opacity: imgIdx === i ? 1 : 0,
           transition: "opacity 0.9s ease",
@@ -917,17 +917,17 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
         <p className="font-medium" style={{ fontSize: 15, color: "#aaa", letterSpacing: 0.3 }}>Hi Kate</p>
       </div>
 
-      {/* Rate your Tea SVG */}
+      {/* Rate your Tea SVG — fades in over the coloured tea circle */}
       <div style={{
         position: "absolute", inset: 0, zIndex: 1,
         display: "flex", alignItems: "flex-start", justifyContent: "center",
-        paddingTop: "28%",
+        paddingTop: "48%",
         opacity: textVisible ? 1 : 0,
         transition: "opacity 0.8s ease",
         pointerEvents: "none",
       }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/images/splash-text.svg" alt="Rate your Tea" style={{ width: "70%", maxWidth: 260, filter: "drop-shadow(0 2px 12px rgba(0,0,0,0.35))" }} />
+        <img src="/images/splash-text.svg" alt="Rate your Tea" style={{ width: "70%", maxWidth: 260, filter: "brightness(0) invert(1) drop-shadow(0 2px 12px rgba(0,0,0,0.4))" }} />
       </div>
 
       {/* Expanding circle — grows from centre to fill screen, revealing home */}
