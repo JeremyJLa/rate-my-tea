@@ -120,7 +120,8 @@ function TeaCard({ tea, rated, animating, onClick }: {
 
   return (
     <div style={{ position: "relative", width: "100%", aspectRatio: "1" }}>
-      {/* Circle — clipped */}
+
+      {/* Circle — fades out when rated */}
       <button
         onClick={onClick}
         style={{
@@ -128,12 +129,12 @@ function TeaCard({ tea, rated, animating, onClick }: {
           borderRadius: "50%", overflow: "hidden", padding: 0,
           border: "3px solid #fff",
           boxShadow: `0 0 0 3px ${tea.color}, 0 4px 12px rgba(0,0,0,0.13)`,
+          opacity: showRated ? 0 : 1,
+          transition: "opacity 0.6s ease",
+          pointerEvents: showRated ? "none" : "auto",
         }}
       >
-        {/* Tea colour fill */}
         <div style={{ position: "absolute", inset: 0, backgroundColor: tea.color }} />
-
-        {/* Foil texture */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/images/foil-texture.png" alt="" aria-hidden style={{
           position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover",
@@ -141,35 +142,43 @@ function TeaCard({ tea, rated, animating, onClick }: {
           transform: `rotate(${rotate}deg) scale(${foilScale}) translate(${tx}px,${ty}px)`,
           transformOrigin: "center center", pointerEvents: "none",
         }} />
-
-        {/* Name — fades out when rated */}
         <div style={{
           position: "absolute", inset: 0, pointerEvents: "none",
           display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
           gap: 3, paddingInline: 8,
-          opacity: showRated ? 0 : 1, transition: "opacity 0.5s ease",
         }}>
-          <span style={{ fontWeight: 700, color: "#fff", fontSize: 15, letterSpacing: -0.3, textShadow: "0 1px 8px rgba(0,0,0,0.55)", textAlign: "center", lineHeight: 1.1 }}>
-            {city}
-          </span>
-          <span style={{ color: "rgba(255,255,255,0.72)", fontSize: 11, fontWeight: 500, textShadow: "0 1px 4px rgba(0,0,0,0.4)", textAlign: "center" }}>
-            Breakfast
+          <span style={{ fontWeight: 700, color: "#fff", fontSize: 15, letterSpacing: -0.3, textShadow: "0 1px 8px rgba(0,0,0,0.55)", textAlign: "center", lineHeight: 1.1 }}>{city}</span>
+          <span style={{ color: "rgba(255,255,255,0.72)", fontSize: 11, fontWeight: 500, textShadow: "0 1px 4px rgba(0,0,0,0.4)", textAlign: "center" }}>Breakfast</span>
+        </div>
+      </button>
+
+      {/* Tea tag — fades in when rated */}
+      <button
+        onClick={onClick}
+        style={{
+          position: "absolute", inset: 0, padding: 0, background: "none",
+          opacity: showRated ? 1 : 0,
+          transition: "opacity 0.75s cubic-bezier(0.4,0,0.2,1)",
+          pointerEvents: showRated ? "auto" : "none",
+        }}
+      >
+        <div style={{
+          width: "100%", height: "100%",
+          clipPath: "polygon(18% 0%,38% 0%,50% 7%,62% 0%,82% 0%,100% 18%,100% 82%,82% 100%,62% 100%,50% 93%,38% 100%,18% 100%,0% 82%,0% 18%)",
+          backgroundColor: "#bfc9da",
+          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+          gap: 3,
+        }}>
+          <svg width="20" height="16" viewBox="0 0 20 16" fill="none">
+            <path d="M2 8L7.5 14L18 2" stroke="#111" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <span style={{ fontWeight: 800, fontSize: 13, letterSpacing: 1.5, color: "#111", textTransform: "uppercase" }}>Rated</span>
+          <span style={{ fontSize: 10, fontWeight: 400, color: "#333", textAlign: "center", lineHeight: 1.4, marginTop: 1 }}>
+            {city}<br/>Breakfast
           </span>
         </div>
       </button>
 
-      {/* Teatag — outside the circle so it isn't clipped */}
-      <div
-        onClick={onClick}
-        style={{
-          position: "absolute", inset: 0, pointerEvents: showRated ? "auto" : "none",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          opacity: showRated ? 1 : 0, transition: "opacity 0.75s cubic-bezier(0.4,0,0.2,1)",
-        }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/images/teatag.png" alt="Rated" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-      </div>
     </div>
   );
 }
