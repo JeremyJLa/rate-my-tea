@@ -157,26 +157,18 @@ function TeaCard({ tea, rated, animating, onClick }: {
         onClick={onClick}
         style={{
           position: "absolute", inset: 0, padding: 0, background: "none",
+          display: "flex", alignItems: "center", justifyContent: "center",
           opacity: showRated ? 1 : 0,
           transition: "opacity 0.75s cubic-bezier(0.4,0,0.2,1)",
           pointerEvents: showRated ? "auto" : "none",
         }}
       >
-        <div style={{
-          width: "100%", height: "100%",
-          clipPath: "polygon(18% 0%,38% 0%,50% 7%,62% 0%,82% 0%,100% 18%,100% 82%,82% 100%,62% 100%,50% 93%,38% 100%,18% 100%,0% 82%,0% 18%)",
-          backgroundColor: "#bfc9da",
-          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-          gap: 3,
-        }}>
-          <svg width="20" height="16" viewBox="0 0 20 16" fill="none">
-            <path d="M2 8L7.5 14L18 2" stroke="#111" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          <span style={{ fontWeight: 800, fontSize: 13, letterSpacing: 1.5, color: "#111", textTransform: "uppercase" }}>Rated</span>
-          <span style={{ fontSize: 10, fontWeight: 400, color: "#333", textAlign: "center", lineHeight: 1.4, marginTop: 1 }}>
-            {city}<br/>Breakfast
-          </span>
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/images/teatag.png"
+          alt={`${tea.name} rated`}
+          style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
+        />
       </button>
 
     </div>
