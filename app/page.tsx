@@ -885,33 +885,35 @@ const CUP_IMAGES = [
 
 function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
   const [imgIdx, setImgIdx] = useState(0);
-  const [btnVisible, setBtnVisible] = useState(false);
-  const [fading, setFading] = useState(false);
+  const [expanding, setExpanding] = useState(false);
 
   const textVisible = imgIdx >= 1;
 
   useEffect(() => {
     const interval = setInterval(() => setImgIdx(i => (i + 1) % CUP_IMAGES.length), 3500);
-    const t2 = setTimeout(() => setBtnVisible(true), 7500);
-    return () => { clearInterval(interval); clearTimeout(t2); };
+    // After 3 images, expand the circle to transition out
+    const tExpand = setTimeout(() => setExpanding(true), 10500);
+    return () => { clearInterval(interval); clearTimeout(tExpand); };
   }, []);
 
-  const handleDismiss = () => { setFading(true); setTimeout(onDismiss, 600); };
+  useEffect(() => {
+    if (!expanding) return;
+    const t = setTimeout(onDismiss, 700);
+    return () => clearTimeout(t);
+  }, [expanding, onDismiss]);
 
   return (
-    <div className="absolute inset-0" style={{
-      opacity: fading ? 0 : 1, transition: "opacity 0.6s ease",
-      zIndex: 100, background: "#fff", overflow: "hidden",
-    }}>
-      {/* Cup images — scaled past screen edges so they bleed off */}
+    <div className="absolute inset-0" style={{ zIndex: 100, background: "#fff", overflow: "hidden" }}>
+      {/* Cup images — scale(1.4) from top-center so they bleed off all edges with no gaps */}
       {CUP_IMAGES.map((src, i) => (
         // eslint-disable-next-line @next/next/no-img-element
         <img key={src} src={src} alt="" style={{
-          position: "absolute",
-          width: "130%", height: "130%",
-          top: "-15%", left: "-15%",
+          position: "absolute", inset: 0,
+          width: "100%", height: "100%",
           objectFit: "cover",
           objectPosition: "center top",
+          transform: "scale(1.4)",
+          transformOrigin: "center top",
           opacity: imgIdx === i ? 1 : 0,
           transition: "opacity 0.9s ease",
         }} />
@@ -938,22 +940,17 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
         <img src="/images/splash-text.svg" alt="Rate your Tea" style={{ width: "70%", maxWidth: 260, filter: "drop-shadow(0 2px 12px rgba(0,0,0,0.35))" }} />
       </div>
 
-      {/* Start tasting button */}
+      {/* Expanding circle — grows from centre to fill screen, revealing home */}
       <div style={{
-        position: "absolute", bottom: 48, left: 0, right: 0, zIndex: 1,
-        display: "flex", justifyContent: "center",
-        opacity: btnVisible ? 1 : 0,
-        transform: btnVisible ? "translateY(0)" : "translateY(16px)",
-        transition: "opacity 0.5s ease, transform 0.5s ease",
-      }}>
-        <button onClick={handleDismiss} className="font-semibold" style={{
-          paddingInline: 48, height: 52, borderRadius: 999,
-          background: "#111", color: "#fff", fontSize: 16,
-          boxShadow: "0 4px 20px rgba(0,0,0,0.18)",
-        }}>
-          Start tasting
-        </button>
-      </div>
+        position: "absolute", zIndex: 10,
+        width: "150vmax", height: "150vmax",
+        top: "50%", left: "50%",
+        borderRadius: "50%",
+        backgroundColor: "#F7F6F3",
+        transform: expanding ? "translate(-50%, -50%) scale(1)" : "translate(-50%, -50%) scale(0)",
+        transition: expanding ? "transform 0.65s cubic-bezier(0.4,0,0.6,1)" : "none",
+        pointerEvents: "none",
+      }} />
     </div>
   );
 }
