@@ -892,17 +892,34 @@ const CUP_IMAGES = [
 
 function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
   const [imgIdx, setImgIdx] = useState(0);
+  const [contracted, setContracted] = useState(false); // opening brown circle
+  const [cycleReady, setCycleReady] = useState(false);
   const [expanding, setExpanding] = useState(false);
   const [fading, setFading] = useState(false);
   const [textVisible, setTextVisible] = useState(false);
   const [showThumbs, setShowThumbs] = useState(false);
 
+  // Trigger brown circle contraction almost immediately after mount
   useEffect(() => {
-    const t = setTimeout(() => setTextVisible(true), 1000);
+    const t = setTimeout(() => setContracted(true), 80);
     return () => clearTimeout(t);
   }, []);
 
+  // Start cycling once brown circle has fully contracted (~1.9s)
   useEffect(() => {
+    const t = setTimeout(() => setCycleReady(true), 1900);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Heading fades in as cycling begins
+  useEffect(() => {
+    const t = setTimeout(() => setTextVisible(true), 2200);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Cycle all cups for 5s, then expand green circle
+  useEffect(() => {
+    if (!cycleReady) return;
     const intervalRef = { id: 0 };
     intervalRef.id = window.setInterval(() => {
       setImgIdx(i => (i + 1) % CUP_IMAGES.length);
@@ -912,7 +929,7 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
       setExpanding(true);
     }, 5000);
     return () => { window.clearInterval(intervalRef.id); clearTimeout(tExpand); };
-  }, []);
+  }, [cycleReady]);
 
   useEffect(() => {
     if (!expanding) return;
@@ -976,7 +993,19 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
         </div>
       </div>
 
-      {/* Expanding circle — green to match teahcup4 */}
+      {/* Opening brown circle — starts full, contracts to reveal first cup */}
+      <div style={{
+        position: "absolute", zIndex: 10,
+        width: "150vmax", height: "150vmax",
+        top: "50%", left: "50%",
+        borderRadius: "50%",
+        backgroundColor: "#7B4E2C",
+        transform: contracted ? "translate(-50%, -50%) scale(0)" : "translate(-50%, -50%) scale(1)",
+        transition: contracted ? "transform 1.8s cubic-bezier(0.22,1,0.36,1)" : "none",
+        pointerEvents: "none",
+      }} />
+
+      {/* Closing green circle — grows to fill screen */}
       <div style={{
         position: "absolute", zIndex: 10,
         width: "150vmax", height: "150vmax",
