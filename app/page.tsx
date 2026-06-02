@@ -104,6 +104,13 @@ function Slider({ value, onChange }: { value: number; onChange: (v: number) => v
   );
 }
 
+function lightenHex(hex: string): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgb(${Math.round(r + (255 - r) * 0.70)},${Math.round(g + (255 - g) * 0.70)},${Math.round(b + (255 - b) * 0.70)})`;
+}
+
 function TeaCard({ tea, rated, animating, onClick }: {
   tea: (typeof TEAS)[number]; rated: boolean; animating: boolean; onClick: () => void;
 }) {
@@ -164,9 +171,19 @@ function TeaCard({ tea, rated, animating, onClick }: {
         }}
       >
         <div style={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          {/* Teatag at its natural light colour — unaltered */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/images/teatag.png" alt="" aria-hidden style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }} />
+          {/* Teatag shape via CSS mask, filled with lightened tea colour */}
+          <div style={{
+            position: "absolute", width: "100%", height: "100%",
+            backgroundColor: lightenHex(tea.color),
+            WebkitMaskImage: "url(/images/teatag.png)",
+            maskImage: "url(/images/teatag.png)",
+            WebkitMaskSize: "contain",
+            maskSize: "contain",
+            WebkitMaskRepeat: "no-repeat",
+            maskRepeat: "no-repeat",
+            WebkitMaskPosition: "center",
+            maskPosition: "center",
+          } as React.CSSProperties} />
           {/* Content */}
           <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, pointerEvents: "none" }}>
             <svg width="20" height="16" viewBox="0 0 20 16" fill="none">
@@ -876,24 +893,36 @@ const CUP_IMAGES = [
 function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
   const [imgIdx, setImgIdx] = useState(0);
   const [expanding, setExpanding] = useState(false);
+  const [fading, setFading] = useState(false);
 
   const textVisible = imgIdx >= 1;
 
   useEffect(() => {
-    const interval = setInterval(() => setImgIdx(i => (i + 1) % CUP_IMAGES.length), 3500);
-    // After 3 images, expand the circle to transition out
-    const tExpand = setTimeout(() => setExpanding(true), 10500);
-    return () => { clearInterval(interval); clearTimeout(tExpand); };
+    const intervalRef = { id: 0 };
+    intervalRef.id = window.setInterval(() => {
+      setImgIdx(i => {
+        if (i >= CUP_IMAGES.length - 2) {
+          // Reached the second-to-last image — advance to last and stop
+          window.clearInterval(intervalRef.id);
+          setTimeout(() => setExpanding(true), 2000);
+          return CUP_IMAGES.length - 1;
+        }
+        return i + 1;
+      });
+    }, 3500);
+    return () => window.clearInterval(intervalRef.id);
   }, []);
 
   useEffect(() => {
     if (!expanding) return;
-    const t = setTimeout(onDismiss, 700);
-    return () => clearTimeout(t);
+    // Start fading the splash after the circle has nearly filled the screen
+    const tFade = setTimeout(() => setFading(true), 1600);
+    const tDismiss = setTimeout(onDismiss, 2300);
+    return () => { clearTimeout(tFade); clearTimeout(tDismiss); };
   }, [expanding, onDismiss]);
 
   return (
-    <div className="absolute inset-0" style={{ zIndex: 100, background: "#fff", overflow: "hidden" }}>
+    <div className="absolute inset-0" style={{ zIndex: 100, background: "#fff", overflow: "hidden", opacity: fading ? 0 : 1, transition: fading ? "opacity 0.6s ease" : "none" }}>
       {/* Cup images — scale(1.15) from top-center, bleeds off edges slightly */}
       {CUP_IMAGES.map((src, i) => (
         // eslint-disable-next-line @next/next/no-img-element
@@ -930,15 +959,15 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
         <img src="/images/splash-text.svg" alt="Rate your Tea" style={{ width: "70%", maxWidth: 260, filter: "brightness(0) invert(1) drop-shadow(0 2px 12px rgba(0,0,0,0.4))" }} />
       </div>
 
-      {/* Expanding circle — grows from centre to fill screen, revealing home */}
+      {/* Expanding circle — warm tea amber, grows slowly to consume the screen */}
       <div style={{
         position: "absolute", zIndex: 10,
         width: "150vmax", height: "150vmax",
         top: "50%", left: "50%",
         borderRadius: "50%",
-        backgroundColor: "#F7F6F3",
+        backgroundColor: "#C07A3C",
         transform: expanding ? "translate(-50%, -50%) scale(1)" : "translate(-50%, -50%) scale(0)",
-        transition: expanding ? "transform 0.65s cubic-bezier(0.4,0,0.6,1)" : "none",
+        transition: expanding ? "transform 1.8s cubic-bezier(0.22,1,0.36,1)" : "none",
         pointerEvents: "none",
       }} />
     </div>
