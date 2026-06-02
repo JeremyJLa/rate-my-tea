@@ -109,63 +109,61 @@ function TeaCard({ tea, rated, animating, onClick }: {
 }) {
   const showRated = rated || animating;
   const city = tea.name.replace(/\s+\S+$/, "");
-  const type = tea.name.split(" ").pop()!;
 
-  if (showRated) {
-    // Teabag-tag shape — chamfered corners + notch top & bottom
-    return (
-      <button onClick={onClick} className="flex flex-col items-center gap-1.5">
-        <div style={{
-          width: "100%", aspectRatio: "1",
-          clipPath: "polygon(18% 0%,38% 0%,50% 7%,62% 0%,82% 0%,100% 18%,100% 82%,82% 100%,62% 100%,50% 93%,38% 100%,18% 100%,0% 82%,0% 18%)",
-          background: "#bfc9da",
-          display: "flex", flexDirection: "column",
-          alignItems: "center", justifyContent: "center",
-          gap: 2,
-          transition: "opacity 0.5s ease",
-        }}>
-          {/* Tick */}
-          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-            <path d="M4 11.5L9 16.5L18 7" stroke="#111" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          {/* RATED */}
-          <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: 1.5, color: "#111", textTransform: "uppercase" }}>Rated</span>
-          {/* Tea name */}
-          <span style={{ fontSize: 9, fontWeight: 400, color: "#333", textAlign: "center", lineHeight: 1.3, marginTop: 1 }}>
-            {city}{"\n"}{type}
-          </span>
-        </div>
-        <span style={{ fontSize: 10, color: "#aaa", textAlign: "center", lineHeight: 1.2 }}>
+  const hash = tea.id.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+  const rotate = ((hash * 37) % 80) - 40;
+  const rad = (Math.abs(rotate) * Math.PI) / 180;
+  const minScale = Math.abs(Math.cos(rad)) + Math.abs(Math.sin(rad)) + 0.15;
+  const foilScale = minScale + (hash % 5) * 0.08;
+  const tx = ((hash * 13) % 20) - 10;
+  const ty = ((hash * 17) % 20) - 10;
+
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        position: "relative", width: "100%", aspectRatio: "1",
+        borderRadius: "50%", overflow: "hidden", padding: 0,
+        border: "3px solid #fff",
+        boxShadow: `0 0 0 3px ${tea.color}, 0 4px 12px rgba(0,0,0,0.13)`,
+      }}
+    >
+      {/* Tea colour fill */}
+      <div style={{ position: "absolute", inset: 0, backgroundColor: tea.color }} />
+
+      {/* Foil texture */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/images/foil-texture.png" alt="" aria-hidden style={{
+        position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover",
+        filter: "grayscale(1) contrast(2.2) brightness(0.8)", opacity: 0.65, mixBlendMode: "overlay",
+        transform: `rotate(${rotate}deg) scale(${foilScale}) translate(${tx}px,${ty}px)`,
+        transformOrigin: "center center", pointerEvents: "none",
+      }} />
+
+      {/* Name — fades out when rated */}
+      <div style={{
+        position: "absolute", inset: 0, pointerEvents: "none",
+        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+        gap: 3, paddingInline: 8,
+        opacity: showRated ? 0 : 1, transition: "opacity 0.5s ease",
+      }}>
+        <span style={{ fontWeight: 700, color: "#fff", fontSize: 15, letterSpacing: -0.3, textShadow: "0 1px 8px rgba(0,0,0,0.55)", textAlign: "center", lineHeight: 1.1 }}>
           {city}
         </span>
-      </button>
-    );
-  }
-
-  // Unrated — circular image + coloured stroke ring
-  return (
-    <button onClick={onClick} className="flex flex-col items-center gap-1.5">
-      {/* Stroke ring: tea.color border, 1px white gap via padding, circle image */}
-      <div style={{
-        width: "100%", aspectRatio: "1",
-        borderRadius: "50%",
-        padding: 3,                          // 1px white gap + 2px border space
-        border: `2px solid ${tea.color}`,
-        background: "#fff",
-        boxSizing: "border-box",
-      }}>
-        <div style={{ width: "100%", height: "100%", borderRadius: "50%", overflow: "hidden" }}>
-          <Image
-            src={tea.image} alt={tea.name} width={120} height={120}
-            className="w-full h-full object-cover"
-            style={{ transform: "scale(1.25)", transformOrigin: "center center" }}
-          />
-        </div>
+        <span style={{ color: "rgba(255,255,255,0.72)", fontSize: 11, fontWeight: 500, textShadow: "0 1px 4px rgba(0,0,0,0.4)", textAlign: "center" }}>
+          Breakfast
+        </span>
       </div>
-      {/* Tea name below */}
-      <span style={{ fontSize: 10, color: "#555", textAlign: "center", lineHeight: 1.2, fontWeight: 500 }}>
-        {city}
-      </span>
+
+      {/* Rated — teatag.png */}
+      <div style={{
+        position: "absolute", inset: 0, pointerEvents: "none",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        opacity: showRated ? 1 : 0, transition: "opacity 0.75s cubic-bezier(0.4,0,0.2,1)",
+      }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/images/teatag.png" alt="Rated" style={{ width: "82%", height: "82%", objectFit: "contain" }} />
+      </div>
     </button>
   );
 }
