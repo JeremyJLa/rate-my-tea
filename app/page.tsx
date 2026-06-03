@@ -957,7 +957,7 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
           width: "100%", height: "100%",
           objectFit: "cover", objectPosition: "center",
           opacity: cupVisible ? 1 : 0,
-          transform: cupVisible ? "scale(1) rotate(0deg)" : "scale(2.2) rotate(180deg)",
+          transform: cupVisible ? "scale(1.05) rotate(0deg)" : "scale(2.2) rotate(180deg)",
           transition: cupVisible ? "opacity 1.0s ease-out, transform 1.6s cubic-bezier(0.22,1,0.36,1)" : "none",
           willChange: "opacity, transform",
         }}
