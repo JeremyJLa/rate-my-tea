@@ -1357,8 +1357,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
           50%       { transform: translateX(-50%) translateY(-8px); }
         }
         @keyframes teabagEnter {
-          from { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.30 + var(--bag-offset, -20px))); }
-          55%  { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 + var(--bag-offset, -20px))); }
+          from { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -1.5 + var(--bag-offset, -20px))); }
           to   { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
         }
         @keyframes teabagExit {
