@@ -1194,8 +1194,8 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/images/splash-text.svg" alt="Rate your Tea" style={{
         position: "absolute",
-        bottom: "22%", left: "50%",
-        width: "48%", maxWidth: 200,
+        bottom: "32%", left: "50%",
+        width: "34%", maxWidth: 140,
         opacity: cupIn ? 0.8 : 0,
         filter: "brightness(0)",
         animation: cupIn ? "floatLogo 3s ease-in-out infinite" : "none",
