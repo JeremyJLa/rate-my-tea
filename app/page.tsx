@@ -1185,6 +1185,9 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
           from { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 - 20px)); }
           to   { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -1.5 - 20px)); }
         }
+        @media (min-width: 640px) {
+          .splash-cup { height: calc(var(--ch, 100vh) * 0.58) !important; }
+        }
         @keyframes teabagDip {
           0%        { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 - 20px)); }
           8%        { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 - 20px)); }
@@ -1205,7 +1208,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       `}</style>
 
       {/* Glass cup — vh-based height so it's consistent across all screen sizes */}
-      <div style={{
+      <div className="splash-cup" style={{
         position: "absolute",
         bottom: 0, left: 0, right: 0,
         height: "calc(var(--ch, 100vh) * 0.68)",
