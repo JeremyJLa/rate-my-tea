@@ -1115,6 +1115,113 @@ function SplashScreenB({ onDismiss }: { onDismiss: () => void }) {
   );
 }
 
+// ── Splash Screen C — glass cup + real teabag dip, tea colour changes ─────────
+
+const TEA_DIP_COLOURS = [
+  "#c8863a",  // natural amber
+  "#7b3f8c",  // purple
+  "#3d9e58",  // green
+  "#c8a820",  // yellow
+  "#5c2d0a",  // brown
+];
+
+function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
+  const [cupIn,     setCupIn]     = useState(false);
+  const [bagDown,   setBagDown]   = useState(false);
+  const [colourIdx, setColourIdx] = useState(0);
+  const [logoIn,    setLogoIn]    = useState(false);
+  const [fading,    setFading]    = useState(false);
+
+  useEffect(() => {
+    const ts: ReturnType<typeof setTimeout>[] = [];
+    let t = 0;
+    const after = (ms: number, fn: () => void) => { t += ms; ts.push(setTimeout(fn, t)); };
+
+    after(200,  () => setCupIn(true));       // cup slides up
+    after(900,  () => setLogoIn(true));      // logo fades in on cup
+
+    // 4 dips — each one changes tea colour
+    for (let i = 1; i < TEA_DIP_COLOURS.length; i++) {
+      const idx = i;
+      after(i === 1 ? 800 : 500, () => setBagDown(true));          // dip down
+      after(500, () => setColourIdx(idx));                          // colour shifts mid-dip
+      after(300, () => setBagDown(false));                          // lift back up
+    }
+
+    after(900,  () => setFading(true));
+    after(700,  () => onDismiss());
+
+    return () => ts.forEach(clearTimeout);
+  }, [onDismiss]);
+
+  const teaColour = TEA_DIP_COLOURS[colourIdx];
+
+  return (
+    <div style={{
+      position: "absolute", inset: 0, zIndex: 100,
+      backgroundColor: "#fff",
+      overflow: "hidden",
+      opacity: fading ? 0 : 1,
+      transition: fading ? "opacity 0.7s ease" : "none",
+    }}>
+
+      {/* Glass cup — slides up from below */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/images/glass-teacuop.png" alt="" aria-hidden style={{
+        position: "absolute",
+        bottom: "10%", left: "50%",
+        transform: `translateX(-50%) translateY(${cupIn ? "0%" : "60%"})`,
+        width: "82%", maxWidth: 340,
+        opacity: cupIn ? 1 : 0,
+        transition: "transform 0.9s cubic-bezier(0.22,1,0.36,1), opacity 0.7s ease",
+        zIndex: 2,
+      }} />
+
+      {/* Tea liquid colour overlay — tints inside the cup */}
+      <div style={{
+        position: "absolute",
+        bottom: "calc(10% + 18%)", left: "50%",
+        transform: "translateX(-50%)",
+        width: "54%", maxWidth: 220,
+        height: "14%",
+        borderRadius: "0 0 50% 50%",
+        background: teaColour,
+        opacity: cupIn ? 0.55 : 0,
+        mixBlendMode: "multiply",
+        transition: "background 0.6s ease, opacity 0.7s ease",
+        zIndex: 3,
+      }} />
+
+      {/* Logo — fades in on the cup */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/images/splash-text.svg" alt="Rate your Tea" style={{
+        position: "absolute",
+        bottom: "calc(10% + 22%)", left: "50%",
+        transform: `translateX(-50%) scale(${logoIn ? 1 : 0.7})`,
+        width: "50%", maxWidth: 200,
+        opacity: logoIn ? 1 : 0,
+        filter: LOGO_WHITE_FILTER,
+        transition: "transform 0.7s cubic-bezier(0.22,1,0.36,1), opacity 0.6s ease",
+        zIndex: 4,
+      }} />
+
+      {/* Real teabag — dips from above the cup */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/images/real-teabag.png" alt="" aria-hidden style={{
+        position: "absolute",
+        top: 0, left: "50%",
+        transform: `translateX(-50%) translateY(${bagDown ? "28%" : cupIn ? "2%" : "-80%"})`,
+        width: "38%", maxWidth: 160,
+        opacity: cupIn ? 1 : 0,
+        transition: "transform 0.55s cubic-bezier(0.22,1,0.36,1), opacity 0.5s ease",
+        willChange: "transform",
+        zIndex: 5,
+      }} />
+
+    </div>
+  );
+}
+
 // ── App ───────────────────────────────────────────────────────────────────────
 
 export default function App() {
@@ -1261,7 +1368,7 @@ export default function App() {
         </div>
 
         {/* Splash screen */}
-        {showSplash && <SplashScreenB onDismiss={() => setShowSplash(false)} />}
+        {showSplash && <SplashScreenC onDismiss={() => setShowSplash(false)} />}
       </div>
     </div>
   );
