@@ -1271,16 +1271,16 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       <img src="/images/real-teabag.png" alt="" aria-hidden style={{
         position: "absolute",
         top: 0, left: "50%",
-        transform: dipping ? "translateX(-50%)" : `translateX(-50%) translateY(calc(var(--ch, 100vh) * ${cupIn ? -0.26 : -0.4} + var(--bag-offset, -20px)))`,
+        transform: dipping ? "translateX(-50%)" : `translateX(-50%) translateY(calc(var(--ch, 100vh) * ${cupIn ? -0.26 : -1.1} + var(--bag-offset, -20px)))`,
         animation: bagOut
           ? "teabagExit 0.7s cubic-bezier(0.55,0,1,0.45) forwards"
           : dipping
             ? `teabagDip ${DIP_DURATION}ms linear forwards`
             : "none",
         width: "62%", maxWidth: 252,
-        opacity: cupIn ? 1 : 0,
+        opacity: 1,
         mixBlendMode: "multiply",
-        transition: "opacity 0.5s ease",
+        transition: (!dipping && !bagOut) ? "transform 1s cubic-bezier(0.22,1,0.36,1)" : "none",
         willChange: "transform",
         zIndex: 8,
       }} />
