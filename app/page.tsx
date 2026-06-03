@@ -1152,26 +1152,32 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
 
     // dip 1 — short
     after(900, () => setBagShortDown(true));
-    after(350, () => setColourIdx(0));
-    after(300, () => setBagShortDown(false));
+    after(350, () => setBagShortDown(false));
 
-    // dip 2 — short, blend to cup 2, then pause 2s with bag up
-    after(700, () => setBagShortDown(true));
-    after(350, () => { setColourIdx(1); setCupImgIdx(1); });
-    after(300, () => setBagShortDown(false));
+    // dip 2 — short, blend to cup 2
+    after(600, () => setBagShortDown(true));
+    after(350, () => { setColourIdx(1); setCupImgIdx(1); setBagShortDown(false); });
 
-    // pause 2 seconds while cup 2 is visible
+    // pause 2 seconds with bag at full rest height
     after(2000, () => { /* bag stays up */ });
 
-    // 3 short dips — gradually blend to cup 3 across them
-    after(0,   () => { setBagShortDown(true); setCupImgIdx(2); }); // start blend to cup 3
+    // longer dip down — deeper than short dips
+    after(0,   () => setBagDown(true));
+    after(600, () => setBagDown(false));
+
+    // second longer dip — start blending to cup 3
+    after(700, () => { setBagDown(true); setCupImgIdx(2); });
+    after(600, () => { setColourIdx(2); setBagDown(false); });
+
+    // 3 short dips
+    after(600, () => setBagShortDown(true));
     after(350, () => setBagShortDown(false));
 
     after(500, () => setBagShortDown(true));
     after(350, () => setBagShortDown(false));
 
     after(500, () => setBagShortDown(true));
-    after(350, () => { setColourIdx(2); setBagShortDown(false); });
+    after(350, () => setBagShortDown(false));
 
     // bag flies up off screen, green floods in, then home
     after(800,  () => setBagOut(true));
