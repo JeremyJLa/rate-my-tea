@@ -111,6 +111,33 @@ function lightenHex(hex: string): string {
   return `rgb(${Math.round(r + (255 - r) * 0.85)},${Math.round(g + (255 - g) * 0.85)},${Math.round(b + (255 - b) * 0.85)})`;
 }
 
+function TeaThumb({ tea, size = 40 }: { tea: (typeof TEAS)[number]; size?: number }) {
+  const hash = tea.id.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+  const rotate = ((hash * 37) % 80) - 40;
+  const rad = (Math.abs(rotate) * Math.PI) / 180;
+  const minScale = Math.abs(Math.cos(rad)) + Math.abs(Math.sin(rad)) + 0.15;
+  const foilScale = minScale + (hash % 5) * 0.08;
+  const tx = ((hash * 13) % 20) - 10;
+  const ty = ((hash * 17) % 20) - 10;
+  return (
+    <div style={{
+      width: size, height: size, borderRadius: "50%", overflow: "hidden", flexShrink: 0,
+      backgroundColor: tea.color,
+      border: "2.5px solid #fff",
+      boxShadow: `0 0 0 2.5px ${tea.color}, 0 3px 10px rgba(0,0,0,0.15)`,
+      position: "relative",
+    }}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/images/foil-texture.png" alt="" aria-hidden style={{
+        position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover",
+        filter: "grayscale(1) contrast(2.2) brightness(0.8)", opacity: 0.65, mixBlendMode: "overlay",
+        transform: `rotate(${rotate}deg) scale(${foilScale}) translate(${tx}px,${ty}px)`,
+        transformOrigin: "center center",
+      }} />
+    </div>
+  );
+}
+
 function TeaCard({ tea, rated, animating, onClick }: {
   tea: (typeof TEAS)[number]; rated: boolean; animating: boolean; onClick: () => void;
 }) {
@@ -371,9 +398,7 @@ function RateScreen({ teaId, existing, fromLeaderboard, onSubmit, onUnrate, onDi
 
           {/* Tea image + name — always shown */}
           <div className="flex items-center gap-3">
-            <div className="relative overflow-hidden" style={{ width: imgSize, height: imgSize, borderRadius: 14 - p * 4, flexShrink: 0, transition: "width 0.1s, height 0.1s, border-radius 0.1s" }}>
-              <Image src={tea.image} alt={tea.name} fill className="object-cover" sizes="64px" style={{ transform: "scale(1.35)", transformOrigin: "center center" }} />
-            </div>
+            <TeaThumb tea={tea} size={imgSize} />
             <h1 className="font-bold" style={{ color: "#111", letterSpacing: -0.4, display: "flex", flexDirection: inline ? "row" : "column", alignItems: inline ? "baseline" : "flex-start", gap: inline ? 5 : 0 }}>
               <span style={{ fontSize: titleSize, lineHeight: 1.15, transition: "font-size 0.1s" }}>{tea.name.replace(/\s+\S+$/, "")}</span>
               <span style={{ fontSize: subSize, fontWeight: 500, color: inline ? "#111" : "#888", lineHeight: 1.15, transition: "font-size 0.1s, color 0.15s" }}>{tea.name.split(" ").pop()}</span>
@@ -608,9 +633,7 @@ function LeaderboardScreen({ ratings, onEditTea, onClose }: {
               style={{ background: "#fff", borderRadius: 16, padding: "12px 14px", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
             >
               <span className="font-bold tabular-nums" style={{ fontSize: 13, color: "#ccc", width: 20, textAlign: "right" }}>{i + 1}</span>
-              <div className="relative overflow-hidden flex-shrink-0" style={{ width: 36, height: 36, borderRadius: 10 }}>
-                <Image src={tea.image} alt={tea.name} fill className="object-cover" sizes="36px" />
-              </div>
+              <TeaThumb tea={tea} size={36} />
               <span className="flex-1 text-left font-medium" style={{ fontSize: 14, color: "#111" }}>{tea.name}</span>
               <span className="font-bold tabular-nums" style={{
                 fontSize: 17,
@@ -811,9 +834,7 @@ function SharedRatingView({ rating, onClose }: { rating: Rating; onClose: () => 
       {/* Header */}
       <div className="flex items-center justify-between px-5 pb-5 shrink-0" style={{ paddingTop: 14, background: "#fff" }}>
         <div className="flex items-center gap-3">
-          <div className="relative overflow-hidden" style={{ width: 44, height: 44, borderRadius: 12, flexShrink: 0 }}>
-            <Image src={tea.image} alt={tea.name} fill className="object-cover" sizes="44px" style={{ transform: "scale(1.35)", transformOrigin: "center center" }} />
-          </div>
+          <TeaThumb tea={tea} size={44} />
           <div>
             <p style={{ fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: 1, fontWeight: 600 }}>Kate rated this</p>
             <h1 className="font-bold" style={{ fontSize: 22, color: "#111", letterSpacing: -0.4 }}>{tea.name}</h1>
