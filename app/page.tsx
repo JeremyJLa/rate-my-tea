@@ -1305,7 +1305,7 @@ const CUP_IMAGES = [
 
 // Dip animation: long dip → partial rise → short dip → colour change (x2)
 const DIP_DURATION = 9000;
-const CUP2_AT     = DIP_DURATION * 0.35;  // after long dip (2nd dip incl. enter), partial rise
+const CUP2_AT     = DIP_DURATION * 0.46;  // at first short dip bottom
 const CUP3_AT     = DIP_DURATION * 0.84;  // after second long dip
 const BAGOUT_AT   = DIP_DURATION + 400;
 
@@ -1332,7 +1332,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
     ts.push(setTimeout(() => setHiVisible(false), DIP_START + DIP_DURATION + 100));
     ts.push(setTimeout(() => setDipping(true),      DIP_START));
     // cup 2 after long dip (2nd dip); cup 3 after second long dip
-    ts.push(setTimeout(() => setCupImgIdx(1),  DIP_START + DIP_DURATION * 0.35));
+    ts.push(setTimeout(() => setCupImgIdx(1),  DIP_START + DIP_DURATION * 0.46));
     ts.push(setTimeout(() => setCupImgIdx(2),  DIP_START + DIP_DURATION * 0.84));
     // fire slightly early so exit animation starts before onAnimationEnd React re-render latency
     ts.push(setTimeout(() => setBagOut(true),  DIP_START + DIP_DURATION - 50));
