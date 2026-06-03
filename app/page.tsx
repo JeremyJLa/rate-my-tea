@@ -1203,20 +1203,6 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
         zIndex: 4,
       }} />
 
-      {/* String line from top of screen down to teabag */}
-      <div style={{
-        position: "absolute",
-        top: 0, left: "50%",
-        width: 1.5,
-        transform: `translateX(-50%) scaleY(1)`,
-        transformOrigin: "top center",
-        height: bagDown ? "47vh" : cupIn ? "30vh" : "0vh",
-        background: "#bbb",
-        transition: "height 0.6s cubic-bezier(0.22,1,0.36,1)",
-        opacity: cupIn ? 1 : 0,
-        zIndex: 6,
-      }} />
-
       {/* Real teabag — string from top, dips into cup */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/images/real-teabag.png" alt="" aria-hidden style={{
