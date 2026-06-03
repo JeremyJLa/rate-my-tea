@@ -1152,19 +1152,24 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
     after(500, () => setColourIdx(0));
     after(500, () => setBagDown(false));
 
-    // dip 2 — blend to cup 2
+    // dip 2 — blend to cup 2, then pause 2s with bag up
     after(700, () => setBagDown(true));
     after(500, () => { setColourIdx(1); setCupImgIdx(1); });
     after(500, () => setBagDown(false));
 
-    // dip 3 — blend to cup 3
-    after(700, () => setBagDown(true));
-    after(500, () => { setColourIdx(2); setCupImgIdx(2); });
+    // pause 2 seconds while cup 2 is visible
+    after(2000, () => { /* bag stays up */ });
+
+    // 3 dips — gradually blend to cup 3 across them
+    after(0,   () => setBagDown(true));
+    after(500, () => setCupImgIdx(2));        // start blend to cup 3 on first of 3 dips
     after(500, () => setBagDown(false));
 
-    // dip 4
     after(700, () => setBagDown(true));
-    after(500, () => setColourIdx(3));
+    after(500, () => setBagDown(false));
+
+    after(700, () => setBagDown(true));
+    after(500, () => setColourIdx(2));
     after(500, () => setBagDown(false));
 
     after(1000, () => setFading(true));
@@ -1209,7 +1214,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
             objectFit: "cover",
             objectPosition: "center bottom",
             opacity: cupImgIdx === i ? 1 : 0,
-            transition: "opacity 1.2s ease",
+            transition: "opacity 2.5s ease",
           }} />
         ))}
       </div>
