@@ -1199,7 +1199,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       <div style={{
         position: "absolute",
         bottom: 0, left: 0, right: 0,
-        height: "58%",
+        height: "50%",
         opacity: cupIn ? 1 : 0,
         transform: `translateY(${cupIn ? "0" : "60%"})`,
         transition: "transform 1s cubic-bezier(0.22,1,0.36,1), opacity 0.8s ease",
@@ -1237,7 +1237,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       <img src="/images/real-teabag.png" alt="" aria-hidden style={{
         position: "absolute",
         top: 0, left: "50%",
-        transform: `translateX(-50%) translateY(${bagDown ? "18%" : cupIn ? "0%" : "-80%"})`,
+        transform: `translateX(-50%) translateY(${bagDown ? "5%" : cupIn ? "-18%" : "-80%"})`,
         width: "62%", maxWidth: 252,
         opacity: cupIn ? 1 : 0,
         mixBlendMode: "multiply",
