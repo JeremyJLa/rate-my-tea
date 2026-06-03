@@ -1305,8 +1305,8 @@ const CUP_IMAGES = [
 
 // Dip animation: long dip → partial rise → short dip → colour change (x2)
 const DIP_DURATION = 9000;
-const CUP2_AT     = DIP_DURATION * 0.46;  // at bottom of 2nd dip (short dip)
-const CUP3_AT     = DIP_DURATION * 0.82;  // after third dip, on the rise
+const CUP2_AT     = DIP_DURATION * 0.28;  // at bottom of dip 2
+const CUP3_AT     = DIP_DURATION * 0.78;  // at bottom of dip 3
 const BAGOUT_AT   = DIP_DURATION + 400;
 
 function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
@@ -1332,8 +1332,8 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
     ts.push(setTimeout(() => setHiVisible(false), DIP_START + DIP_DURATION + 100));
     ts.push(setTimeout(() => setDipping(true),      DIP_START));
     // cup 2 after long dip (2nd dip); cup 3 after second long dip
-    ts.push(setTimeout(() => setCupImgIdx(1),  DIP_START + DIP_DURATION * 0.46));
-    ts.push(setTimeout(() => setCupImgIdx(2),  DIP_START + DIP_DURATION * 0.82));
+    ts.push(setTimeout(() => setCupImgIdx(1),  DIP_START + DIP_DURATION * 0.28));
+    ts.push(setTimeout(() => setCupImgIdx(2),  DIP_START + DIP_DURATION * 0.78));
     // fire slightly early so exit animation starts before onAnimationEnd React re-render latency
     ts.push(setTimeout(() => setBagOut(true),  DIP_START + DIP_DURATION - 50));
     ts.push(setTimeout(() => setGreenFill(true), DIP_START + DIP_DURATION + 900));
@@ -1369,14 +1369,12 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
           .splash-cup { height: calc(var(--ch, 100vh) * 0.58) !important; }
         }
         @keyframes teabagDip {
-          /* Pattern 1: long dip → partial rise → short dip */
+          /* Dip 2: long dip down → back to rest */
           0%        { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
-          18%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.06 + var(--bag-offset, -20px))); }
-          34%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.17 + var(--bag-offset, -20px))); }
-          46%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.11 + var(--bag-offset, -20px))); }
+          28%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.06 + var(--bag-offset, -20px))); }
           50%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
-          /* Pattern 2: long dip only → back to rest */
-          66%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.06 + var(--bag-offset, -20px))); }
+          /* Dip 3: long dip down → back to rest */
+          78%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.06 + var(--bag-offset, -20px))); }
           100%      { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
         }
         }
