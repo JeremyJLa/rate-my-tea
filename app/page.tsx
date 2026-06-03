@@ -6,17 +6,17 @@ import Image from "next/image";
 // ── Data ──────────────────────────────────────────────────────────────────────
 
 const TEAS = [
-  { id: "adelaide-breakfast",   name: "Adelaide Breakfast",   image: "/images/adelaide-breakfast.png",   color: "#C0442A", t2url: "https://www.t2tea.com/search?q=adelaide+breakfast"    },
-  { id: "sydney-breakfast",     name: "Sydney Breakfast",     image: "/images/sydney-breakfast.jpg",     color: "#1C3A6B", t2url: "https://www.t2tea.com/search?q=sydney+breakfast"      },
-  { id: "melbourne-breakfast",  name: "Melbourne Breakfast",  image: "/images/melbourne-breakfast.jpg",  color: "#2A3A2C", t2url: "https://www.t2tea.com/search?q=melbourne+breakfast"   },
-  { id: "irish-breakfast",      name: "Irish Breakfast",      image: "/images/irish-breakfast.jpg",      color: "#1E4A3A", t2url: "https://www.t2tea.com/search?q=irish+breakfast"       },
-  { id: "singapore-breakfast",  name: "Singapore Breakfast",  image: "/images/singapore-breakfast.jpg",  color: "#6B3FA0", t2url: "https://www.t2tea.com/search?q=singapore+breakfast"   },
-  { id: "canberra-breakfast",   name: "Canberra Breakfast",   image: "/images/canberra-breakfast.png",   color: "#2563B0", t2url: "https://www.t2tea.com/search?q=canberra+breakfast"    },
-  { id: "brisbane-breakfast",   name: "Brisbane Breakfast",   image: "/images/brisbane-breakfast.jpg",   color: "#E07820", t2url: "https://www.t2tea.com/search?q=brisbane+breakfast"    },
-  { id: "english-breakfast",    name: "English Breakfast",    image: "/images/english-breakfast.jpg",    color: "#C8202A", t2url: "https://www.t2tea.com/search?q=english+breakfast"     },
-  { id: "scots-breakfast",      name: "Scots Breakfast",      image: "/images/scots-breakfast.png",      color: "#1A4F8A", t2url: "https://www.t2tea.com/search?q=scots+breakfast"       },
-  { id: "new-zealand-breakfast",name: "New Zealand Breakfast",image: "/images/new-zealand-breakfast.jpg",color: "#7AB028", t2url: "https://www.t2tea.com/search?q=new+zealand+breakfast" },
-  { id: "new-york-breakfast",   name: "New York Breakfast",   image: "/images/new-york-breakfast.jpg",   color: "#D4A020", t2url: "https://www.t2tea.com/search?q=new+york+breakfast"    },
+  { id: "adelaide-breakfast",   name: "Adelaide Breakfast",   image: "/images/adelaide-breakfast.png",   color: "#C0442A", t2url: "https://www.t2tea.com/search?q=adelaide+breakfast",    description: "A bold, full-bodied South Australian blend with a rich malty character and deep amber brew. Its robust strength makes it the perfect wake-up cup — best enjoyed with a splash of milk." },
+  { id: "sydney-breakfast",     name: "Sydney Breakfast",     image: "/images/sydney-breakfast.jpg",     color: "#1C3A6B", t2url: "https://www.t2tea.com/search?q=sydney+breakfast",      description: "Bright and smooth like a harbour morning, this blend balances clean Assam notes with a gentle brightness. Effortlessly drinkable, it pairs beautifully with or without milk." },
+  { id: "melbourne-breakfast",  name: "Melbourne Breakfast",  image: "/images/melbourne-breakfast.jpg",  color: "#2A3A2C", t2url: "https://www.t2tea.com/search?q=melbourne+breakfast",   description: "Complex and layered like the city itself, Melbourne Breakfast brings together earthy depth and a smooth finish. A sophisticated brew for those who take their tea seriously." },
+  { id: "irish-breakfast",      name: "Irish Breakfast",      image: "/images/irish-breakfast.jpg",      color: "#1E4A3A", t2url: "https://www.t2tea.com/search?q=irish+breakfast",       description: "A hearty, full-strength blend of fine Assam teas, Irish Breakfast is bold, malty and built to stand up to milk. The ideal companion for a proper sit-down breakfast." },
+  { id: "singapore-breakfast",  name: "Singapore Breakfast",  image: "/images/singapore-breakfast.jpg",  color: "#6B3FA0", t2url: "https://www.t2tea.com/search?q=singapore+breakfast",   description: "Aromatic and silky with subtle floral notes, this Southeast Asian-inspired blend is smooth and fragrant. A refined morning cup that transports you straight to the tropics." },
+  { id: "canberra-breakfast",   name: "Canberra Breakfast",   image: "/images/canberra-breakfast.png",   color: "#2563B0", t2url: "https://www.t2tea.com/search?q=canberra+breakfast",    description: "Crisp, clean and precisely balanced — much like the capital itself. This refined blend has a delicate character that reveals more with every sip. Understated excellence." },
+  { id: "brisbane-breakfast",   name: "Brisbane Breakfast",   image: "/images/brisbane-breakfast.jpg",   color: "#E07820", t2url: "https://www.t2tea.com/search?q=brisbane+breakfast",    description: "Warm, sunny and effortlessly uplifting, Brisbane Breakfast has golden notes and a smooth, easy-drinking finish. The kind of tea that makes mornings feel like a good idea." },
+  { id: "english-breakfast",    name: "English Breakfast",    image: "/images/english-breakfast.jpg",    color: "#C8202A", t2url: "https://www.t2tea.com/search?q=english+breakfast",     description: "The timeless classic. A well-rounded blend of Assam, Ceylon and Kenyan teas delivering a full-bodied, brisk cup. Strong enough for milk, smooth enough on its own." },
+  { id: "scots-breakfast",      name: "Scots Breakfast",      image: "/images/scots-breakfast.png",      color: "#1A4F8A", t2url: "https://www.t2tea.com/search?q=scots+breakfast",       description: "Bold and unapologetically strong, Scots Breakfast is a hearty highland-inspired blend with a robust, warming character. Not for the faint-hearted — and all the better for it." },
+  { id: "new-zealand-breakfast",name: "New Zealand Breakfast",image: "/images/new-zealand-breakfast.jpg",color: "#7AB028", t2url: "https://www.t2tea.com/search?q=new+zealand+breakfast", description: "Fresh, clean and naturally light with a gentle grassy sweetness. New Zealand Breakfast reflects the country's pure landscapes — a bright, uncomplicated cup to start the day." },
+  { id: "new-york-breakfast",   name: "New York Breakfast",   image: "/images/new-york-breakfast.jpg",   color: "#D4A020", t2url: "https://www.t2tea.com/search?q=new+york+breakfast",    description: "Bold, energising and built for pace — just like the city. New York Breakfast hits hard with a robust, full-strength brew that powers you through whatever the day throws at you." },
 ];
 
 const AXES = [
@@ -269,6 +269,133 @@ function StatusBar() {
 
 // ── Screens ───────────────────────────────────────────────────────────────────
 
+function DecideModal({ unrated, onRate, onClose }: {
+  unrated: (typeof TEAS)[number][];
+  onRate: (id: string) => void;
+  onClose: () => void;
+}) {
+  const [idx, setIdx] = useState(0);
+  const [visible, setVisible] = useState(false);
+  const startX = useRef<number | null>(null);
+
+  useEffect(() => { const t = setTimeout(() => setVisible(true), 20); return () => clearTimeout(t); }, []);
+
+  const close = () => { setVisible(false); setTimeout(onClose, 350); };
+
+  const prev = () => setIdx(i => (i - 1 + unrated.length) % unrated.length);
+  const next = () => setIdx(i => (i + 1) % unrated.length);
+
+  if (!unrated.length) return null;
+  const tea = unrated[idx];
+
+  return (
+    <div
+      style={{
+        position: "absolute", inset: 0, zIndex: 200,
+        background: "rgba(0,0,0,0.45)",
+        display: "flex", alignItems: "flex-end",
+        opacity: visible ? 1 : 0,
+        transition: "opacity 0.35s ease",
+      }}
+      onClick={close}
+    >
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{
+          width: "100%",
+          background: "linear-gradient(160deg,#F5F9F5 0%,#F2EFE8 100%)",
+          borderRadius: "28px 28px 0 0",
+          paddingBottom: 40,
+          transform: visible ? "translateY(0)" : "translateY(100%)",
+          transition: "transform 0.4s cubic-bezier(0.22,1,0.36,1)",
+          overflow: "hidden",
+        }}
+      >
+        {/* Handle */}
+        <div style={{ display: "flex", justifyContent: "center", paddingTop: 14, paddingBottom: 8 }}>
+          <div style={{ width: 40, height: 4, borderRadius: 9999, background: "#ddd" }} />
+        </div>
+
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 pb-4">
+          <p style={{ fontSize: 13, fontWeight: 600, color: "#aaa", textTransform: "uppercase", letterSpacing: 1 }}>
+            Teas to try
+          </p>
+          <button onClick={close} style={{ width: 32, height: 32, borderRadius: 16, background: "#f0f0f0", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#888", fontSize: 16 }}>✕</button>
+        </div>
+
+        {/* Card */}
+        <div
+          style={{ paddingInline: 20 }}
+          onPointerDown={e => { startX.current = e.clientX; }}
+          onPointerUp={e => {
+            if (startX.current === null) return;
+            const dx = e.clientX - startX.current;
+            if (dx < -40) next();
+            else if (dx > 40) prev();
+            startX.current = null;
+          }}
+        >
+          <div style={{
+            background: "#fff",
+            borderRadius: 24,
+            padding: "28px 24px 24px",
+            boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
+            display: "flex", flexDirection: "column", alignItems: "center", gap: 16,
+            minHeight: 320,
+          }}>
+            <TeaThumb tea={tea} size={72} />
+            <div style={{ textAlign: "center" }}>
+              <h2 style={{ fontSize: 22, fontWeight: 800, color: "#111", letterSpacing: -0.4, marginBottom: 10 }}>
+                {tea.name}
+              </h2>
+              <p style={{ fontSize: 15, color: "#666", lineHeight: 1.6, maxWidth: 280, margin: "0 auto" }}>
+                {tea.description}
+              </p>
+            </div>
+            <button
+              onClick={() => { onRate(tea.id); close(); }}
+              style={{
+                marginTop: 8, height: 50, paddingInline: 32, borderRadius: 9999, border: "none",
+                background: "linear-gradient(135deg,#4ade80,#16a34a)",
+                color: "#fff", fontWeight: 700, fontSize: 16, cursor: "pointer",
+                boxShadow: "0 4px 16px rgba(22,163,74,0.35)",
+                width: "100%",
+              }}
+            >
+              Rate this tea
+            </button>
+          </div>
+        </div>
+
+        {/* Dots + arrows */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 16, marginTop: 20, paddingInline: 20 }}>
+          <button onClick={prev} style={{ background: "none", border: "none", cursor: "pointer", padding: 8, color: "#aaa" }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <div style={{ display: "flex", gap: 6 }}>
+            {unrated.map((_, i) => (
+              <button key={i} onClick={() => setIdx(i)} style={{
+                width: i === idx ? 18 : 7, height: 7, borderRadius: 9999, border: "none", cursor: "pointer",
+                background: i === idx ? "#16a34a" : "#ddd",
+                transition: "width 0.2s ease, background 0.2s ease", padding: 0,
+              }} />
+            ))}
+          </div>
+          <button onClick={next} style={{ background: "none", border: "none", cursor: "pointer", padding: 8, color: "#aaa" }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+        </div>
+
+        {/* Count */}
+        <p style={{ textAlign: "center", fontSize: 12, color: "#bbb", marginTop: 8 }}>
+          {idx + 1} of {unrated.length} unrated
+        </p>
+      </div>
+    </div>
+  );
+}
+
 function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard, splashDone }: {
   ratings: Map<string, Rating>; animatingId: string | null;
   onSelectTea: (id: string) => void; onViewLeaderboard: () => void;
@@ -277,6 +404,9 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard, spla
   const tastedCount = ratings.size;
   const progressPct = (tastedCount / 11) * 100;
   const [cardsIn, setCardsIn] = useState(false);
+  const [decideOpen, setDecideOpen] = useState(false);
+  const unrated = TEAS.filter(t => !ratings.has(t.id));
+
   useEffect(() => {
     if (!splashDone) return;
     const t = setTimeout(() => setCardsIn(true), 80);
@@ -308,8 +438,20 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard, spla
         )}
       </div>
 
+      {/* Can't decide link */}
+      {unrated.length > 0 && (
+        <div style={{ textAlign: "center", paddingBottom: 16 }}>
+          <button
+            onClick={() => setDecideOpen(true)}
+            style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: "#888", textDecoration: "underline", textUnderlineOffset: 3, padding: 0 }}
+          >
+            Can't decide which tea to try next?
+          </button>
+        </div>
+      )}
+
       {/* Grid */}
-      <div className="px-4" style={{ paddingTop: 20, paddingBottom: 110 }}>
+      <div className="px-4" style={{ paddingTop: 4, paddingBottom: 110 }}>
         <div className="grid grid-cols-3" style={{ columnGap: 12, rowGap: 24 }}>
           {TEAS.map((tea, i) => (
             <div key={tea.id} style={{
@@ -343,6 +485,15 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard, spla
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity: 0.6 }}><path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </button>
         </div>
+      )}
+
+      {/* Decide modal */}
+      {decideOpen && (
+        <DecideModal
+          unrated={unrated}
+          onRate={onSelectTea}
+          onClose={() => setDecideOpen(false)}
+        />
       )}
     </div>
   );
