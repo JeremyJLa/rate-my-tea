@@ -108,7 +108,7 @@ function lightenHex(hex: string): string {
   const r = parseInt(hex.slice(1, 3), 16);
   const g = parseInt(hex.slice(3, 5), 16);
   const b = parseInt(hex.slice(5, 7), 16);
-  return `rgb(${Math.round(r + (255 - r) * 0.70)},${Math.round(g + (255 - g) * 0.70)},${Math.round(b + (255 - b) * 0.70)})`;
+  return `rgb(${Math.round(r + (255 - r) * 0.85)},${Math.round(g + (255 - g) * 0.85)},${Math.round(b + (255 - b) * 0.85)})`;
 }
 
 function TeaCard({ tea, rated, animating, onClick }: {
@@ -882,67 +882,90 @@ function SharedRatingView({ rating, onClose }: { rating: Rating; onClose: () => 
 
 // ── Splash Screen ─────────────────────────────────────────────────────────────
 
-const SPLASH_EASE = "cubic-bezier(0.22,1,0.36,1)";
-
 function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
-  const [markIn,  setMarkIn]  = useState(false);
-  const [titleIn, setTitleIn] = useState(false);
-  const [nameIn,  setNameIn]  = useState(false);
-  const [fading,  setFading]  = useState(false);
+  const [logoVisible, setLogoVisible] = useState(false);
+  const [cupVisible,  setCupVisible]  = useState(false);
+  const [logoOut,     setLogoOut]     = useState(false);
+  const [irisGrow,    setIrisGrow]    = useState(false);
 
   useEffect(() => {
     const ts = [
-      setTimeout(() => setMarkIn(true),   90),   // mark scales in
-      setTimeout(() => setTitleIn(true),  300),  // wordmark rises
-      setTimeout(() => setNameIn(true),   540),  // greeting fades
-      setTimeout(() => setFading(true),  1100),  // all fades out
-      setTimeout(() => onDismiss(),      1450),  // hand off
+      setTimeout(() => setLogoVisible(true),  50),
+      setTimeout(() => setCupVisible(true),  800),
+      setTimeout(() => setLogoOut(true),    1600),
+      setTimeout(() => setIrisGrow(true),   2200),
+      setTimeout(() => onDismiss(),         4000),
     ];
     return () => ts.forEach(clearTimeout);
   }, [onDismiss]);
 
+  // Logo transform: starts tiny, grows to full, then shrinks out
+  const logoTransform = logoOut
+    ? "scale(0.5)"
+    : logoVisible ? "scale(1)" : "scale(0.18)";
+  const logoOpacity = logoOut ? 0 : logoVisible ? 1 : 0;
+  const logoTransition = logoOut
+    ? "transform 0.5s ease-in, opacity 0.5s ease-in"
+    : "transform 1.1s cubic-bezier(0.22,1,0.36,1), opacity 0.5s ease-out";
+
   return (
     <div style={{
       position: "absolute", inset: 0, zIndex: 100,
-      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-      backgroundColor: "#0D0906",
-      willChange: "opacity",
-      opacity: fading ? 0 : 1,
-      transition: fading ? "opacity 0.34s ease-out" : "none",
+      backgroundColor: "#fff",
+      overflow: "hidden",
     }}>
 
-      {/* Mark — green circle, scales in from centre */}
-      <div style={{
-        width: 52, height: 52, borderRadius: "50%",
-        backgroundColor: "#5A8035",
-        marginBottom: 24,
-        willChange: "transform, opacity",
-        transform: markIn ? "scale3d(1,1,1)" : "scale3d(0.4,0.4,1)",
-        opacity: markIn ? 1 : 0,
-        transition: `transform 0.6s ${SPLASH_EASE}, opacity 0.4s ease-out`,
-      }} />
-
-      {/* Wordmark — rises 10px and fades in */}
+      {/* Cup photo — fades in behind logo */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/images/splash-text.svg" alt="Rate your Tea" style={{
-        width: "54%", maxWidth: 200,
-        marginBottom: 16,
-        filter: "brightness(0) invert(1)",
-        willChange: "transform, opacity",
-        transform: titleIn ? "translate3d(0,0,0)" : "translate3d(0,10px,0)",
-        opacity: titleIn ? 1 : 0,
-        transition: `transform 0.55s ${SPLASH_EASE}, opacity 0.5s ease-out`,
-      }} />
+      <img
+        src="/images/teahcup5.png"
+        alt=""
+        aria-hidden
+        style={{
+          position: "absolute", inset: 0,
+          width: "100%", height: "100%",
+          objectFit: "cover", objectPosition: "center",
+          opacity: cupVisible ? 1 : 0,
+          transition: "opacity 0.9s ease",
+          willChange: "opacity",
+        }}
+      />
 
-      {/* Greeting — fades in last, very muted */}
-      <p style={{
-        margin: 0, fontSize: 13, fontWeight: 400,
-        color: "rgba(255,255,255,0.35)",
-        letterSpacing: 0.4,
-        willChange: "opacity",
-        opacity: nameIn ? 1 : 0,
-        transition: "opacity 0.5s ease-out",
-      }}>Hi Kate</p>
+      {/* Logo — grows in, then shrinks + fades out */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/images/splash-text.svg"
+        alt="Rate your Tea"
+        style={{
+          position: "absolute",
+          top: "50%", left: "50%",
+          transform: `translate(-50%, -50%) ${logoTransform}`,
+          width: "62%", maxWidth: 240,
+          opacity: logoOpacity,
+          transition: logoTransition,
+          willChange: "transform, opacity",
+          transformOrigin: "center center",
+          zIndex: 2,
+          filter: cupVisible
+            ? "brightness(0) invert(1) drop-shadow(0 2px 8px rgba(0,0,0,0.4))"
+            : "none",
+          transition: logoTransition + (cupVisible ? ", filter 0.9s ease" : ""),
+        }}
+      />
+
+      {/* White iris — grows from cup centre to fill screen */}
+      <div style={{
+        position: "absolute",
+        width: 80, height: 80,
+        borderRadius: "50%",
+        top: "calc(48% - 40px)",
+        left: "calc(50% - 40px)",
+        background: "#fff",
+        transform: irisGrow ? "scale(25)" : "scale(0)",
+        transition: irisGrow ? "transform 2s cubic-bezier(0.25,0.1,0.25,1)" : "none",
+        willChange: "transform",
+        zIndex: 3,
+      }} />
 
     </div>
   );
