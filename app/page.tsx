@@ -928,9 +928,12 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
 
   // Three horizontal slices of the logo, each flies in a different direction
   const LOGO_SLICES = [
-    { clip: "inset(0 0 62% 0)",    fly: "translate(-180px, -320px) rotate(-22deg)" },
-    { clip: "inset(33% 0 38% 0)",  fly: "translate(25px, 380px) rotate(6deg)"      },
-    { clip: "inset(57% 0 0 0)",    fly: "translate(170px, -260px) rotate(20deg)"   },
+    // "Rate" — bold word, upper portion → flies up and right
+    { clip: "inset(0 0 58% 0)",         fly: "translate(160px, -300px) rotate(14deg)"  },
+    // "your" — small word, middle-right → flies far right
+    { clip: "inset(35% 15% 40% 0)",     fly: "translate(340px, 20px) rotate(5deg)"     },
+    // "Tea" — large serif, lower portion → flies down
+    { clip: "inset(53% 0 0 0)",         fly: "translate(60px, 340px) rotate(-8deg)"    },
   ];
 
   return (
