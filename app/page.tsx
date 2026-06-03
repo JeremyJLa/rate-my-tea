@@ -1203,7 +1203,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       {/* Glass cup — vh-based height so it's consistent across all screen sizes */}
       <div style={{
         position: "absolute",
-        bottom: 10, left: 0, right: 0,
+        bottom: 0, left: 0, right: 0,
         height: "calc(var(--ch, 100vh) * 0.58)",
         opacity: cupIn ? 1 : 0,
         transform: cupIn ? "translateY(0)" : "translateY(calc(var(--ch, 100vh) * 0.6))",
