@@ -1199,7 +1199,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       <div style={{
         position: "absolute",
         bottom: 0, left: 0, right: 0,
-        height: "48vh",
+        height: "58vh",
         opacity: cupIn ? 1 : 0,
         transform: `translateY(${cupIn ? "0" : "60vh"})`,
         transition: "transform 1s cubic-bezier(0.22,1,0.36,1), opacity 0.8s ease",
