@@ -1152,9 +1152,9 @@ const CUP_IMAGES = [
   "/images/glass-teacuop3.png",
 ];
 
-// Dip animation: 8s continuous sequence
-// Keyframe %s → ms: 8% = 640ms, 62% = 4960ms (cup changes timed to match)
-const DIP_DURATION = 8000;
+// Dip animation: 5s continuous sequence
+// Keyframe %s → ms: 8% = 400ms, 62% = 3100ms (cup changes timed to match)
+const DIP_DURATION = 5000;
 const CUP2_AT     = DIP_DURATION * 0.08;  // 640ms — long dip starts
 const CUP3_AT     = DIP_DURATION * 0.62;  // 4960ms — second long dip starts
 const BAGOUT_AT   = DIP_DURATION + 400;
@@ -1174,9 +1174,9 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
     const after = (ms: number, fn: () => void) => { t += ms; ts.push(setTimeout(fn, t)); };
 
     // absolute timings from t=0
-    const DIP_START = 2000; // ms after mount when animation begins
-    ts.push(setTimeout(() => setCupIn(true),              200));
-    ts.push(setTimeout(() => setLogoIn(true),            1200));
+    const DIP_START = 1000; // ms after mount when animation begins
+    ts.push(setTimeout(() => setCupIn(true),             100));
+    ts.push(setTimeout(() => setLogoIn(true),            600));
     ts.push(setTimeout(() => setDipping(true),      DIP_START));
     // cup 2 blends at 8% into animation
     ts.push(setTimeout(() => setCupImgIdx(1),  DIP_START + DIP_DURATION * 0.08));
@@ -1249,7 +1249,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
             objectFit: "cover",
             objectPosition: "center bottom",
             opacity: cupImgIdx === i ? 1 : 0,
-            transition: "opacity 2.5s ease",
+            transition: "opacity 1.5s ease",
           }} />
         ))}
       </div>
