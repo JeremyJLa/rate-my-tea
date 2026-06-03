@@ -1182,20 +1182,20 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
           50%       { transform: translateX(-50%) translateY(-8px); }
         }
         @keyframes teabagDip {
-          0%        { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 - 20px)); }
-          8%        { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 - 20px)); }
-          18%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 - 20px)); }
-          26%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 - 20px)); }
-          34%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 - 20px)); }
-          44%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 - 20px)); }
-          58%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 - 20px)); }
+          0%        { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 - 15px)); }
+          8%        { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 - 15px)); }
+          18%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 - 15px)); }
+          26%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 - 15px)); }
+          34%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 - 15px)); }
+          44%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 - 15px)); }
+          58%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 - 15px)); }
           66%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 - 20px)); }
           73%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 - 20px)); }
           78%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 - 20px)); }
           83%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 - 20px)); }
           87%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 - 20px)); }
           91%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 - 20px)); }
-          97%, 100% { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 - 20px)); }
+          97%, 100% { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 - 15px)); }
         }
         }
       `}</style>
@@ -1242,7 +1242,11 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       <img src="/images/real-teabag.png" alt="" aria-hidden style={{
         position: "absolute",
         top: 0, left: "50%",
-        transform: dipping ? "translateX(-50%)" : `translateX(-50%) translateY(calc(var(--ch, 100vh) * ${bagOut ? -1.2 : cupIn ? -0.26 : -0.4} - 20px))`,
+        transform: bagOut
+          ? `translateX(-50%) translateY(calc(var(--ch, 100vh) * -1.2 - 15px))`
+          : dipping
+            ? "translateX(-50%)"
+            : `translateX(-50%) translateY(calc(var(--ch, 100vh) * ${cupIn ? -0.26 : -0.4} - 15px))`,
         animation: bagOut ? "none" : dipping ? `teabagDip ${DIP_DURATION}ms ease-in-out forwards` : "none",
         width: "62%", maxWidth: 252,
         opacity: cupIn ? 1 : 0,
