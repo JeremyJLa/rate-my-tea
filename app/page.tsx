@@ -283,7 +283,7 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard, spla
 
       {/* Grid */}
       <div className="px-4" style={{ paddingTop: 20, paddingBottom: 110 }}>
-        <div className="grid grid-cols-3" style={{ columnGap: 12, rowGap: 14 }}>
+        <div className="grid grid-cols-3" style={{ columnGap: 12, rowGap: 24 }}>
           {TEAS.map((tea, i) => (
             <div key={tea.id} style={{
               opacity: cardsIn ? 1 : 0,
