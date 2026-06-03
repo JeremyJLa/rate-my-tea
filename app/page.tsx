@@ -1184,7 +1184,8 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
     ts.push(setTimeout(() => setCupImgIdx(1),  DIP_START + DIP_DURATION * 0.48));
     // cup 3 blends after second long+short pattern (96%)
     ts.push(setTimeout(() => setCupImgIdx(2),  DIP_START + DIP_DURATION * 0.96));
-    // bag exit triggered by onAnimationEnd on the img (no setTimeout needed)
+    // fire slightly early so exit animation starts before onAnimationEnd React re-render latency
+    ts.push(setTimeout(() => setBagOut(true),  DIP_START + DIP_DURATION - 50));
     ts.push(setTimeout(() => setGreenFill(true), DIP_START + DIP_DURATION + 900));
     ts.push(setTimeout(() => setIrisGrow(true),  DIP_START + DIP_DURATION + 1600));
     ts.push(setTimeout(() => onDismiss(),        DIP_START + DIP_DURATION + 2000));
@@ -1204,6 +1205,11 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
         @keyframes floatLogo {
           0%, 100% { transform: translateX(-50%) translateY(0px); }
           50%       { transform: translateX(-50%) translateY(-8px); }
+        }
+        @keyframes teabagEnter {
+          from { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.30 + var(--bag-offset, -20px))); }
+          55%  { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 + var(--bag-offset, -20px))); }
+          to   { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
         }
         @keyframes teabagExit {
           from { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
@@ -1272,16 +1278,18 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
         style={{
         position: "absolute",
         top: 0, left: "50%",
-        transform: dipping ? "translateX(-50%)" : `translateX(-50%) translateY(calc(var(--ch, 100vh) * ${cupIn ? -0.26 : -1.1} + var(--bag-offset, -20px)))`,
+        transform: "translateX(-50%)",
         animation: bagOut
           ? "teabagExit 0.7s cubic-bezier(0.55,0,1,0.45) forwards"
           : dipping
             ? `teabagDip ${DIP_DURATION}ms linear forwards`
-            : "none",
+            : cupIn
+              ? "teabagEnter 1.8s cubic-bezier(0.4,0,0.2,1) forwards"
+              : "none",
         width: "62%", maxWidth: 252,
-        opacity: 1,
+        opacity: cupIn ? 1 : 0,
         mixBlendMode: "multiply",
-        transition: (!dipping && !bagOut) ? "transform 1s cubic-bezier(0.22,1,0.36,1)" : "none",
+        transition: "opacity 0.3s ease",
         willChange: "transform",
         zIndex: 8,
       }} />
