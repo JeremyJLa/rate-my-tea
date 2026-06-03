@@ -1171,7 +1171,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
         position: "absolute",
         bottom: 0, left: "50%",
         transform: `translateX(-50%) translateY(${cupIn ? "0" : "60%"})`,
-        width: "182%",
+        width: "300%",
         opacity: cupIn ? 1 : 0,
         transition: "transform 1s cubic-bezier(0.22,1,0.36,1), opacity 0.8s ease",
         zIndex: 2,
