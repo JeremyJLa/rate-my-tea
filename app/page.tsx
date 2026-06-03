@@ -1190,24 +1190,11 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
         }} />
       </div>
 
-      {/* Green tea colour overlay — blends over the amber liquid */}
-      <div style={{
-        position: "absolute",
-        bottom: "32%", left: "50%",
-        transform: "translateX(-50%)",
-        width: "60%", height: "18%",
-        borderRadius: "50%",
-        background: TEA_DIP_COLOURS[colourIdx],
-        transition: "background 1.2s ease",
-        zIndex: 3,
-        pointerEvents: "none",
-      }} />
-
       {/* Floating black logo inside the tea */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/images/splash-text.svg" alt="Rate your Tea" style={{
         position: "absolute",
-        bottom: "42%", left: "50%",
+        bottom: "28%", left: "50%",
         width: "34%", maxWidth: 140,
         opacity: cupIn ? 0.8 : 0,
         filter: "brightness(0)",
