@@ -1154,8 +1154,8 @@ const CUP_IMAGES = [
 
 // Dip animation: long dip → partial rise → short dip → colour change (x2)
 const DIP_DURATION = 9000;
-const CUP2_AT     = DIP_DURATION * 0.48;  // after first long+short pattern
-const CUP3_AT     = DIP_DURATION * 0.96;  // after second long+short pattern
+const CUP2_AT     = DIP_DURATION * 0.50;  // bag at rest after pattern 1 (50% keyframe)
+const CUP3_AT     = DIP_DURATION * 0.97;  // bag at rest after pattern 2 (100% keyframe)
 const BAGOUT_AT   = DIP_DURATION + 400;
 
 function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
@@ -1180,10 +1180,9 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
     ts.push(setTimeout(() => setLogoIn(true),            1200));
     ts.push(setTimeout(() => setHiVisible(false), DIP_START + DIP_DURATION + 100));
     ts.push(setTimeout(() => setDipping(true),      DIP_START));
-    // cup 2 blends after first long+short pattern (48%)
-    ts.push(setTimeout(() => setCupImgIdx(1),  DIP_START + DIP_DURATION * 0.48));
-    // cup 3 blends after second long+short pattern (96%)
-    ts.push(setTimeout(() => setCupImgIdx(2),  DIP_START + DIP_DURATION * 0.96));
+    // cup changes at the rest keyframes: 50% and 97%
+    ts.push(setTimeout(() => setCupImgIdx(1),  DIP_START + DIP_DURATION * 0.50));
+    ts.push(setTimeout(() => setCupImgIdx(2),  DIP_START + DIP_DURATION * 0.97));
     // fire slightly early so exit animation starts before onAnimationEnd React re-render latency
     ts.push(setTimeout(() => setBagOut(true),  DIP_START + DIP_DURATION - 50));
     ts.push(setTimeout(() => setGreenFill(true), DIP_START + DIP_DURATION + 900));
