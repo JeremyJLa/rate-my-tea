@@ -882,184 +882,68 @@ function SharedRatingView({ rating, onClose }: { rating: Rating; onClose: () => 
 
 // ── Splash Screen ─────────────────────────────────────────────────────────────
 
-const CUP_IMAGES = [
-  "/images/teahcup1.png",
-  "/images/teahcup2.png",
-  "/images/teahcup3.png",
-  "/images/teahcup4.png",
-  "/images/teahcup5.png",
-];
-
-// Module-level constants — string identity is stable, <style> tag never re-fires
 const SPLASH_EASE = "cubic-bezier(0.22,1,0.36,1)";
-const SPLASH_KEYFRAMES = `
-  @keyframes rmt-cup-reveal {
-    0%   { opacity:0;   transform:scale3d(0.88,0.88,1); }
-    55%  { opacity:1;   transform:scale3d(1.05,1.05,1); }
-    78%  { opacity:1;   transform:scale3d(0.99,0.99,1); }
-    100% { opacity:1;   transform:scale3d(1.00,1.00,1); }
-  }
-  @keyframes rmt-brown-collapse {
-    0%   { opacity:1;   transform:translate3d(-50%,-50%,0) scale(1);    }
-    55%  { opacity:1;   transform:translate3d(-50%,-50%,0) scale(0.16); }
-    82%  { opacity:0.5; transform:translate3d(-50%,-50%,0) scale(0.10); }
-    100% { opacity:0;   transform:translate3d(-50%,-50%,0) scale(0.07); }
-  }
-`;
-
-// Single coordinated timeline (ms from mount):
-//   200  Phase 2 — brown collapses (1300ms); cup wrapper scales in (1100ms)
-//   500  cup2   800 cup3   1100 cup4   1400 cup5   (300ms steps, 220ms crossfade)
-//  1300  blend → normal  (brown ~87% gone, snap invisible)
-//  1550  Phase 4 — "Hi Kate" + heading rise in
-//  1850  green circle expands (500ms)
-//  2000  white thumbnail silhouettes flash
-//  2100  entire splash fades out (280ms)
-//  2400  onDismiss — home screen takes over
 
 function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
-  const [imgIdx,     setImgIdx]     = useState(0);
-  const [started,    setStarted]    = useState(false);
-  const [blendOff,   setBlendOff]   = useState(false);
-  const [textIn,     setTextIn]     = useState(false);
-  const [closing,    setClosing]    = useState(false);
-  const [showThumbs, setShowThumbs] = useState(false);
-  const [fading,     setFading]     = useState(false);
+  const [markIn,  setMarkIn]  = useState(false);
+  const [titleIn, setTitleIn] = useState(false);
+  const [nameIn,  setNameIn]  = useState(false);
+  const [fading,  setFading]  = useState(false);
 
   useEffect(() => {
-    const ts: ReturnType<typeof setTimeout>[] = [];
-
-    ts.push(setTimeout(() => setStarted(true), 200));
-
-    // Advance through all 5 cups every 300ms starting at t=200ms
-    // cup2@500  cup3@800  cup4@1100  cup5@1400
-    [1, 2, 3, 4].forEach(idx => {
-      ts.push(setTimeout(() => setImgIdx(idx), 200 + idx * 300));
-    });
-
-    ts.push(setTimeout(() => setBlendOff(true),   1300));
-    ts.push(setTimeout(() => setTextIn(true),     1550));
-    ts.push(setTimeout(() => setClosing(true),    1850));
-    ts.push(setTimeout(() => setShowThumbs(true), 2000));
-    ts.push(setTimeout(() => setFading(true),     2100));
-    ts.push(setTimeout(() => onDismiss(),         2400));
-
+    const ts = [
+      setTimeout(() => setMarkIn(true),   90),   // mark scales in
+      setTimeout(() => setTitleIn(true),  300),  // wordmark rises
+      setTimeout(() => setNameIn(true),   540),  // greeting fades
+      setTimeout(() => setFading(true),  1100),  // all fades out
+      setTimeout(() => onDismiss(),      1450),  // hand off
+    ];
     return () => ts.forEach(clearTimeout);
   }, [onDismiss]);
-
-  // Wrapper: CSS keyframe drives unified scale overshoot + settle for all cups.
-  // multiply blend makes cups appear to emerge from the brown background as it collapses.
-  const cupWrapperStyle: React.CSSProperties = started
-    ? { animation: `rmt-cup-reveal 1100ms ${SPLASH_EASE} both`, mixBlendMode: blendOff ? "normal" : "multiply" }
-    : { opacity: 0 };
-
-  // Brown circle: collapses from full-screen → small disc → fades out (merges into tea surface)
-  const brownStyle: React.CSSProperties = started
-    ? { animation: `rmt-brown-collapse 1300ms ${SPLASH_EASE} both` }
-    : { opacity: 1, transform: "translate3d(-50%,-50%,0) scale(1)" };
 
   return (
     <div style={{
       position: "absolute", inset: 0, zIndex: 100,
-      backgroundColor: "#7B4E2C",
-      overflow: "hidden",
+      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+      backgroundColor: "#0D0906",
       willChange: "opacity",
       opacity: fading ? 0 : 1,
-      transition: fading ? "opacity 0.28s ease-out" : "none",
+      transition: fading ? "opacity 0.34s ease-out" : "none",
     }}>
-      <style>{SPLASH_KEYFRAMES}</style>
 
-      {/* Cup wrapper — keyframe controls group scale/opacity; inner imgs crossfade for cycling */}
+      {/* Mark — green circle, scales in from centre */}
       <div style={{
-        position: "absolute", inset: 0,
-        willChange: "transform, opacity",
-        ...cupWrapperStyle,
-      }}>
-        {CUP_IMAGES.map((src, i) => (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img key={src} src={src} alt="" style={{
-            position: "absolute", inset: 0,
-            width: "100%", height: "100%",
-            objectFit: "cover", objectPosition: "center top",
-            willChange: "opacity",
-            opacity: imgIdx === i ? 1 : 0,
-            transition: "opacity 0.22s ease-in-out",
-          }} />
-        ))}
-      </div>
-
-      {/* "Hi Kate" — rises 6px, Phase 4 */}
-      <div style={{
-        position: "absolute", top: 0, left: 0, right: 0, height: 90, zIndex: 2,
-        display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: 10,
-        willChange: "transform, opacity",
-        transform: textIn ? "translate3d(0,0,0)" : "translate3d(0,6px,0)",
-        opacity: textIn ? 1 : 0,
-        transition: textIn ? `transform 0.5s ${SPLASH_EASE}, opacity 0.45s ease-out` : "none",
-      }}>
-        <p className="font-medium" style={{ fontSize: 15, color: "rgba(255,255,255,0.7)", letterSpacing: 0.3 }}>Hi Kate</p>
-      </div>
-
-      {/* "Rate your Tea" SVG — rises 8px, 100ms stagger */}
-      <div style={{
-        position: "absolute", inset: 0, zIndex: 2,
-        display: "flex", alignItems: "flex-start", justifyContent: "center",
-        paddingTop: "57%", pointerEvents: "none",
-        willChange: "transform, opacity",
-        transform: textIn ? "translate3d(0,0,0)" : "translate3d(0,8px,0)",
-        opacity: textIn ? 1 : 0,
-        transition: textIn ? `transform 0.55s 0.1s ${SPLASH_EASE}, opacity 0.5s 0.1s ease-out` : "none",
-      }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/images/splash-text.svg" alt="Rate your Tea" style={{
-          width: "70%", maxWidth: 260,
-          filter: "brightness(0) invert(1)",
-        }} />
-      </div>
-
-      {/* White thumbnail silhouettes — match home grid positions */}
-      <div style={{
-        position: "absolute", inset: 0, zIndex: 12, pointerEvents: "none",
-        willChange: "opacity",
-        opacity: showThumbs ? 1 : 0,
-        transition: "opacity 0.2s ease",
-      }}>
-        <div style={{ height: 160 }} />
-        <div style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 20 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
-            {Array.from({ length: 11 }).map((_, i) => (
-              <div key={i} style={{ width: "100%", aspectRatio: "1", borderRadius: "50%", backgroundColor: "rgba(255,255,255,0.85)" }} />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Brown circle — collapses + fades into cup tea surface */}
-      <div style={{
-        position: "absolute", zIndex: 10,
-        width: "150vmax", height: "150vmax",
-        top: "50%", left: "50%",
-        borderRadius: "50%",
-        backgroundColor: "#7B4E2C",
-        willChange: "transform, opacity",
-        pointerEvents: "none",
-        ...brownStyle,
-      }} />
-
-      {/* Green circle — expands to close */}
-      <div style={{
-        position: "absolute", zIndex: 10,
-        width: "150vmax", height: "150vmax",
-        top: "50%", left: "50%",
-        borderRadius: "50%",
+        width: 52, height: 52, borderRadius: "50%",
         backgroundColor: "#5A8035",
-        willChange: "transform",
-        transform: closing
-          ? "translate3d(-50%,-50%,0) scale(1)"
-          : "translate3d(-50%,-50%,0) scale(0)",
-        transition: closing ? `transform 0.5s ${SPLASH_EASE}` : "none",
-        pointerEvents: "none",
+        marginBottom: 24,
+        willChange: "transform, opacity",
+        transform: markIn ? "scale3d(1,1,1)" : "scale3d(0.4,0.4,1)",
+        opacity: markIn ? 1 : 0,
+        transition: `transform 0.6s ${SPLASH_EASE}, opacity 0.4s ease-out`,
       }} />
+
+      {/* Wordmark — rises 10px and fades in */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/images/splash-text.svg" alt="Rate your Tea" style={{
+        width: "54%", maxWidth: 200,
+        marginBottom: 16,
+        filter: "brightness(0) invert(1)",
+        willChange: "transform, opacity",
+        transform: titleIn ? "translate3d(0,0,0)" : "translate3d(0,10px,0)",
+        opacity: titleIn ? 1 : 0,
+        transition: `transform 0.55s ${SPLASH_EASE}, opacity 0.5s ease-out`,
+      }} />
+
+      {/* Greeting — fades in last, very muted */}
+      <p style={{
+        margin: 0, fontSize: 13, fontWeight: 400,
+        color: "rgba(255,255,255,0.35)",
+        letterSpacing: 0.4,
+        willChange: "opacity",
+        opacity: nameIn ? 1 : 0,
+        transition: "opacity 0.5s ease-out",
+      }}>Hi Kate</p>
+
     </div>
   );
 }
