@@ -896,34 +896,32 @@ function SharedRatingView({ rating, onClose }: { rating: Rating; onClose: () => 
 // ── Splash Screen ─────────────────────────────────────────────────────────────
 
 const TEA_GREEN = "#3dba6e";
-const LOGO_GREEN_FILTER = "brightness(0) saturate(100%) invert(45%) sepia(40%) saturate(600%) hue-rotate(60deg) brightness(95%)";
-const LOGO_WHITE_FILTER = "brightness(0) invert(1) drop-shadow(0 2px 8px rgba(0,0,0,0.4))";
+const LOGO_WHITE_FILTER = "brightness(0) invert(1) drop-shadow(0 2px 8px rgba(0,0,0,0.5))";
 
 function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
-  const [logoVisible, setLogoVisible] = useState(false);
   const [cupVisible,  setCupVisible]  = useState(false);
   const [greenFlood,  setGreenFlood]  = useState(false);
+  const [logoVisible, setLogoVisible] = useState(false);
   const [logoOut,     setLogoOut]     = useState(false);
   const [irisGrow,    setIrisGrow]    = useState(false);
 
   useEffect(() => {
     const ts = [
-      setTimeout(() => setLogoVisible(true),   50),
-      setTimeout(() => setCupVisible(true),    800),
-      setTimeout(() => setGreenFlood(true),   1700),
-      setTimeout(() => setLogoOut(true),      2500),
-      setTimeout(() => setIrisGrow(true),     2500),
-      setTimeout(() => onDismiss(),           4300),
+      setTimeout(() => setCupVisible(true),    400),
+      setTimeout(() => setGreenFlood(true),   1400),
+      setTimeout(() => setLogoVisible(true),  1800),  // white logo grows in over green
+      setTimeout(() => setLogoOut(true),      2800),
+      setTimeout(() => setIrisGrow(true),     2800),
+      setTimeout(() => onDismiss(),           4600),
     ];
     return () => ts.forEach(clearTimeout);
   }, [onDismiss]);
 
-  const logoTransform = logoVisible ? "scale(1)" : "scale(0.18)";
+  const logoTransform = logoVisible ? "scale(1)" : "scale(0.3)";
   const logoOpacity   = logoOut ? 0 : logoVisible ? 1 : 0;
-  const logoFilter    = cupVisible ? LOGO_WHITE_FILTER : LOGO_GREEN_FILTER;
   const logoTransition = logoOut
     ? "opacity 0.4s ease-in"
-    : "transform 1.1s cubic-bezier(0.22,1,0.36,1), opacity 0.5s ease-out, filter 0.7s ease";
+    : "transform 0.8s cubic-bezier(0.22,1,0.36,1), opacity 0.6s ease-out";
 
   return (
     <div style={{
@@ -975,7 +973,7 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
           transform: `translate(-50%, -50%) ${logoTransform}`,
           width: "62%", maxWidth: 240,
           opacity: logoOpacity,
-          filter: logoFilter,
+          filter: LOGO_WHITE_FILTER,
           transition: logoTransition,
           willChange: "transform, opacity",
           transformOrigin: "center center",
