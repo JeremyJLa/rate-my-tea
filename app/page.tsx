@@ -904,37 +904,28 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
   const [cupVisible,  setCupVisible]  = useState(false);
   const [greenFlood,  setGreenFlood]  = useState(false);
   const [logoVisible, setLogoVisible] = useState(false);
-  const [logoBlack,   setLogoBlack]   = useState(false);
-  const [logoBreak,   setLogoBreak]   = useState(false);
+  const [logoOut,     setLogoOut]     = useState(false);
   const [irisGrow,    setIrisGrow]    = useState(false);
 
   useEffect(() => {
     const ts = [
       setTimeout(() => setHiKate(true),       150),
       setTimeout(() => setHiKateOut(true),   1600),
-      setTimeout(() => setCupVisible(true),  1900),   // cup spins in
-      setTimeout(() => setGreenFlood(true),  3600),   // green flood — after cup fully settled
-      setTimeout(() => setLogoVisible(true), 4000),   // white logo over green
-      setTimeout(() => setIrisGrow(true),    6800),   // iris grows, logo turns black
-      setTimeout(() => setLogoBlack(true),   6800),
-      setTimeout(() => setLogoBreak(true),   7800),   // words fly apart
-      setTimeout(() => onDismiss(),          8600),
+      setTimeout(() => setCupVisible(true),  1900),  // cup spins in
+      setTimeout(() => setGreenFlood(true),  3600),  // green flood after cup fully visible
+      setTimeout(() => setLogoVisible(true), 4000),  // white logo scales in over green
+      setTimeout(() => setLogoOut(true),     4900),  // logo scales to 0 once green is full
+      setTimeout(() => setIrisGrow(true),    5400),  // white iris wipe
+      setTimeout(() => onDismiss(),          7200),
     ];
     return () => ts.forEach(clearTimeout);
   }, [onDismiss]);
 
-  const logoBaseTransform = logoVisible ? "scale(1)" : "scale(0.3)";
-  const logoOpacity = logoVisible ? 1 : 0;
-
-  // Three horizontal slices of the logo, each flies in a different direction
-  const LOGO_SLICES = [
-    // "Rate" — bold word, upper portion → flies up and right
-    { clip: "inset(0 0 58% 0)",         fly: "translate(160px, -300px) rotate(14deg)"  },
-    // "your" — small word, middle-right → flies far right
-    { clip: "inset(35% 15% 40% 0)",     fly: "translate(340px, 20px) rotate(5deg)"     },
-    // "Tea" — large serif, lower portion → flies down
-    { clip: "inset(53% 0 0 0)",         fly: "translate(60px, 340px) rotate(-8deg)"    },
-  ];
+  const logoTransform   = logoOut ? "scale(0)" : logoVisible ? "scale(1)" : "scale(0.3)";
+  const logoOpacity     = logoVisible ? 1 : 0;
+  const logoTransition  = logoOut
+    ? "transform 0.5s cubic-bezier(0.55,0,1,0.45)"
+    : "transform 0.8s cubic-bezier(0.22,1,0.36,1), opacity 0.6s ease-out";
 
   return (
     <div style={{
@@ -987,31 +978,24 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
         zIndex: 2,
       }} />
 
-      {/* Layer 3 — Logo: 3 slices that break apart on exit */}
-      {LOGO_SLICES.map(({ clip, fly }, i) => (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          key={i}
-          src="/images/splash-text.svg"
-          alt={i === 0 ? "Rate your Tea" : ""}
-          aria-hidden={i !== 0}
-          style={{
-            position: "absolute",
-            top: "42%", left: "50%",
-            transform: `translate(-50%, -50%) ${logoBreak ? fly : logoBaseTransform}`,
-            width: "62%", maxWidth: 240,
-            opacity: logoOpacity,
-            filter: logoBlack ? "brightness(0)" : LOGO_WHITE_FILTER,
-            clipPath: clip,
-            transition: logoBreak
-              ? `transform 0.9s cubic-bezier(0.55,0,1,0.45), filter 0.3s ease`
-              : `transform 0.8s cubic-bezier(0.22,1,0.36,1), opacity 0.6s ease-out, filter 0.4s ease`,
-            willChange: "transform, opacity",
-            transformOrigin: "center center",
-            zIndex: 6,
-          }}
-        />
-      ))}
+      {/* Layer 3 — Logo: scales in over green, then shrinks to 0 */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/images/splash-text.svg"
+        alt="Rate your Tea"
+        style={{
+          position: "absolute",
+          top: "42%", left: "50%",
+          transform: `translate(-50%, -50%) ${logoTransform}`,
+          width: "62%", maxWidth: 240,
+          opacity: logoOpacity,
+          filter: LOGO_WHITE_FILTER,
+          transition: logoTransition,
+          willChange: "transform, opacity",
+          transformOrigin: "center center",
+          zIndex: 6,
+        }}
+      />
 
       {/* Layer 4 — White iris (grows over green to reveal home) */}
       <div style={{
