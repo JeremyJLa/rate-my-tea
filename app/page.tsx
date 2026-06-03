@@ -1138,6 +1138,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
   const [bagBounce,  setBagBounce]  = useState(false); // small up-bounce from dipped position
   const [bagOut,     setBagOut]     = useState(false);
   const [greenFill, setGreenFill] = useState(false);
+  const [irisGrow,  setIrisGrow]  = useState(false);
   const [colourIdx, setColourIdx] = useState(0);
   const [logoIn,    setLogoIn]    = useState(false);
   const [fading,    setFading]    = useState(false);
@@ -1171,11 +1172,11 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
     after(300, () => setBagBounce(false));
     after(200, () => setBagDown(false));                            // briefly back to rest
 
-    // bag flies up off screen, green floods in, then home
+    // bag flies up, green floods, white iris expands → home
     after(800,  () => setBagOut(true));
     after(600,  () => setGreenFill(true));
-    after(1200, () => setFading(true));
-    after(800,  () => onDismiss());
+    after(900,  () => setIrisGrow(true));
+    after(2000, () => onDismiss());
 
     return () => ts.forEach(clearTimeout);
   }, [onDismiss]);
@@ -1187,8 +1188,6 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       position: "absolute", inset: 0, zIndex: 100,
       backgroundColor: "#fff",
       overflow: "hidden",
-      opacity: fading ? 0 : 1,
-      transition: fading ? "opacity 0.8s ease" : "none",
     }}>
       <style>{`
         @keyframes floatLogo {
@@ -1258,6 +1257,18 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
         transition: greenFill ? "transform 1s cubic-bezier(0.4,0,0.6,1)" : "none",
         willChange: "transform",
         zIndex: 6,
+      }} />
+
+      {/* White iris — expands from centre over the green, reveals home screen */}
+      <div style={{
+        position: "absolute",
+        width: 80, height: 80, borderRadius: "50%",
+        top: "calc(50% - 40px)", left: "calc(50% - 40px)",
+        background: "#fff",
+        transform: irisGrow ? "scale(30)" : "scale(0)",
+        transition: irisGrow ? "transform 1.8s cubic-bezier(0.25,0.1,0.25,1)" : "none",
+        willChange: "transform",
+        zIndex: 7,
       }} />
 
     </div>
