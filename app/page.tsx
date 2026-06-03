@@ -1165,17 +1165,24 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       transition: fading ? "opacity 0.8s ease" : "none",
     }}>
 
-      {/* Glass cup — fades + slides up, fills width, saucer near bottom */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/images/glass-teacuop.png" alt="" aria-hidden style={{
+      {/* Glass cup — fills bottom 70% of screen, object-fit cover crops into cup */}
+      <div style={{
         position: "absolute",
-        bottom: 0, left: "50%",
-        transform: `translateX(-50%) translateY(${cupIn ? "0" : "60%"})`,
-        width: "300%",
+        bottom: 0, left: 0, right: 0,
+        height: "72%",
         opacity: cupIn ? 1 : 0,
+        transform: `translateY(${cupIn ? "0" : "60%"})`,
         transition: "transform 1s cubic-bezier(0.22,1,0.36,1), opacity 0.8s ease",
         zIndex: 2,
-      }} />
+        overflow: "hidden",
+      }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/images/glass-teacuop.png" alt="" aria-hidden style={{
+          width: "100%", height: "100%",
+          objectFit: "cover",
+          objectPosition: "center bottom",
+        }} />
+      </div>
 
       {/* Tea colour overlay — ellipse over the liquid area inside cup */}
       <div style={{
