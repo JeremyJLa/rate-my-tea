@@ -1026,6 +1026,7 @@ const CUP_SEQUENCE = [
 
 function SplashScreenB({ onDismiss }: { onDismiss: () => void }) {
   const [dotGrow,    setDotGrow]    = useState(false);
+  const [dotOut,     setDotOut]     = useState(false);
   const [cupIdx,     setCupIdx]     = useState(0);
   const [cupVisible, setCupVisible] = useState(false);
   const [bagDown,    setBagDown]    = useState(false);
@@ -1040,7 +1041,7 @@ function SplashScreenB({ onDismiss }: { onDismiss: () => void }) {
     const after = (ms: number, fn: () => void) => { t += ms; ts.push(setTimeout(fn, t)); };
 
     after(100,  () => setDotGrow(true));       // dot expands to fill screen
-    after(900,  () => setCupVisible(true));     // cup fades in over dot
+    after(900,  () => { setCupVisible(true); setDotOut(true); }); // cup fades in, dot fades out
     after(500,  () => setBagDown(true));        // teabag dips in
     after(700,  () => setBagDown(false));       // teabag lifts
     after(400,  () => setLogoIn(true));         // logo appears
@@ -1078,7 +1079,8 @@ function SplashScreenB({ onDismiss }: { onDismiss: () => void }) {
         top: "calc(50% - 8px)", left: "calc(50% - 8px)",
         background: color,
         transform: dotGrow ? "scale(80)" : "scale(1)",
-        transition: `transform 0.9s cubic-bezier(0.22,1,0.36,1), background 0.6s ease`,
+        opacity: dotOut ? 0 : 1,
+        transition: `transform 0.9s cubic-bezier(0.22,1,0.36,1), background 0.6s ease, opacity 0.9s ease`,
         willChange: "transform",
         zIndex: 1,
       }} />
