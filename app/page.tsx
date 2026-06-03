@@ -1015,6 +1015,116 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
   );
 }
 
+// ── Splash Screen B — dot expand → cup cycle with teabag dip ─────────────────
+
+const CUP_SEQUENCE = [
+  { cup: "/images/new-cup-purple.png", color: "#A45EA2" },
+  { cup: "/images/new-cup-green.png",  color: "#4caf50" },
+  { cup: "/images/new-cup-yellow.png", color: "#c8b400" },
+  { cup: "/images/new-cup-brown.png",  color: "#5c2d0a" },
+];
+
+function SplashScreenB({ onDismiss }: { onDismiss: () => void }) {
+  const [dotGrow,    setDotGrow]    = useState(false);
+  const [cupIdx,     setCupIdx]     = useState(0);
+  const [cupVisible, setCupVisible] = useState(false);
+  const [bagDown,    setBagDown]    = useState(false);
+  const [logoIn,     setLogoIn]     = useState(false);
+  const [fading,     setFading]     = useState(false);
+
+  useEffect(() => {
+    // dot expands → cup fades in → teabag cycles down/up per cup → logo → fade out
+    const ts: ReturnType<typeof setTimeout>[] = [];
+    let t = 0;
+
+    const after = (ms: number, fn: () => void) => { t += ms; ts.push(setTimeout(fn, t)); };
+
+    after(100,  () => setDotGrow(true));       // dot expands to fill screen
+    after(900,  () => setCupVisible(true));     // cup fades in over dot
+    after(500,  () => setBagDown(true));        // teabag dips in
+    after(700,  () => setBagDown(false));       // teabag lifts
+    after(400,  () => setLogoIn(true));         // logo appears
+
+    // cycle through remaining cups
+    for (let i = 1; i < CUP_SEQUENCE.length; i++) {
+      after(800,  () => setBagDown(true));
+      after(600,  () => { setCupIdx(i); setBagDown(false); });
+      after(700,  () => setBagDown(true));
+      after(600,  () => setBagDown(false));
+    }
+
+    after(800,  () => setFading(true));
+    after(600,  () => onDismiss());
+
+    return () => ts.forEach(clearTimeout);
+  }, [onDismiss]);
+
+  const { cup, color } = CUP_SEQUENCE[cupIdx];
+
+  return (
+    <div style={{
+      position: "absolute", inset: 0, zIndex: 100,
+      backgroundColor: "#fff",
+      overflow: "hidden",
+      opacity: fading ? 0 : 1,
+      transition: fading ? "opacity 0.6s ease" : "none",
+    }}>
+
+      {/* Expanding colour dot */}
+      <div style={{
+        position: "absolute",
+        width: 16, height: 16, borderRadius: "50%",
+        top: "calc(50% - 8px)", left: "calc(50% - 8px)",
+        background: color,
+        transform: dotGrow ? "scale(80)" : "scale(1)",
+        transition: `transform 0.9s cubic-bezier(0.22,1,0.36,1), background 0.6s ease`,
+        willChange: "transform",
+        zIndex: 1,
+      }} />
+
+      {/* Cup image — crossfades on cup change */}
+      {CUP_SEQUENCE.map((s, i) => (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img key={s.cup} src={s.cup} alt="" aria-hidden style={{
+          position: "absolute", inset: 0,
+          width: "100%", height: "100%",
+          objectFit: "cover", objectPosition: "center",
+          opacity: cupVisible && cupIdx === i ? 1 : 0,
+          transition: "opacity 0.5s ease",
+          zIndex: 2,
+        }} />
+      ))}
+
+      {/* Teabag — slides down into cup and back up */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/images/teabagdip.png" alt="" aria-hidden style={{
+        position: "absolute",
+        top: 0, left: "50%",
+        transform: `translateX(-50%) translateY(${bagDown ? "18%" : "-35%"})`,
+        width: "55%", maxWidth: 220,
+        opacity: cupVisible ? 1 : 0,
+        transition: "transform 0.55s cubic-bezier(0.22,1,0.36,1), opacity 0.4s ease",
+        willChange: "transform",
+        zIndex: 3,
+      }} />
+
+      {/* Logo */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/images/splash-text.svg" alt="Rate your Tea" style={{
+        position: "absolute",
+        top: "52%", left: "50%",
+        transform: `translate(-50%, -50%) scale(${logoIn ? 1 : 0.5})`,
+        width: "55%", maxWidth: 210,
+        opacity: logoIn ? 1 : 0,
+        filter: LOGO_WHITE_FILTER,
+        transition: "transform 0.7s cubic-bezier(0.22,1,0.36,1), opacity 0.5s ease",
+        zIndex: 4,
+      }} />
+
+    </div>
+  );
+}
+
 // ── App ───────────────────────────────────────────────────────────────────────
 
 export default function App() {
@@ -1161,7 +1271,7 @@ export default function App() {
         </div>
 
         {/* Splash screen */}
-        {showSplash && <SplashScreen onDismiss={() => setShowSplash(false)} />}
+        {showSplash && <SplashScreenB onDismiss={() => setShowSplash(false)} />}
       </div>
     </div>
   );
