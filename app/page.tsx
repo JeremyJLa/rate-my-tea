@@ -1132,10 +1132,11 @@ const CUP_IMAGES = [
 ];
 
 function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
-  const [cupIn,     setCupIn]     = useState(false);
-  const [cupImgIdx, setCupImgIdx] = useState(0);
-  const [bagDown,   setBagDown]   = useState(false);
-  const [bagOut,    setBagOut]    = useState(false);
+  const [cupIn,        setCupIn]        = useState(false);
+  const [cupImgIdx,    setCupImgIdx]    = useState(0);
+  const [bagDown,      setBagDown]      = useState(false);
+  const [bagShortDown, setBagShortDown] = useState(false);
+  const [bagOut,       setBagOut]       = useState(false);
   const [greenFill, setGreenFill] = useState(false);
   const [colourIdx, setColourIdx] = useState(0);
   const [logoIn,    setLogoIn]    = useState(false);
@@ -1162,17 +1163,15 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
     // pause 2 seconds while cup 2 is visible
     after(2000, () => { /* bag stays up */ });
 
-    // 3 dips — gradually blend to cup 3 across them
-    after(0,   () => setBagDown(true));
-    after(500, () => setCupImgIdx(2));        // start blend to cup 3 on first of 3 dips
-    after(500, () => setBagDown(false));
+    // 3 short dips — gradually blend to cup 3 across them
+    after(0,   () => { setBagShortDown(true); setCupImgIdx(2); }); // start blend to cup 3
+    after(350, () => setBagShortDown(false));
 
-    after(700, () => setBagDown(true));
-    after(500, () => setBagDown(false));
+    after(500, () => setBagShortDown(true));
+    after(350, () => setBagShortDown(false));
 
-    after(700, () => setBagDown(true));
-    after(500, () => setColourIdx(2));
-    after(500, () => setBagDown(false));
+    after(500, () => setBagShortDown(true));
+    after(350, () => { setColourIdx(2); setBagShortDown(false); });
 
     // bag flies up off screen, green floods in, then home
     after(800,  () => setBagOut(true));
@@ -1242,7 +1241,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       <img src="/images/real-teabag.png" alt="" aria-hidden style={{
         position: "absolute",
         top: 0, left: "50%",
-        transform: `translateX(-50%) translateY(${bagOut ? "-120vh" : bagDown ? "8vh" : cupIn ? "calc(-18vh - 20px)" : "-40vh"})`,
+        transform: `translateX(-50%) translateY(${bagOut ? "-120vh" : bagShortDown ? "3vh" : bagDown ? "8vh" : cupIn ? "calc(-18vh - 20px)" : "-40vh"})`,
         width: "62%", maxWidth: 252,
         opacity: cupIn ? 1 : 0,
         mixBlendMode: "multiply",
