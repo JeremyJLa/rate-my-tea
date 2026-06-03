@@ -1111,19 +1111,6 @@ function SplashScreenB({ onDismiss }: { onDismiss: () => void }) {
         zIndex: 3,
       }} />
 
-      {/* Logo */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/images/splash-text.svg" alt="Rate your Tea" style={{
-        position: "absolute",
-        top: "52%", left: "50%",
-        transform: `translate(-50%, -50%) scale(${logoIn ? 1 : 0.5})`,
-        width: "55%", maxWidth: 210,
-        opacity: logoIn ? 1 : 0,
-        filter: LOGO_WHITE_FILTER,
-        transition: "transform 0.7s cubic-bezier(0.22,1,0.36,1), opacity 0.5s ease",
-        zIndex: 4,
-      }} />
-
     </div>
   );
 }
