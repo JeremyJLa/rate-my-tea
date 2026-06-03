@@ -1045,12 +1045,13 @@ function SplashScreenB({ onDismiss }: { onDismiss: () => void }) {
     after(700,  () => setBagDown(false));       // teabag lifts
     after(400,  () => setLogoIn(true));         // logo appears
 
-    // cycle through remaining cups
+    // cycle through remaining cups — colour fades in as bag dips down
     for (let i = 1; i < CUP_SEQUENCE.length; i++) {
-      after(800,  () => setBagDown(true));
-      after(600,  () => { setCupIdx(i); setBagDown(false); });
-      after(700,  () => setBagDown(true));
-      after(600,  () => setBagDown(false));
+      const idx = i;
+      after(800,  () => { setBagDown(true); setCupIdx(idx); }); // bag dips, colour blends in
+      after(700,  () => setBagDown(false));                      // bag lifts
+      after(600,  () => setBagDown(true));                       // second dip
+      after(700,  () => setBagDown(false));
     }
 
     after(800,  () => setFading(true));
@@ -1090,7 +1091,7 @@ function SplashScreenB({ onDismiss }: { onDismiss: () => void }) {
           width: "100%", height: "100%",
           objectFit: "cover", objectPosition: "center",
           opacity: cupVisible && cupIdx === i ? 1 : 0,
-          transition: "opacity 0.5s ease",
+          transition: "opacity 0.7s ease",
           zIndex: 2,
         }} />
       ))}
