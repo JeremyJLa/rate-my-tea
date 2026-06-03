@@ -1132,11 +1132,11 @@ const CUP_IMAGES = [
 ];
 
 function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
-  const [cupIn,        setCupIn]        = useState(false);
-  const [cupImgIdx,    setCupImgIdx]    = useState(0);
-  const [bagDown,      setBagDown]      = useState(false);
-  const [bagShortDown, setBagShortDown] = useState(false);
-  const [bagOut,       setBagOut]       = useState(false);
+  const [cupIn,      setCupIn]      = useState(false);
+  const [cupImgIdx,  setCupImgIdx]  = useState(0);
+  const [bagDown,    setBagDown]    = useState(false);
+  const [bagBounce,  setBagBounce]  = useState(false); // small up-bounce from dipped position
+  const [bagOut,     setBagOut]     = useState(false);
   const [greenFill, setGreenFill] = useState(false);
   const [colourIdx, setColourIdx] = useState(0);
   const [logoIn,    setLogoIn]    = useState(false);
@@ -1150,31 +1150,26 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
     after(200,  () => setCupIn(true));
     after(1000, () => setLogoIn(true));
 
-    // === First sequence: 1 long dip + 2 short dips → cup 2 blends ===
-    after(900, () => setBagDown(true));                              // long dip
-    after(600, () => { setCupImgIdx(1); setBagDown(false); });      // cup 2 starts blending
+    // === First sequence: long dip → bounce 2 short up from bottom → back to high rest ===
+    after(900, () => { setBagDown(true); setCupImgIdx(1); });       // long dip, cup 2 blends
+    after(700, () => setBagBounce(true));                            // bounce up slightly
+    after(300, () => setBagBounce(false));                          // back to dip depth
+    after(300, () => setBagBounce(true));                            // bounce up again
+    after(300, () => setBagBounce(false));                          // back to dip depth
+    after(400, () => setBagDown(false));                            // return to high rest
 
-    after(550, () => setBagShortDown(true));                        // short dip 1
-    after(350, () => setBagShortDown(false));
+    // pause at high rest
+    after(1600, () => { /* bag at high rest */ });
 
-    after(450, () => setBagShortDown(true));                        // short dip 2
-    after(350, () => setBagShortDown(false));
-
-    // back up to high rest position — pause
-    after(1800, () => { /* bag at high rest */ });
-
-    // === Second sequence: 1 long dip + 3 short dips → cup 3 blends → flies off ===
+    // === Second sequence: long dip → bounce 3 short up from bottom → flies off ===
     after(0,   () => { setBagDown(true); setCupImgIdx(2); });       // long dip, cup 3 blends
-    after(600, () => setBagDown(false));
-
-    after(550, () => setBagShortDown(true));                        // short dip 1
-    after(350, () => setBagShortDown(false));
-
-    after(450, () => setBagShortDown(true));                        // short dip 2
-    after(350, () => setBagShortDown(false));
-
-    after(450, () => setBagShortDown(true));                        // short dip 3
-    after(350, () => setBagShortDown(false));
+    after(700, () => setBagBounce(true));                            // bounce 1
+    after(300, () => setBagBounce(false));
+    after(300, () => setBagBounce(true));                            // bounce 2
+    after(300, () => setBagBounce(false));
+    after(300, () => setBagBounce(true));                            // bounce 3
+    after(300, () => setBagBounce(false));
+    after(200, () => setBagDown(false));                            // briefly back to rest
 
     // bag flies up off screen, green floods in, then home
     after(800,  () => setBagOut(true));
@@ -1244,7 +1239,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       <img src="/images/real-teabag.png" alt="" aria-hidden style={{
         position: "absolute",
         top: 0, left: "50%",
-        transform: `translateX(-50%) translateY(${bagOut ? "-120vh" : bagShortDown ? "-8vh" : bagDown ? "-4vh" : cupIn ? "-26vh" : "-40vh"})`,
+        transform: `translateX(-50%) translateY(${bagOut ? "-120vh" : bagBounce ? "-10vh" : bagDown ? "-4vh" : cupIn ? "-26vh" : "-40vh"})`,
         width: "62%", maxWidth: 252,
         opacity: cupIn ? 1 : 0,
         mixBlendMode: "multiply",
