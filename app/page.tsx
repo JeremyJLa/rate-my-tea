@@ -1185,7 +1185,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
     // cup 3 blends after second long+short pattern (96%)
     ts.push(setTimeout(() => setCupImgIdx(2),  DIP_START + DIP_DURATION * 0.96));
     // bag flies off just after animation ends
-    ts.push(setTimeout(() => setBagOut(true),  DIP_START + DIP_DURATION + 300));
+    ts.push(setTimeout(() => setBagOut(true),  DIP_START + DIP_DURATION));
     ts.push(setTimeout(() => setGreenFill(true), DIP_START + DIP_DURATION + 900));
     ts.push(setTimeout(() => setIrisGrow(true),  DIP_START + DIP_DURATION + 1600));
     ts.push(setTimeout(() => onDismiss(),        DIP_START + DIP_DURATION + 2000));
