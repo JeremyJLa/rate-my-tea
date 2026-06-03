@@ -1184,8 +1184,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
     ts.push(setTimeout(() => setCupImgIdx(1),  DIP_START + DIP_DURATION * 0.48));
     // cup 3 blends after second long+short pattern (96%)
     ts.push(setTimeout(() => setCupImgIdx(2),  DIP_START + DIP_DURATION * 0.96));
-    // bag flies off just after animation ends
-    ts.push(setTimeout(() => setBagOut(true),  DIP_START + DIP_DURATION));
+    // bag exit triggered by onAnimationEnd on the img (no setTimeout needed)
     ts.push(setTimeout(() => setGreenFill(true), DIP_START + DIP_DURATION + 900));
     ts.push(setTimeout(() => setIrisGrow(true),  DIP_START + DIP_DURATION + 1600));
     ts.push(setTimeout(() => onDismiss(),        DIP_START + DIP_DURATION + 2000));
@@ -1268,7 +1267,9 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
 
       {/* Real teabag — vh units so dip distance is same on all devices */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/images/real-teabag.png" alt="" aria-hidden style={{
+      <img src="/images/real-teabag.png" alt="" aria-hidden
+        onAnimationEnd={(e) => { if (e.animationName === "teabagDip") setBagOut(true); }}
+        style={{
         position: "absolute",
         top: 0, left: "50%",
         transform: dipping ? "translateX(-50%)" : `translateX(-50%) translateY(calc(var(--ch, 100vh) * ${cupIn ? -0.26 : -1.1} + var(--bag-offset, -20px)))`,
