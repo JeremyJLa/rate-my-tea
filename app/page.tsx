@@ -1131,57 +1131,44 @@ const CUP_IMAGES = [
   "/images/glass-teacuop3.png",
 ];
 
+// Dip animation: 8s continuous sequence
+// Keyframe %s → ms: 8% = 640ms, 62% = 4960ms (cup changes timed to match)
+const DIP_DURATION = 8000;
+const CUP2_AT     = DIP_DURATION * 0.08;  // 640ms — long dip starts
+const CUP3_AT     = DIP_DURATION * 0.62;  // 4960ms — second long dip starts
+const BAGOUT_AT   = DIP_DURATION + 400;
+
 function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
-  const [cupIn,      setCupIn]      = useState(false);
-  const [cupImgIdx,  setCupImgIdx]  = useState(0);
-  const [bagDown,    setBagDown]    = useState(false);
-  const [bagBounce,  setBagBounce]  = useState(false); // small up-bounce from dipped position
-  const [bagOut,     setBagOut]     = useState(false);
+  const [cupIn,     setCupIn]     = useState(false);
+  const [cupImgIdx, setCupImgIdx] = useState(0);
+  const [dipping,   setDipping]   = useState(false);
+  const [bagOut,    setBagOut]    = useState(false);
   const [greenFill, setGreenFill] = useState(false);
   const [irisGrow,  setIrisGrow]  = useState(false);
-  const [colourIdx, setColourIdx] = useState(0);
   const [logoIn,    setLogoIn]    = useState(false);
-  const [fading,    setFading]    = useState(false);
 
   useEffect(() => {
     const ts: ReturnType<typeof setTimeout>[] = [];
     let t = 0;
     const after = (ms: number, fn: () => void) => { t += ms; ts.push(setTimeout(fn, t)); };
 
-    after(200,  () => setCupIn(true));
-    after(1000, () => setLogoIn(true));
-
-    // === First sequence: long dip → bounce 2 short up from bottom → back to high rest ===
-    after(900, () => { setBagDown(true); setCupImgIdx(1); });       // long dip, cup 2 blends
-    after(700, () => setBagBounce(true));                            // bounce up slightly
-    after(300, () => setBagBounce(false));                          // back to dip depth
-    after(300, () => setBagBounce(true));                            // bounce up again
-    after(300, () => setBagBounce(false));                          // back to dip depth
-    after(400, () => setBagDown(false));                            // return to high rest
-
-    // pause at high rest
-    after(1600, () => { /* bag at high rest */ });
-
-    // === Second sequence: long dip → bounce 3 short up from bottom → flies off ===
-    after(0,   () => { setBagDown(true); setCupImgIdx(2); });       // long dip, cup 3 blends
-    after(700, () => setBagBounce(true));                            // bounce 1
-    after(300, () => setBagBounce(false));
-    after(300, () => setBagBounce(true));                            // bounce 2
-    after(300, () => setBagBounce(false));
-    after(300, () => setBagBounce(true));                            // bounce 3
-    after(300, () => setBagBounce(false));
-    after(200, () => setBagDown(false));                            // briefly back to rest
-
-    // bag flies up, green floods, white iris expands → home
-    after(800,  () => setBagOut(true));
-    after(600,  () => setGreenFill(true));
-    after(700,  () => setIrisGrow(true));
-    after(1400, () => onDismiss());
+    // absolute timings from t=0
+    const DIP_START = 2000; // ms after mount when animation begins
+    ts.push(setTimeout(() => setCupIn(true),              200));
+    ts.push(setTimeout(() => setLogoIn(true),            1200));
+    ts.push(setTimeout(() => setDipping(true),      DIP_START));
+    // cup 2 blends at 8% into animation
+    ts.push(setTimeout(() => setCupImgIdx(1),  DIP_START + DIP_DURATION * 0.08));
+    // cup 3 blends at 62% into animation
+    ts.push(setTimeout(() => setCupImgIdx(2),  DIP_START + DIP_DURATION * 0.62));
+    // bag flies off just after animation ends
+    ts.push(setTimeout(() => setBagOut(true),  DIP_START + DIP_DURATION + 300));
+    ts.push(setTimeout(() => setGreenFill(true), DIP_START + DIP_DURATION + 900));
+    ts.push(setTimeout(() => setIrisGrow(true),  DIP_START + DIP_DURATION + 1600));
+    ts.push(setTimeout(() => onDismiss(),        DIP_START + DIP_DURATION + 3000));
 
     return () => ts.forEach(clearTimeout);
   }, [onDismiss]);
-
-  const teaColour = TEA_DIP_COLOURS[colourIdx];
 
   return (
     <div style={{
@@ -1193,6 +1180,23 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
         @keyframes floatLogo {
           0%, 100% { transform: translateX(-50%) translateY(0px); }
           50%       { transform: translateX(-50%) translateY(-8px); }
+        }
+        @keyframes teabagDip {
+          0%        { transform: translateX(-50%) translateY(-26vh); }
+          8%        { transform: translateX(-50%) translateY(-4vh); }
+          18%       { transform: translateX(-50%) translateY(-7vh); }
+          26%       { transform: translateX(-50%) translateY(-4vh); }
+          34%       { transform: translateX(-50%) translateY(-7vh); }
+          44%       { transform: translateX(-50%) translateY(-26vh); }
+          58%       { transform: translateX(-50%) translateY(-26vh); }
+          66%       { transform: translateX(-50%) translateY(-4vh); }
+          73%       { transform: translateX(-50%) translateY(-7vh); }
+          78%       { transform: translateX(-50%) translateY(-4vh); }
+          83%       { transform: translateX(-50%) translateY(-7vh); }
+          87%       { transform: translateX(-50%) translateY(-4vh); }
+          91%       { transform: translateX(-50%) translateY(-7vh); }
+          97%, 100% { transform: translateX(-50%) translateY(-26vh); }
+        }
         }
       `}</style>
 
@@ -1238,11 +1242,12 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       <img src="/images/real-teabag.png" alt="" aria-hidden style={{
         position: "absolute",
         top: 0, left: "50%",
-        transform: `translateX(-50%) translateY(${bagOut ? "-120vh" : bagBounce ? "-6vh" : bagDown ? "-4vh" : cupIn ? "-26vh" : "-40vh"})`,
+        transform: bagOut ? "translateX(-50%) translateY(-120vh)" : !cupIn ? "translateX(-50%) translateY(-40vh)" : undefined,
+        animation: bagOut ? "none" : dipping ? `teabagDip ${DIP_DURATION}ms ease-in-out forwards` : "none",
         width: "62%", maxWidth: 252,
         opacity: cupIn ? 1 : 0,
         mixBlendMode: "multiply",
-        transition: bagOut ? "transform 0.7s cubic-bezier(0.55,0,1,0.45)" : "transform 0.6s cubic-bezier(0.22,1,0.36,1), opacity 0.5s ease",
+        transition: bagOut ? "transform 0.7s cubic-bezier(0.55,0,1,0.45)" : "opacity 0.5s ease",
         willChange: "transform",
         zIndex: 5,
       }} />
