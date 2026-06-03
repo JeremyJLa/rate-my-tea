@@ -1093,7 +1093,7 @@ function SplashScreenB({ onDismiss }: { onDismiss: () => void }) {
           width: "100%", height: "100%",
           objectFit: "cover", objectPosition: "center",
           opacity: cupVisible && cupIdx === i ? 1 : 0,
-          transition: "opacity 0.7s ease",
+          transition: `opacity ${i === 0 ? "1.6s" : "0.7s"} ease`,
           zIndex: 2,
         }} />
       ))}
