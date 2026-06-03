@@ -1209,7 +1209,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
         position: "absolute",
         top: 0, left: "50%",
         transform: `translateX(-50%) translateY(${bagDown ? "28%" : cupIn ? "2%" : "-80%"})`,
-        width: "38%", maxWidth: 160,
+        width: "62%", maxWidth: 252,
         opacity: cupIn ? 1 : 0,
         mixBlendMode: "multiply",
         transition: "transform 0.6s cubic-bezier(0.22,1,0.36,1), opacity 0.5s ease",
