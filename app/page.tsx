@@ -1125,8 +1125,15 @@ const TEA_DIP_COLOURS = [
   "rgba(40,140,40,0.58)",  // dip 4 — clearly green tea
 ];
 
+const CUP_IMAGES = [
+  "/images/glass-teacuop.png",
+  "/images/glass-teacuop-2.png",
+  "/images/glass-teacuop3.png",
+];
+
 function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
   const [cupIn,     setCupIn]     = useState(false);
+  const [cupImgIdx, setCupImgIdx] = useState(0);
   const [bagDown,   setBagDown]   = useState(false);
   const [colourIdx, setColourIdx] = useState(0);
   const [logoIn,    setLogoIn]    = useState(false);
@@ -1140,13 +1147,25 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
     after(200,  () => setCupIn(true));
     after(1000, () => setLogoIn(true));
 
-    // 4 dips — tea gradually turns green with each dip
-    for (let i = 0; i < TEA_DIP_COLOURS.length; i++) {
-      const idx = i;
-      after(i === 0 ? 900 : 700, () => setBagDown(true));
-      after(500, () => setColourIdx(idx));
-      after(500, () => setBagDown(false));
-    }
+    // dip 1
+    after(900, () => setBagDown(true));
+    after(500, () => setColourIdx(0));
+    after(500, () => setBagDown(false));
+
+    // dip 2 — blend to cup 2
+    after(700, () => setBagDown(true));
+    after(500, () => { setColourIdx(1); setCupImgIdx(1); });
+    after(500, () => setBagDown(false));
+
+    // dip 3 — blend to cup 3
+    after(700, () => setBagDown(true));
+    after(500, () => { setColourIdx(2); setCupImgIdx(2); });
+    after(500, () => setBagDown(false));
+
+    // dip 4
+    after(700, () => setBagDown(true));
+    after(500, () => setColourIdx(3));
+    after(500, () => setBagDown(false));
 
     after(1000, () => setFading(true));
     after(800,  () => onDismiss());
@@ -1182,12 +1201,17 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
         zIndex: 2,
         overflow: "hidden",
       }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/images/glass-teacuop.png" alt="" aria-hidden style={{
-          width: "100%", height: "100%",
-          objectFit: "cover",
-          objectPosition: "center bottom",
-        }} />
+        {CUP_IMAGES.map((src, i) => (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img key={src} src={src} alt="" aria-hidden style={{
+            position: "absolute", inset: 0,
+            width: "100%", height: "100%",
+            objectFit: "cover",
+            objectPosition: "center bottom",
+            opacity: cupImgIdx === i ? 1 : 0,
+            transition: "opacity 1.2s ease",
+          }} />
+        ))}
       </div>
 
       {/* Floating black logo inside the tea */}
