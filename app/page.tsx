@@ -914,9 +914,9 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
       setTimeout(() => setCupVisible(true),  1900),  // cup zooms in
       setTimeout(() => setGreenFlood(true),  1900),   // green flood
       setTimeout(() => setLogoVisible(true), 2300),   // white logo over green
-      setTimeout(() => setLogoOut(true),     3200),
-      setTimeout(() => setIrisGrow(true),    3200),
-      setTimeout(() => onDismiss(),          5000),
+      setTimeout(() => setLogoOut(true),     5200),
+      setTimeout(() => setIrisGrow(true),    5200),
+      setTimeout(() => onDismiss(),          7000),
     ];
     return () => ts.forEach(clearTimeout);
   }, [onDismiss]);
