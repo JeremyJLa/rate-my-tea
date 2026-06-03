@@ -1176,7 +1176,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
     // absolute timings from t=0
     const DIP_START = 2000; // ms after mount when animation begins
     ts.push(setTimeout(() => setCupIn(true),              200));
-    ts.push(setTimeout(() => setHiVisible(true),          400));
+    ts.push(setTimeout(() => setHiVisible(true),         1400));
     ts.push(setTimeout(() => setLogoIn(true),            1200));
     ts.push(setTimeout(() => setHiVisible(false), DIP_START + DIP_DURATION + 100));
     ts.push(setTimeout(() => setDipping(true),      DIP_START));
@@ -1291,7 +1291,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
         top: "10%", left: 0, right: 0,
         textAlign: "center",
         opacity: hiVisible ? 1 : 0,
-        transition: hiVisible ? "opacity 1.2s ease" : "opacity 0.6s ease",
+        transition: hiVisible ? "opacity 2.5s ease" : "opacity 0.6s ease",
         zIndex: 3,
         pointerEvents: "none",
       }}>
