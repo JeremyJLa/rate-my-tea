@@ -1117,12 +1117,12 @@ function SplashScreenB({ onDismiss }: { onDismiss: () => void }) {
 
 // ── Splash Screen C — glass cup + real teabag dip, tea colour changes ─────────
 
+// Amber → green gradient across dips
 const TEA_DIP_COLOURS = [
-  "#c8863a",  // natural amber
-  "#7b3f8c",  // purple
-  "#3d9e58",  // green
-  "#c8a820",  // yellow
-  "#5c2d0a",  // brown
+  "rgba(0,0,0,0)",      // dip 1 — no tint yet, pure amber tea
+  "rgba(80,160,60,0.18)",  // dip 2 — hint of green
+  "rgba(60,150,50,0.38)",  // dip 3 — greener
+  "rgba(40,140,40,0.58)",  // dip 4 — clearly green tea
 ];
 
 function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
@@ -1140,12 +1140,12 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
     after(200,  () => setCupIn(true));
     after(1000, () => setLogoIn(true));
 
-    // 4 dips — colour shifts as bag enters the tea
-    for (let i = 1; i < TEA_DIP_COLOURS.length; i++) {
+    // 4 dips — tea gradually turns green with each dip
+    for (let i = 0; i < TEA_DIP_COLOURS.length; i++) {
       const idx = i;
-      after(i === 1 ? 900 : 550, () => setBagDown(true));
-      after(450, () => setColourIdx(idx));
-      after(350, () => setBagDown(false));
+      after(i === 0 ? 900 : 700, () => setBagDown(true));
+      after(500, () => setColourIdx(idx));
+      after(500, () => setBagDown(false));
     }
 
     after(1000, () => setFading(true));
@@ -1189,6 +1189,19 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
           objectPosition: "center bottom",
         }} />
       </div>
+
+      {/* Green tea colour overlay — blends over the amber liquid */}
+      <div style={{
+        position: "absolute",
+        bottom: "32%", left: "50%",
+        transform: "translateX(-50%)",
+        width: "60%", height: "18%",
+        borderRadius: "50%",
+        background: TEA_DIP_COLOURS[colourIdx],
+        transition: "background 1.2s ease",
+        zIndex: 3,
+        pointerEvents: "none",
+      }} />
 
       {/* Floating black logo inside the tea */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
