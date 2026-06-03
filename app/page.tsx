@@ -1182,20 +1182,20 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
           50%       { transform: translateX(-50%) translateY(-8px); }
         }
         @keyframes teabagDip {
-          0%        { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26)); }
-          8%        { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04)); }
-          18%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07)); }
-          26%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04)); }
-          34%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07)); }
-          44%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26)); }
-          58%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26)); }
-          66%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04)); }
-          73%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07)); }
-          78%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04)); }
-          83%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07)); }
-          87%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04)); }
-          91%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07)); }
-          97%, 100% { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26)); }
+          0%        { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 - 10px)); }
+          8%        { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 - 10px)); }
+          18%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 - 10px)); }
+          26%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 - 10px)); }
+          34%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 - 10px)); }
+          44%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 - 10px)); }
+          58%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 - 10px)); }
+          66%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 - 10px)); }
+          73%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 - 10px)); }
+          78%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 - 10px)); }
+          83%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 - 10px)); }
+          87%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 - 10px)); }
+          91%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 - 10px)); }
+          97%, 100% { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 - 10px)); }
         }
         }
       `}</style>
@@ -1242,7 +1242,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       <img src="/images/real-teabag.png" alt="" aria-hidden style={{
         position: "absolute",
         top: 0, left: "50%",
-        transform: dipping ? undefined : `translateX(-50%) translateY(calc(var(--ch, 100vh) * ${bagOut ? -1.2 : cupIn ? -0.26 : -0.4}))`,
+        transform: dipping ? undefined : `translateX(-50%) translateY(calc(var(--ch, 100vh) * ${bagOut ? -1.2 : cupIn ? -0.26 : -0.4} - 10px))`,
         animation: bagOut ? "none" : dipping ? `teabagDip ${DIP_DURATION}ms ease-in-out forwards` : "none",
         width: "62%", maxWidth: 252,
         opacity: cupIn ? 1 : 0,
