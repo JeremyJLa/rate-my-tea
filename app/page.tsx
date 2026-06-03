@@ -1403,7 +1403,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
             objectFit: "cover",
             objectPosition: "center bottom",
             opacity: cupImgIdx === i ? 1 : 0,
-            transition: "opacity 2.5s ease",
+            transition: "opacity 0.6s ease",
           }} />
         ))}
       </div>
