@@ -912,13 +912,13 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
     const ts = [
       setTimeout(() => setHiKate(true),       150),
       setTimeout(() => setHiKateOut(true),   1600),
-      setTimeout(() => setCupVisible(true),  1900),
-      setTimeout(() => setGreenFlood(true),  1900),
-      setTimeout(() => setLogoVisible(true), 2300),
-      setTimeout(() => setIrisGrow(true),    5200),   // iris grows, logo turns black
-      setTimeout(() => setLogoBlack(true),   5200),
-      setTimeout(() => setLogoBreak(true),   6300),   // words fly apart
-      setTimeout(() => onDismiss(),          7200),
+      setTimeout(() => setCupVisible(true),  1900),   // cup spins in
+      setTimeout(() => setGreenFlood(true),  3600),   // green flood — after cup fully settled
+      setTimeout(() => setLogoVisible(true), 4000),   // white logo over green
+      setTimeout(() => setIrisGrow(true),    6800),   // iris grows, logo turns black
+      setTimeout(() => setLogoBlack(true),   6800),
+      setTimeout(() => setLogoBreak(true),   7800),   // words fly apart
+      setTimeout(() => onDismiss(),          8600),
     ];
     return () => ts.forEach(clearTimeout);
   }, [onDismiss]);
