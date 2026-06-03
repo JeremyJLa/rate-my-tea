@@ -1195,13 +1195,13 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
         }
       `}</style>
 
-      {/* Glass cup — fills bottom 70% of screen, object-fit cover crops into cup */}
+      {/* Glass cup — vh-based height so it's consistent across all screen sizes */}
       <div style={{
         position: "absolute",
         bottom: 0, left: 0, right: 0,
-        height: "50%",
+        height: "48vh",
         opacity: cupIn ? 1 : 0,
-        transform: `translateY(${cupIn ? "0" : "60%"})`,
+        transform: `translateY(${cupIn ? "0" : "60vh"})`,
         transition: "transform 1s cubic-bezier(0.22,1,0.36,1), opacity 0.8s ease",
         zIndex: 2,
         overflow: "hidden",
@@ -1223,7 +1223,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/images/splash-text.svg" alt="Rate your Tea" style={{
         position: "absolute",
-        bottom: "calc(28% - 100px)", left: "50%",
+        bottom: "20vh", left: "50%",
         width: "34%", maxWidth: 140,
         opacity: cupIn ? 0.8 : 0,
         filter: "brightness(0)",
@@ -1232,12 +1232,12 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
         zIndex: 4,
       }} />
 
-      {/* Real teabag — string from top, dips into cup */}
+      {/* Real teabag — vh units so dip distance is same on all devices */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/images/real-teabag.png" alt="" aria-hidden style={{
         position: "absolute",
         top: 0, left: "50%",
-        transform: `translateX(-50%) translateY(${bagDown ? "5%" : cupIn ? "-18%" : "-80%"})`,
+        transform: `translateX(-50%) translateY(${bagDown ? "28vh" : cupIn ? "8vh" : "-40vh"})`,
         width: "62%", maxWidth: 252,
         opacity: cupIn ? 1 : 0,
         mixBlendMode: "multiply",
