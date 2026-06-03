@@ -1369,16 +1369,14 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
           .splash-cup { height: calc(var(--ch, 100vh) * 0.58) !important; }
         }
         @keyframes teabagDip {
-          /* Pattern 1: long dip → partial rise → short dip → colour change */
+          /* Pattern 1: long dip → partial rise → short dip */
           0%        { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
           18%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.06 + var(--bag-offset, -20px))); }
           34%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.17 + var(--bag-offset, -20px))); }
           46%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.11 + var(--bag-offset, -20px))); }
           50%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
-          /* Pattern 2: long dip → partial rise → short dip → colour change */
+          /* Pattern 2: long dip only → back to rest */
           66%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.06 + var(--bag-offset, -20px))); }
-          82%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.17 + var(--bag-offset, -20px))); }
-          94%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.11 + var(--bag-offset, -20px))); }
           100%      { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
         }
         }
