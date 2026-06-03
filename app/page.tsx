@@ -1175,8 +1175,8 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
     // bag flies up, green floods, white iris expands → home
     after(800,  () => setBagOut(true));
     after(600,  () => setGreenFill(true));
-    after(900,  () => setIrisGrow(true));
-    after(2000, () => onDismiss());
+    after(700,  () => setIrisGrow(true));
+    after(1400, () => onDismiss());
 
     return () => ts.forEach(clearTimeout);
   }, [onDismiss]);
@@ -1224,7 +1224,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/images/splash-text.svg" alt="Rate your Tea" style={{
         position: "absolute",
-        bottom: "calc(10vh + 35px)", left: "50%",
+        bottom: "calc(10vh + 55px)", left: "50%",
         width: "34%", maxWidth: 140,
         opacity: cupIn ? 0.8 : 0,
         filter: "brightness(0)",
@@ -1238,7 +1238,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       <img src="/images/real-teabag.png" alt="" aria-hidden style={{
         position: "absolute",
         top: 0, left: "50%",
-        transform: `translateX(-50%) translateY(${bagOut ? "-120vh" : bagBounce ? "-10vh" : bagDown ? "-4vh" : cupIn ? "-26vh" : "-40vh"})`,
+        transform: `translateX(-50%) translateY(${bagOut ? "-120vh" : bagBounce ? "-6vh" : bagDown ? "-4vh" : cupIn ? "-26vh" : "-40vh"})`,
         width: "62%", maxWidth: 252,
         opacity: cupIn ? 1 : 0,
         mixBlendMode: "multiply",
