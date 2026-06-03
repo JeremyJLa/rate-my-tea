@@ -882,106 +882,104 @@ function SharedRatingView({ rating, onClose }: { rating: Rating; onClose: () => 
 
 // ── Splash Screen ─────────────────────────────────────────────────────────────
 
-const CUP_IMAGES = [
-  "/images/teahcup1.png",
-  "/images/teahcup2.png",
-  "/images/teahcup3.png",
-  "/images/teahcup5.png",
-  "/images/teahcup4.png", // last — green tea, matches expanding circle colour
-];
+// ── Splash timing (ms from mount) ────────────────────────────────────────────
+// 60   brown circle starts contracting          (0.55s duration)
+// 130  hero cup image fades + scales in         (0.65s)
+// 320  "Hi Kate" greeting rises in              (0.4s)
+// 440  "Rate your Tea" heading rises in         (0.5s)
+// 820  green circle starts expanding            (0.55s)
+// 940  white thumbnail silhouettes flash in     (0.2s)
+// 1100 entire splash fades out                  (0.35s)
+// 1500 onDismiss — home screen takes over
+// ─────────────────────────────────────────────────────────────────────────────
 
 function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
-  const [imgIdx, setImgIdx] = useState(0);
-  const [contracted, setContracted] = useState(false); // opening brown circle
-  const [cycleReady, setCycleReady] = useState(false);
-  const [expanding, setExpanding] = useState(false);
-  const [fading, setFading] = useState(false);
-  const [textVisible, setTextVisible] = useState(false);
-  const [showThumbs, setShowThumbs] = useState(false);
-
-  // Trigger brown circle contraction almost immediately after mount
-  useEffect(() => {
-    const t = setTimeout(() => setContracted(true), 80);
-    return () => clearTimeout(t);
-  }, []);
-
-  // Start cycling once brown circle has fully contracted (~1.9s)
-  useEffect(() => {
-    const t = setTimeout(() => setCycleReady(true), 1900);
-    return () => clearTimeout(t);
-  }, []);
-
-  // Heading fades in as cycling begins
-  useEffect(() => {
-    const t = setTimeout(() => setTextVisible(true), 2200);
-    return () => clearTimeout(t);
-  }, []);
-
-  // Cycle all cups for 5s, then expand green circle
-  useEffect(() => {
-    if (!cycleReady) return;
-    const intervalRef = { id: 0 };
-    intervalRef.id = window.setInterval(() => {
-      setImgIdx(i => (i + 1) % CUP_IMAGES.length);
-    }, 800);
-    const tExpand = setTimeout(() => {
-      window.clearInterval(intervalRef.id);
-      setExpanding(true);
-    }, 5000);
-    return () => { window.clearInterval(intervalRef.id); clearTimeout(tExpand); };
-  }, [cycleReady]);
+  const [contracted,      setContracted]      = useState(false);
+  const [cupVisible,      setCupVisible]       = useState(false);
+  const [greetingVisible, setGreetingVisible]  = useState(false);
+  const [headingVisible,  setHeadingVisible]   = useState(false);
+  const [expanding,       setExpanding]        = useState(false);
+  const [showThumbs,      setShowThumbs]       = useState(false);
+  const [fading,          setFading]           = useState(false);
 
   useEffect(() => {
-    if (!expanding) return;
-    const tThumbs = setTimeout(() => setShowThumbs(true), 400);
-    const tFade = setTimeout(() => setFading(true), 1400);
-    const tDismiss = setTimeout(onDismiss, 2100);
-    return () => { clearTimeout(tThumbs); clearTimeout(tFade); clearTimeout(tDismiss); };
-  }, [expanding, onDismiss]);
+    const timers = [
+      setTimeout(() => setContracted(true),      60),
+      setTimeout(() => setCupVisible(true),      130),
+      setTimeout(() => setGreetingVisible(true), 320),
+      setTimeout(() => setHeadingVisible(true),  440),
+      setTimeout(() => setExpanding(true),       820),
+      setTimeout(() => setShowThumbs(true),      940),
+      setTimeout(() => setFading(true),         1100),
+      setTimeout(() => onDismiss(),             1500),
+    ];
+    return () => timers.forEach(clearTimeout);
+  }, [onDismiss]);
+
+  const ease = "cubic-bezier(0.22,1,0.36,1)";
 
   return (
-    <div className="absolute inset-0" style={{ zIndex: 100, background: "#fff", overflow: "hidden", opacity: fading ? 0 : 1, transition: fading ? "opacity 0.65s ease" : "none" }}>
-      {/* Cup images — smooth crossfade cycling */}
-      {CUP_IMAGES.map((src, i) => (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img key={src} src={src} alt="" style={{
-          position: "absolute", inset: 0,
-          width: "100%", height: "100%",
-          objectFit: "cover",
-          objectPosition: "center top",
-          transform: "scale(1.15)",
-          transformOrigin: "center top",
-          opacity: imgIdx === i ? 1 : 0,
-          transition: "opacity 0.55s ease-in-out",
-        }} />
-      ))}
+    <div style={{
+      position: "absolute", inset: 0, zIndex: 100,
+      backgroundColor: "#7B4E2C",
+      overflow: "hidden",
+      willChange: "opacity",
+      opacity: fading ? 0 : 1,
+      transition: fading ? "opacity 0.35s ease-out" : "none",
+    }}>
 
-      {/* Hi Kate */}
+      {/* Hero cup image — scales from 1.20 → 1.15 as it fades in */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/images/teahcup1.png" alt="" style={{
+        position: "absolute", inset: 0,
+        width: "100%", height: "100%",
+        objectFit: "cover", objectPosition: "center top",
+        willChange: "transform, opacity",
+        transform: cupVisible
+          ? "scale3d(1.15,1.15,1) translate3d(0,0,0)"
+          : "scale3d(1.20,1.20,1) translate3d(0,0,0)",
+        opacity: cupVisible ? 1 : 0,
+        transition: cupVisible
+          ? `transform 0.65s ${ease}, opacity 0.5s ease-out`
+          : "none",
+      }} />
+
+      {/* "Hi Kate" — rises 6px + fades in */}
       <div style={{
-        position: "absolute", top: 0, left: 0, right: 0, height: 90, zIndex: 1,
+        position: "absolute", top: 0, left: 0, right: 0, height: 90, zIndex: 2,
         display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: 10,
+        willChange: "transform, opacity",
+        transform: greetingVisible ? "translate3d(0,0,0)" : "translate3d(0,6px,0)",
+        opacity: greetingVisible ? 1 : 0,
+        transition: `transform 0.4s ${ease}, opacity 0.4s ease-out`,
       }}>
-        <p className="font-medium" style={{ fontSize: 15, color: "#aaa", letterSpacing: 0.3 }}>Hi Kate</p>
+        <p className="font-medium" style={{ fontSize: 15, color: "rgba(255,255,255,0.7)", letterSpacing: 0.3 }}>Hi Kate</p>
       </div>
 
-      {/* Rate your Tea SVG — inside the tea colour area of the cup */}
+      {/* "Rate your Tea" SVG — rises 8px + fades in, inside the tea colour area */}
       <div style={{
-        position: "absolute", inset: 0, zIndex: 1,
+        position: "absolute", inset: 0, zIndex: 2,
         display: "flex", alignItems: "flex-start", justifyContent: "center",
         paddingTop: "57%",
-        opacity: textVisible ? 1 : 0,
-        transition: "opacity 1.2s ease",
         pointerEvents: "none",
+        willChange: "transform, opacity",
+        transform: headingVisible ? "translate3d(0,0,0)" : "translate3d(0,8px,0)",
+        opacity: headingVisible ? 1 : 0,
+        transition: `transform 0.5s ${ease}, opacity 0.45s ease-out`,
       }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/images/splash-text.svg" alt="Rate your Tea" style={{ width: "70%", maxWidth: 260, filter: "brightness(0) invert(1) drop-shadow(0 2px 12px rgba(0,0,0,0.4))" }} />
+        <img src="/images/splash-text.svg" alt="Rate your Tea" style={{
+          width: "70%", maxWidth: 260,
+          filter: "brightness(0) invert(1)",
+        }} />
       </div>
 
-      {/* White thumbnail silhouettes — match home grid layout, fade in before reveal */}
+      {/* White thumbnail silhouettes — brief flash matching home grid positions */}
       <div style={{
         position: "absolute", inset: 0, zIndex: 12, pointerEvents: "none",
+        willChange: "opacity",
         opacity: showThumbs ? 1 : 0,
-        transition: "opacity 0.5s ease",
+        transition: "opacity 0.2s ease",
       }}>
         <div style={{ height: 160 }} />
         <div style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 20 }}>
@@ -993,27 +991,33 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
         </div>
       </div>
 
-      {/* Opening brown circle — starts full, contracts to reveal first cup */}
+      {/* Opening brown circle — starts full-screen, contracts to reveal cup */}
       <div style={{
         position: "absolute", zIndex: 10,
         width: "150vmax", height: "150vmax",
         top: "50%", left: "50%",
         borderRadius: "50%",
         backgroundColor: "#7B4E2C",
-        transform: contracted ? "translate(-50%, -50%) scale(0)" : "translate(-50%, -50%) scale(1)",
-        transition: contracted ? "transform 1.8s cubic-bezier(0.22,1,0.36,1)" : "none",
+        willChange: "transform",
+        transform: contracted
+          ? "translate3d(-50%,-50%,0) scale(0)"
+          : "translate3d(-50%,-50%,0) scale(1)",
+        transition: contracted ? `transform 0.55s ${ease}` : "none",
         pointerEvents: "none",
       }} />
 
-      {/* Closing green circle — grows to fill screen */}
+      {/* Closing green circle — expands to fill screen */}
       <div style={{
         position: "absolute", zIndex: 10,
         width: "150vmax", height: "150vmax",
         top: "50%", left: "50%",
         borderRadius: "50%",
         backgroundColor: "#5A8035",
-        transform: expanding ? "translate(-50%, -50%) scale(1)" : "translate(-50%, -50%) scale(0)",
-        transition: expanding ? "transform 1.8s cubic-bezier(0.22,1,0.36,1)" : "none",
+        willChange: "transform",
+        transform: expanding
+          ? "translate3d(-50%,-50%,0) scale(1)"
+          : "translate3d(-50%,-50%,0) scale(0)",
+        transition: expanding ? `transform 0.55s ${ease}` : "none",
         pointerEvents: "none",
       }} />
     </div>
