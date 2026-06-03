@@ -1182,20 +1182,20 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
           50%       { transform: translateX(-50%) translateY(-8px); }
         }
         @keyframes teabagDip {
-          0%        { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 - 10px)); }
-          8%        { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 - 10px)); }
-          18%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 - 10px)); }
-          26%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 - 10px)); }
-          34%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 - 10px)); }
-          44%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 - 10px)); }
-          58%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 - 10px)); }
-          66%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 - 10px)); }
-          73%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 - 10px)); }
-          78%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 - 10px)); }
-          83%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 - 10px)); }
-          87%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 - 10px)); }
-          91%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 - 10px)); }
-          97%, 100% { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 - 10px)); }
+          0%        { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 - 20px)); }
+          8%        { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 - 20px)); }
+          18%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 - 20px)); }
+          26%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 - 20px)); }
+          34%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 - 20px)); }
+          44%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 - 20px)); }
+          58%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 - 20px)); }
+          66%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 - 20px)); }
+          73%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 - 20px)); }
+          78%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 - 20px)); }
+          83%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 - 20px)); }
+          87%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 - 20px)); }
+          91%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 - 20px)); }
+          97%, 100% { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 - 20px)); }
         }
         }
       `}</style>
@@ -1242,14 +1242,14 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       <img src="/images/real-teabag.png" alt="" aria-hidden style={{
         position: "absolute",
         top: 0, left: "50%",
-        transform: dipping ? undefined : `translateX(-50%) translateY(calc(var(--ch, 100vh) * ${bagOut ? -1.2 : cupIn ? -0.26 : -0.4} - 10px))`,
+        transform: dipping ? undefined : `translateX(-50%) translateY(calc(var(--ch, 100vh) * ${bagOut ? -1.2 : cupIn ? -0.26 : -0.4} - 20px))`,
         animation: bagOut ? "none" : dipping ? `teabagDip ${DIP_DURATION}ms ease-in-out forwards` : "none",
         width: "62%", maxWidth: 252,
         opacity: cupIn ? 1 : 0,
         mixBlendMode: "multiply",
-        transition: bagOut ? "transform 0.7s cubic-bezier(0.55,0,1,0.45)" : "opacity 0.5s ease",
+        transition: bagOut ? "transform 1s cubic-bezier(0.55,0,1,0.45)" : "opacity 0.5s ease",
         willChange: "transform",
-        zIndex: 5,
+        zIndex: 8,
       }} />
 
       {/* Green flood — expands from centre after bag exits */}
