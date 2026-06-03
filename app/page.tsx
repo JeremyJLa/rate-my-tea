@@ -242,12 +242,19 @@ function StatusBar() {
 
 // ── Screens ───────────────────────────────────────────────────────────────────
 
-function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard }: {
+function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard, splashDone }: {
   ratings: Map<string, Rating>; animatingId: string | null;
   onSelectTea: (id: string) => void; onViewLeaderboard: () => void;
+  splashDone: boolean;
 }) {
   const tastedCount = ratings.size;
   const progressPct = (tastedCount / 11) * 100;
+  const [cardsIn, setCardsIn] = useState(false);
+  useEffect(() => {
+    if (!splashDone) return;
+    const t = setTimeout(() => setCardsIn(true), 80);
+    return () => clearTimeout(t);
+  }, [splashDone]);
 
   return (
     <div className="h-full overflow-y-auto" style={{ background: "#F7F6F3" }}>
@@ -277,9 +284,15 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard }: {
       {/* Grid */}
       <div className="px-4" style={{ paddingTop: 20, paddingBottom: 110 }}>
         <div className="grid grid-cols-3 gap-3">
-          {TEAS.map((tea) => (
-            <TeaCard key={tea.id} tea={tea} rated={ratings.has(tea.id)}
-              animating={animatingId === tea.id} onClick={() => onSelectTea(tea.id)} />
+          {TEAS.map((tea, i) => (
+            <div key={tea.id} style={{
+              opacity: cardsIn ? 1 : 0,
+              transform: cardsIn ? "translateY(0)" : "translateY(-24px)",
+              transition: `opacity 0.4s ease ${i * 55}ms, transform 0.5s cubic-bezier(0.22,1,0.36,1) ${i * 55}ms`,
+            }}>
+              <TeaCard tea={tea} rated={ratings.has(tea.id)}
+                animating={animatingId === tea.id} onClick={() => onSelectTea(tea.id)} />
+            </div>
           ))}
         </div>
       </div>
@@ -930,8 +943,8 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
           width: "100%", height: "100%",
           objectFit: "cover", objectPosition: "center",
           opacity: cupVisible ? 1 : 0,
-          transform: cupVisible ? "scale(1)" : "scale(2.2)",
-          transition: cupVisible ? "opacity 1.0s ease-out, transform 1.4s cubic-bezier(0.22,1,0.36,1)" : "none",
+          transform: cupVisible ? "scale(1) rotate(0deg)" : "scale(2.2) rotate(180deg)",
+          transition: cupVisible ? "opacity 1.0s ease-out, transform 1.6s cubic-bezier(0.22,1,0.36,1)" : "none",
           willChange: "opacity, transform",
         }}
       />
@@ -958,7 +971,7 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
         alt="Rate your Tea"
         style={{
           position: "absolute",
-          top: "50%", left: "50%",
+          top: "42%", left: "50%",
           transform: `translate(-50%, -50%) ${logoTransform}`,
           width: "62%", maxWidth: 240,
           opacity: logoOpacity,
@@ -1084,7 +1097,7 @@ export default function App() {
 
         {/* Home */}
         <div className="absolute inset-0">
-          <HomeScreen ratings={ratings} animatingId={animatingId} onSelectTea={handleOpenFromHome} onViewLeaderboard={() => setScreen("leaderboard")} />
+          <HomeScreen ratings={ratings} animatingId={animatingId} onSelectTea={handleOpenFromHome} onViewLeaderboard={() => setScreen("leaderboard")} splashDone={!showSplash} />
         </div>
 
         {/* Leaderboard — slides up, stays put when rate slides over it from right */}
