@@ -1208,7 +1208,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       <img src="/images/real-teabag.png" alt="" aria-hidden style={{
         position: "absolute",
         top: 0, left: "50%",
-        transform: `translateX(-50%) translateY(${bagDown ? "18%" : cupIn ? "-10%" : "-80%"})`,
+        transform: `translateX(-50%) translateY(${bagDown ? "18%" : cupIn ? "0%" : "-80%"})`,
         width: "62%", maxWidth: 252,
         opacity: cupIn ? 1 : 0,
         mixBlendMode: "multiply",
