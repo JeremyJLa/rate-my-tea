@@ -924,7 +924,7 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
   }, [onDismiss]);
 
   const logoBaseTransform = logoVisible ? "scale(1)" : "scale(0.3)";
-  const logoOpacity = logoBreak ? 0 : logoVisible ? 1 : 0;
+  const logoOpacity = logoVisible ? 1 : 0;
 
   // Three horizontal slices of the logo, each flies in a different direction
   const LOGO_SLICES = [
@@ -1001,7 +1001,7 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
             filter: logoBlack ? "brightness(0)" : LOGO_WHITE_FILTER,
             clipPath: clip,
             transition: logoBreak
-              ? `transform 0.9s cubic-bezier(0.55,0,1,0.45), opacity 0.5s ease, filter 0.3s ease`
+              ? `transform 0.9s cubic-bezier(0.55,0,1,0.45), filter 0.3s ease`
               : `transform 0.8s cubic-bezier(0.22,1,0.36,1), opacity 0.6s ease-out, filter 0.4s ease`,
             willChange: "transform, opacity",
             transformOrigin: "center center",
