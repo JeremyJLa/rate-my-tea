@@ -955,7 +955,7 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
       {/* Layer 1 — Cup photo */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/images/teahcup5.png"
+        src="/images/teahcup4.png"
         alt=""
         aria-hidden
         style={{
