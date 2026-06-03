@@ -257,7 +257,7 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard, spla
   }, [splashDone]);
 
   return (
-    <div className="h-full overflow-y-auto" style={{ background: "#F7F6F3" }}>
+    <div className="h-full overflow-y-auto" style={{ background: "transparent" }}>
       <StatusBar />
 
       {/* Header */}
@@ -552,7 +552,7 @@ function LeaderboardScreen({ ratings, onEditTea, onClose }: {
   const displayed = showTabs && tab === "top5" ? ranked.slice(0, 3) : ranked;
 
   return (
-    <div className="flex flex-col h-full" style={{ background: "#F7F6F3" }}>
+    <div className="flex flex-col h-full" style={{ background: "transparent" }}>
       <StatusBar />
 
       {/* Header */}
@@ -1398,7 +1398,7 @@ export default function App() {
       <div
         ref={containerRef}
         className="relative overflow-hidden w-full sm:h-[844px] sm:w-[390px] sm:rounded-[50px] sm:shadow-2xl"
-        style={{ height: "100dvh", background: "#F7F6F3" } as React.CSSProperties}
+        style={{ height: "100dvh", background: "linear-gradient(160deg, #F5F9F5 0%, #F7F6F0 50%, #F2EFE8 100%)" } as React.CSSProperties}
       >
 
         {/* Home */}
@@ -1407,7 +1407,7 @@ export default function App() {
         </div>
 
         {/* Leaderboard — slides up, stays put when rate slides over it from right */}
-        <div className="absolute inset-0 transition-transform duration-300 ease-in-out" style={{ transform: (leaderboardVisible || (rateVisible && rateSlideDir === "right")) ? "translateY(0)" : "translateY(100%)", background: "#F7F6F3" }}>
+        <div className="absolute inset-0 transition-transform duration-300 ease-in-out" style={{ transform: (leaderboardVisible || (rateVisible && rateSlideDir === "right")) ? "translateY(0)" : "translateY(100%)", background: "linear-gradient(160deg, #F5F9F5 0%, #F7F6F0 50%, #F2EFE8 100%)" }}>
           <LeaderboardScreen ratings={ratings} onEditTea={handleEditFromLeaderboard} onClose={() => setScreen("home")} />
         </div>
 
