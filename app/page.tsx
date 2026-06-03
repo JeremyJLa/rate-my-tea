@@ -1167,6 +1167,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
   const [greenFill, setGreenFill] = useState(false);
   const [irisGrow,  setIrisGrow]  = useState(false);
   const [logoIn,    setLogoIn]    = useState(false);
+  const [hiVisible, setHiVisible] = useState(false);
 
   useEffect(() => {
     const ts: ReturnType<typeof setTimeout>[] = [];
@@ -1176,7 +1177,9 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
     // absolute timings from t=0
     const DIP_START = 2000; // ms after mount when animation begins
     ts.push(setTimeout(() => setCupIn(true),              200));
+    ts.push(setTimeout(() => setHiVisible(true),          400));
     ts.push(setTimeout(() => setLogoIn(true),            1200));
+    ts.push(setTimeout(() => setHiVisible(false), DIP_START + DIP_DURATION + 100));
     ts.push(setTimeout(() => setDipping(true),      DIP_START));
     // cup 2 blends after dip 1 (33%)
     ts.push(setTimeout(() => setCupImgIdx(1),  DIP_START + DIP_DURATION * 0.33));
@@ -1278,6 +1281,19 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
         willChange: "transform",
         zIndex: 8,
       }} />
+
+      {/* Hi Kate greeting */}
+      <div style={{
+        position: "absolute",
+        top: "10%", left: 0, right: 0,
+        textAlign: "center",
+        opacity: hiVisible ? 1 : 0,
+        transition: hiVisible ? "opacity 1.2s ease" : "opacity 0.6s ease",
+        zIndex: 3,
+        pointerEvents: "none",
+      }}>
+        <span style={{ fontSize: 32, fontWeight: 700, color: "#aaa", letterSpacing: -0.5 }}>Hi Kate</span>
+      </div>
 
       {/* Green flood — expands from centre after bag exits */}
       <div style={{
