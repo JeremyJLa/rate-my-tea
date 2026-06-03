@@ -1150,15 +1150,15 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
     after(200,  () => setCupIn(true));
     after(1000, () => setLogoIn(true));
 
-    // dip 1
-    after(900, () => setBagDown(true));
-    after(500, () => setColourIdx(0));
-    after(500, () => setBagDown(false));
+    // dip 1 — short
+    after(900, () => setBagShortDown(true));
+    after(350, () => setColourIdx(0));
+    after(300, () => setBagShortDown(false));
 
-    // dip 2 — blend to cup 2, then pause 2s with bag up
-    after(700, () => setBagDown(true));
-    after(500, () => { setColourIdx(1); setCupImgIdx(1); });
-    after(500, () => setBagDown(false));
+    // dip 2 — short, blend to cup 2, then pause 2s with bag up
+    after(700, () => setBagShortDown(true));
+    after(350, () => { setColourIdx(1); setCupImgIdx(1); });
+    after(300, () => setBagShortDown(false));
 
     // pause 2 seconds while cup 2 is visible
     after(2000, () => { /* bag stays up */ });
@@ -1227,7 +1227,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/images/splash-text.svg" alt="Rate your Tea" style={{
         position: "absolute",
-        bottom: "calc(10vh + 15px)", left: "50%",
+        bottom: "calc(10vh + 35px)", left: "50%",
         width: "34%", maxWidth: 140,
         opacity: cupIn ? 0.8 : 0,
         filter: "brightness(0)",
