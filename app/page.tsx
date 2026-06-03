@@ -1177,8 +1177,8 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       overflow: "hidden",
     }}>
       <style>{`
-        .splash-root { --bag-offset: -20px; }
-        @media (max-width: 639px) { .splash-root { --bag-offset: -30px; } }
+        .splash-root { --bag-offset: -30px; }
+        @media (max-width: 639px) { .splash-root { --bag-offset: -40px; } }
         @keyframes floatLogo {
           0%, 100% { transform: translateX(-50%) translateY(0px); }
           50%       { transform: translateX(-50%) translateY(-8px); }
