@@ -1137,19 +1137,19 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
     let t = 0;
     const after = (ms: number, fn: () => void) => { t += ms; ts.push(setTimeout(fn, t)); };
 
-    after(200,  () => setCupIn(true));       // cup slides up
-    after(900,  () => setLogoIn(true));      // logo fades in on cup
+    after(200,  () => setCupIn(true));
+    after(1000, () => setLogoIn(true));
 
-    // 4 dips — each one changes tea colour
+    // 4 dips — colour shifts as bag enters the tea
     for (let i = 1; i < TEA_DIP_COLOURS.length; i++) {
       const idx = i;
-      after(i === 1 ? 800 : 500, () => setBagDown(true));          // dip down
-      after(500, () => setColourIdx(idx));                          // colour shifts mid-dip
-      after(300, () => setBagDown(false));                          // lift back up
+      after(i === 1 ? 900 : 550, () => setBagDown(true));
+      after(450, () => setColourIdx(idx));
+      after(350, () => setBagDown(false));
     }
 
-    after(900,  () => setFading(true));
-    after(700,  () => onDismiss());
+    after(1000, () => setFading(true));
+    after(800,  () => onDismiss());
 
     return () => ts.forEach(clearTimeout);
   }, [onDismiss]);
@@ -1162,58 +1162,61 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       backgroundColor: "#fff",
       overflow: "hidden",
       opacity: fading ? 0 : 1,
-      transition: fading ? "opacity 0.7s ease" : "none",
+      transition: fading ? "opacity 0.8s ease" : "none",
     }}>
 
-      {/* Glass cup — slides up from below */}
+      {/* Glass cup — fades + slides up, fills width, saucer near bottom */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/images/glass-teacuop.png" alt="" aria-hidden style={{
         position: "absolute",
-        bottom: "10%", left: "50%",
-        transform: `translateX(-50%) translateY(${cupIn ? "0%" : "60%"})`,
-        width: "82%", maxWidth: 340,
+        bottom: "3%", left: "50%",
+        transform: `translateX(-50%) translateY(${cupIn ? "0" : "50%"})`,
+        width: "94%",
         opacity: cupIn ? 1 : 0,
-        transition: "transform 0.9s cubic-bezier(0.22,1,0.36,1), opacity 0.7s ease",
+        transition: "transform 1s cubic-bezier(0.22,1,0.36,1), opacity 0.8s ease",
         zIndex: 2,
       }} />
 
-      {/* Tea liquid colour overlay — tints inside the cup */}
+      {/* Tea colour overlay — ellipse over the liquid area inside cup */}
       <div style={{
         position: "absolute",
-        bottom: "calc(10% + 18%)", left: "50%",
+        /* sits over the tea liquid — approx 33–55% from bottom of screen */
+        bottom: "33%", left: "50%",
         transform: "translateX(-50%)",
-        width: "54%", maxWidth: 220,
-        height: "14%",
-        borderRadius: "0 0 50% 50%",
+        width: "62%",
+        height: "22%",
+        borderRadius: "50%",
         background: teaColour,
-        opacity: cupIn ? 0.55 : 0,
+        opacity: cupIn ? 0.45 : 0,
         mixBlendMode: "multiply",
-        transition: "background 0.6s ease, opacity 0.7s ease",
+        transition: "background 0.7s ease, opacity 0.8s ease",
         zIndex: 3,
       }} />
 
-      {/* Logo — fades in on the cup */}
+      {/* Logo — dark text inside the tea liquid area */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/images/splash-text.svg" alt="Rate your Tea" style={{
         position: "absolute",
-        bottom: "calc(10% + 22%)", left: "50%",
-        transform: `translateX(-50%) scale(${logoIn ? 1 : 0.7})`,
-        width: "50%", maxWidth: 200,
+        bottom: "38%", left: "50%",
+        transform: `translateX(-50%) scale(${logoIn ? 1 : 0.75})`,
+        width: "46%", maxWidth: 190,
         opacity: logoIn ? 1 : 0,
-        filter: LOGO_WHITE_FILTER,
-        transition: "transform 0.7s cubic-bezier(0.22,1,0.36,1), opacity 0.6s ease",
+        /* dark amber tint to match tea, like the mockup */
+        filter: "brightness(0) opacity(0.65) sepia(1) saturate(4) hue-rotate(5deg)",
+        transition: "transform 0.8s cubic-bezier(0.22,1,0.36,1), opacity 0.6s ease",
         zIndex: 4,
       }} />
 
-      {/* Real teabag — dips from above the cup */}
+      {/* Real teabag — string from top, dips into cup */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/images/real-teabag.png" alt="" aria-hidden style={{
         position: "absolute",
         top: 0, left: "50%",
-        transform: `translateX(-50%) translateY(${bagDown ? "28%" : cupIn ? "2%" : "-80%"})`,
-        width: "38%", maxWidth: 160,
+        /* up: bag sits just above cup rim (~35vh from top); down: dips ~12vh further */
+        transform: `translateX(-50%) translateY(${bagDown ? "47vh" : cupIn ? "30vh" : "-30vh"})`,
+        width: "44%", maxWidth: 180,
         opacity: cupIn ? 1 : 0,
-        transition: "transform 0.55s cubic-bezier(0.22,1,0.36,1), opacity 0.5s ease",
+        transition: "transform 0.6s cubic-bezier(0.22,1,0.36,1), opacity 0.5s ease",
         willChange: "transform",
         zIndex: 5,
       }} />
