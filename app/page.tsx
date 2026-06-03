@@ -1216,6 +1216,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
         transform: `translateX(-50%) translateY(${bagDown ? "47vh" : cupIn ? "30vh" : "-30vh"})`,
         width: "44%", maxWidth: 180,
         opacity: cupIn ? 1 : 0,
+        mixBlendMode: "multiply",
         transition: "transform 0.6s cubic-bezier(0.22,1,0.36,1), opacity 0.5s ease",
         willChange: "transform",
         zIndex: 5,
