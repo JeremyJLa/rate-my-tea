@@ -1165,7 +1165,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
     ts.push(setTimeout(() => setBagOut(true),  DIP_START + DIP_DURATION + 300));
     ts.push(setTimeout(() => setGreenFill(true), DIP_START + DIP_DURATION + 900));
     ts.push(setTimeout(() => setIrisGrow(true),  DIP_START + DIP_DURATION + 1600));
-    ts.push(setTimeout(() => onDismiss(),        DIP_START + DIP_DURATION + 3000));
+    ts.push(setTimeout(() => onDismiss(),        DIP_START + DIP_DURATION + 2000));
 
     return () => ts.forEach(clearTimeout);
   }, [onDismiss]);
@@ -1271,7 +1271,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
         top: "calc(50% - 40px)", left: "calc(50% - 40px)",
         background: "#fff",
         transform: irisGrow ? "scale(30)" : "scale(0)",
-        transition: irisGrow ? "transform 1.8s cubic-bezier(0.25,0.1,0.25,1)" : "none",
+        transition: irisGrow ? "transform 0.8s cubic-bezier(0.25,0.1,0.25,1)" : "none",
         willChange: "transform",
         zIndex: 7,
       }} />
