@@ -1103,7 +1103,7 @@ function SplashScreenB({ onDismiss }: { onDismiss: () => void }) {
       <img src="/images/teabagdip.png" alt="" aria-hidden style={{
         position: "absolute",
         top: 0, left: "50%",
-        transform: `translateX(-50%) translateY(${bagDown ? "8%" : "-60%"})`,
+        transform: `translateX(-50%) translateY(${bagDown ? "20px" : "-60%"})`,
         width: "55%", maxWidth: 220,
         opacity: cupVisible ? 1 : 0,
         transition: "transform 0.55s cubic-bezier(0.22,1,0.36,1), opacity 0.4s ease",
