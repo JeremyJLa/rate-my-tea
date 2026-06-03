@@ -1184,36 +1184,6 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
         }} />
       </div>
 
-      {/* Tea colour overlay — ellipse over the liquid area inside cup */}
-      <div style={{
-        position: "absolute",
-        /* sits over the tea liquid — approx 33–55% from bottom of screen */
-        bottom: "33%", left: "50%",
-        transform: "translateX(-50%)",
-        width: "62%",
-        height: "22%",
-        borderRadius: "50%",
-        background: teaColour,
-        opacity: cupIn ? 0.45 : 0,
-        mixBlendMode: "multiply",
-        transition: "background 0.7s ease, opacity 0.8s ease",
-        zIndex: 3,
-      }} />
-
-      {/* Logo — dark text inside the tea liquid area */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/images/splash-text.svg" alt="Rate your Tea" style={{
-        position: "absolute",
-        bottom: "38%", left: "50%",
-        transform: `translateX(-50%) scale(${logoIn ? 1 : 0.75})`,
-        width: "46%", maxWidth: 190,
-        opacity: logoIn ? 1 : 0,
-        /* dark amber tint to match tea, like the mockup */
-        filter: "brightness(0) opacity(0.65) sepia(1) saturate(4) hue-rotate(5deg)",
-        transition: "transform 0.8s cubic-bezier(0.22,1,0.36,1), opacity 0.6s ease",
-        zIndex: 4,
-      }} />
-
       {/* Real teabag — string from top, dips into cup */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/images/real-teabag.png" alt="" aria-hidden style={{
