@@ -882,33 +882,43 @@ function SharedRatingView({ rating, onClose }: { rating: Rating; onClose: () => 
 
 // ── Splash Screen ─────────────────────────────────────────────────────────────
 
-// Keyframes are module-level so the string is stable across renders
+const CUP_IMAGES = [
+  "/images/teahcup1.png",
+  "/images/teahcup2.png",
+  "/images/teahcup3.png",
+  "/images/teahcup4.png",
+  "/images/teahcup5.png",
+];
+
+// Module-level constants — string identity is stable, <style> tag never re-fires
 const SPLASH_EASE = "cubic-bezier(0.22,1,0.36,1)";
 const SPLASH_KEYFRAMES = `
   @keyframes rmt-cup-reveal {
-    0%   { opacity:0; transform:scale3d(0.90,0.90,1) translate3d(0,0,0); }
-    60%  { opacity:1; transform:scale3d(1.05,1.05,1) translate3d(0,0,0); }
-    80%  { opacity:1; transform:scale3d(0.99,0.99,1) translate3d(0,0,0); }
-    100% { opacity:1; transform:scale3d(1.00,1.00,1) translate3d(0,0,0); }
+    0%   { opacity:0;   transform:scale3d(0.88,0.88,1); }
+    55%  { opacity:1;   transform:scale3d(1.05,1.05,1); }
+    78%  { opacity:1;   transform:scale3d(0.99,0.99,1); }
+    100% { opacity:1;   transform:scale3d(1.00,1.00,1); }
   }
   @keyframes rmt-brown-collapse {
-    0%   { transform:translate3d(-50%,-50%,0) scale(1);    }
-    62%  { transform:translate3d(-50%,-50%,0) scale(0.27); }
-    100% { transform:translate3d(-50%,-50%,0) scale(0);    }
+    0%   { opacity:1;   transform:translate3d(-50%,-50%,0) scale(1);    }
+    55%  { opacity:1;   transform:translate3d(-50%,-50%,0) scale(0.16); }
+    82%  { opacity:0.5; transform:translate3d(-50%,-50%,0) scale(0.10); }
+    100% { opacity:0;   transform:translate3d(-50%,-50%,0) scale(0.07); }
   }
 `;
 
-// ── Splash phase timeline (ms from mount) ─────────────────────────────────────
-//  200  Phase 2: brown collapses (1100ms); cup scales in with multiply blend (1000ms)
-// 1200  blend → normal (brown nearly gone, snap is invisible)
-// 1350  Phase 3→4: "Hi Kate" + heading rise in
-// 1800  Phase 4: green circle expands (500ms)
-// 1960  white thumbnail silhouettes flash
-// 2060  entire splash fades out (280ms)
-// 2350  onDismiss — home screen takes over
-// ─────────────────────────────────────────────────────────────────────────────
+// Single coordinated timeline (ms from mount):
+//   200  Phase 2 — brown collapses (1300ms); cup wrapper scales in (1100ms)
+//   500  cup2   800 cup3   1100 cup4   1400 cup5   (300ms steps, 220ms crossfade)
+//  1300  blend → normal  (brown ~87% gone, snap invisible)
+//  1550  Phase 4 — "Hi Kate" + heading rise in
+//  1850  green circle expands (500ms)
+//  2000  white thumbnail silhouettes flash
+//  2100  entire splash fades out (280ms)
+//  2400  onDismiss — home screen takes over
 
 function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
+  const [imgIdx,     setImgIdx]     = useState(0);
   const [started,    setStarted]    = useState(false);
   const [blendOff,   setBlendOff]   = useState(false);
   const [textIn,     setTextIn]     = useState(false);
@@ -917,28 +927,36 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
   const [fading,     setFading]     = useState(false);
 
   useEffect(() => {
-    const ts = [
-      setTimeout(() => setStarted(true),     200),
-      setTimeout(() => setBlendOff(true),   1200),
-      setTimeout(() => setTextIn(true),     1350),
-      setTimeout(() => setClosing(true),    1800),
-      setTimeout(() => setShowThumbs(true), 1960),
-      setTimeout(() => setFading(true),     2060),
-      setTimeout(() => onDismiss(),         2350),
-    ];
+    const ts: ReturnType<typeof setTimeout>[] = [];
+
+    ts.push(setTimeout(() => setStarted(true), 200));
+
+    // Advance through all 5 cups every 300ms starting at t=200ms
+    // cup2@500  cup3@800  cup4@1100  cup5@1400
+    [1, 2, 3, 4].forEach(idx => {
+      ts.push(setTimeout(() => setImgIdx(idx), 200 + idx * 300));
+    });
+
+    ts.push(setTimeout(() => setBlendOff(true),   1300));
+    ts.push(setTimeout(() => setTextIn(true),     1550));
+    ts.push(setTimeout(() => setClosing(true),    1850));
+    ts.push(setTimeout(() => setShowThumbs(true), 2000));
+    ts.push(setTimeout(() => setFading(true),     2100));
+    ts.push(setTimeout(() => onDismiss(),         2400));
+
     return () => ts.forEach(clearTimeout);
   }, [onDismiss]);
 
-  // Cup: CSS keyframe controls scale overshoot + settle; multiply blend merges with
-  // the contracting brown circle for a "liquid poured into cup" visual during overlap
-  const cupStyle: React.CSSProperties = started
-    ? { animation: `rmt-cup-reveal 1000ms ${SPLASH_EASE} both`, mixBlendMode: blendOff ? "normal" : "multiply" }
+  // Wrapper: CSS keyframe drives unified scale overshoot + settle for all cups.
+  // multiply blend makes cups appear to emerge from the brown background as it collapses.
+  const cupWrapperStyle: React.CSSProperties = started
+    ? { animation: `rmt-cup-reveal 1100ms ${SPLASH_EASE} both`, mixBlendMode: blendOff ? "normal" : "multiply" }
     : { opacity: 0 };
 
-  // Brown circle: CSS keyframe collapses it in two stages (full → small disc → gone)
+  // Brown circle: collapses from full-screen → small disc → fades out (merges into tea surface)
   const brownStyle: React.CSSProperties = started
-    ? { animation: `rmt-brown-collapse 1100ms ${SPLASH_EASE} both` }
-    : { transform: "translate3d(-50%,-50%,0) scale(1)" };
+    ? { animation: `rmt-brown-collapse 1300ms ${SPLASH_EASE} both` }
+    : { opacity: 1, transform: "translate3d(-50%,-50%,0) scale(1)" };
 
   return (
     <div style={{
@@ -951,17 +969,26 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
     }}>
       <style>{SPLASH_KEYFRAMES}</style>
 
-      {/* Hero cup — scale 0.90→1.05→0.99→1.00 with multiply blend during collapse */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/images/teahcup1.png" alt="" style={{
+      {/* Cup wrapper — keyframe controls group scale/opacity; inner imgs crossfade for cycling */}
+      <div style={{
         position: "absolute", inset: 0,
-        width: "100%", height: "100%",
-        objectFit: "cover", objectPosition: "center top",
         willChange: "transform, opacity",
-        ...cupStyle,
-      }} />
+        ...cupWrapperStyle,
+      }}>
+        {CUP_IMAGES.map((src, i) => (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img key={src} src={src} alt="" style={{
+            position: "absolute", inset: 0,
+            width: "100%", height: "100%",
+            objectFit: "cover", objectPosition: "center top",
+            willChange: "opacity",
+            opacity: imgIdx === i ? 1 : 0,
+            transition: "opacity 0.22s ease-in-out",
+          }} />
+        ))}
+      </div>
 
-      {/* "Hi Kate" — rises 6px, fades in at Phase 4 */}
+      {/* "Hi Kate" — rises 6px, Phase 4 */}
       <div style={{
         position: "absolute", top: 0, left: 0, right: 0, height: 90, zIndex: 2,
         display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: 10,
@@ -973,7 +1000,7 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
         <p className="font-medium" style={{ fontSize: 15, color: "rgba(255,255,255,0.7)", letterSpacing: 0.3 }}>Hi Kate</p>
       </div>
 
-      {/* "Rate your Tea" SVG — rises 8px, 100ms stagger after greeting */}
+      {/* "Rate your Tea" SVG — rises 8px, 100ms stagger */}
       <div style={{
         position: "absolute", inset: 0, zIndex: 2,
         display: "flex", alignItems: "flex-start", justifyContent: "center",
@@ -990,7 +1017,7 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
         }} />
       </div>
 
-      {/* White thumbnail silhouettes — positions match home screen grid */}
+      {/* White thumbnail silhouettes — match home grid positions */}
       <div style={{
         position: "absolute", inset: 0, zIndex: 12, pointerEvents: "none",
         willChange: "opacity",
@@ -1007,19 +1034,19 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
         </div>
       </div>
 
-      {/* Brown circle — two-stage collapse via CSS keyframe */}
+      {/* Brown circle — collapses + fades into cup tea surface */}
       <div style={{
         position: "absolute", zIndex: 10,
         width: "150vmax", height: "150vmax",
         top: "50%", left: "50%",
         borderRadius: "50%",
         backgroundColor: "#7B4E2C",
-        willChange: "transform",
+        willChange: "transform, opacity",
         pointerEvents: "none",
         ...brownStyle,
       }} />
 
-      {/* Green circle — expands to close, morphs into home screen */}
+      {/* Green circle — expands to close */}
       <div style={{
         position: "absolute", zIndex: 10,
         width: "150vmax", height: "150vmax",
