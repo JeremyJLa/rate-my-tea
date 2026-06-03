@@ -899,6 +899,8 @@ const TEA_GREEN = "#3dba6e";
 const LOGO_WHITE_FILTER = "brightness(0) invert(1) drop-shadow(0 2px 8px rgba(0,0,0,0.5))";
 
 function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
+  const [hiKate,      setHiKate]      = useState(false);
+  const [hiKateOut,   setHiKateOut]   = useState(false);
   const [cupVisible,  setCupVisible]  = useState(false);
   const [greenFlood,  setGreenFlood]  = useState(false);
   const [logoVisible, setLogoVisible] = useState(false);
@@ -907,12 +909,14 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
 
   useEffect(() => {
     const ts = [
-      setTimeout(() => setCupVisible(true),    400),
-      setTimeout(() => setGreenFlood(true),   1400),
-      setTimeout(() => setLogoVisible(true),  1800),  // white logo grows in over green
-      setTimeout(() => setLogoOut(true),      2800),
-      setTimeout(() => setIrisGrow(true),     2800),
-      setTimeout(() => onDismiss(),           4600),
+      setTimeout(() => setHiKate(true),       150),   // Hi Kate fades in
+      setTimeout(() => setHiKateOut(true),    900),   // Hi Kate fades out
+      setTimeout(() => setCupVisible(true),  1100),   // cup zooms in
+      setTimeout(() => setGreenFlood(true),  1900),   // green flood
+      setTimeout(() => setLogoVisible(true), 2300),   // white logo over green
+      setTimeout(() => setLogoOut(true),     3200),
+      setTimeout(() => setIrisGrow(true),    3200),
+      setTimeout(() => onDismiss(),          5000),
     ];
     return () => ts.forEach(clearTimeout);
   }, [onDismiss]);
@@ -929,6 +933,18 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
       backgroundColor: "#fff",
       overflow: "hidden",
     }}>
+
+      {/* Hi Kate — fades in then out on white background */}
+      <p style={{
+        position: "absolute", inset: 0,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        margin: 0, fontSize: 28, fontWeight: 400,
+        color: "#aaa", letterSpacing: 0.2,
+        opacity: hiKate && !hiKateOut ? 1 : 0,
+        transition: hiKateOut ? "opacity 0.5s ease-in" : "opacity 0.6s ease-out",
+        zIndex: 1,
+        pointerEvents: "none",
+      }}>Hi Kate</p>
 
       {/* Layer 1 — Cup photo */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
