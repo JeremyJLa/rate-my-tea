@@ -1164,6 +1164,12 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       opacity: fading ? 0 : 1,
       transition: fading ? "opacity 0.8s ease" : "none",
     }}>
+      <style>{`
+        @keyframes floatLogo {
+          0%, 100% { transform: translateX(-50%) translateY(0px); }
+          50%       { transform: translateX(-50%) translateY(-8px); }
+        }
+      `}</style>
 
       {/* Glass cup — fills bottom 70% of screen, object-fit cover crops into cup */}
       <div style={{
@@ -1184,12 +1190,38 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
         }} />
       </div>
 
+      {/* Floating black logo inside the tea */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/images/splash-text.svg" alt="Rate your Tea" style={{
+        position: "absolute",
+        bottom: "22%", left: "50%",
+        width: "48%", maxWidth: 200,
+        opacity: cupIn ? 0.8 : 0,
+        filter: "brightness(0)",
+        animation: cupIn ? "floatLogo 3s ease-in-out infinite" : "none",
+        transition: "opacity 0.8s ease",
+        zIndex: 4,
+      }} />
+
+      {/* String line from top of screen down to teabag */}
+      <div style={{
+        position: "absolute",
+        top: 0, left: "50%",
+        width: 1.5,
+        transform: `translateX(-50%) scaleY(1)`,
+        transformOrigin: "top center",
+        height: bagDown ? "47vh" : cupIn ? "30vh" : "0vh",
+        background: "#bbb",
+        transition: "height 0.6s cubic-bezier(0.22,1,0.36,1)",
+        opacity: cupIn ? 1 : 0,
+        zIndex: 6,
+      }} />
+
       {/* Real teabag — string from top, dips into cup */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/images/real-teabag.png" alt="" aria-hidden style={{
         position: "absolute",
         top: 0, left: "50%",
-        /* up: bag sits just above cup rim (~35vh from top); down: dips ~12vh further */
         transform: `translateX(-50%) translateY(${bagDown ? "47vh" : cupIn ? "30vh" : "-30vh"})`,
         width: "62%", maxWidth: 252,
         opacity: cupIn ? 1 : 0,
