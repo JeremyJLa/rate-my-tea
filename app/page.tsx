@@ -896,7 +896,7 @@ function SharedRatingView({ rating, onClose }: { rating: Rating; onClose: () => 
 // ── Splash Screen ─────────────────────────────────────────────────────────────
 
 const TEA_GREEN = "#3dba6e";
-const LOGO_WHITE_FILTER = "brightness(0) invert(1) drop-shadow(0 2px 8px rgba(0,0,0,0.5))";
+const LOGO_WHITE_FILTER = "drop-shadow(0 2px 8px rgba(0,0,0,0.5))";
 
 function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
   const [hiKate,      setHiKate]      = useState(false);
