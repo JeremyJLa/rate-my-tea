@@ -904,28 +904,34 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
   const [cupVisible,  setCupVisible]  = useState(false);
   const [greenFlood,  setGreenFlood]  = useState(false);
   const [logoVisible, setLogoVisible] = useState(false);
-  const [logoOut,     setLogoOut]     = useState(false);
+  const [logoBlack,   setLogoBlack]   = useState(false);
+  const [logoBreak,   setLogoBreak]   = useState(false);
   const [irisGrow,    setIrisGrow]    = useState(false);
 
   useEffect(() => {
     const ts = [
-      setTimeout(() => setHiKate(true),       150),   // Hi Kate fades in
-      setTimeout(() => setHiKateOut(true),   1600),  // Hi Kate fades out
-      setTimeout(() => setCupVisible(true),  1900),  // cup zooms in
-      setTimeout(() => setGreenFlood(true),  1900),   // green flood
-      setTimeout(() => setLogoVisible(true), 2300),   // white logo over green
-      setTimeout(() => setLogoOut(true),     5200),
-      setTimeout(() => setIrisGrow(true),    5200),
-      setTimeout(() => onDismiss(),          7000),
+      setTimeout(() => setHiKate(true),       150),
+      setTimeout(() => setHiKateOut(true),   1600),
+      setTimeout(() => setCupVisible(true),  1900),
+      setTimeout(() => setGreenFlood(true),  1900),
+      setTimeout(() => setLogoVisible(true), 2300),
+      setTimeout(() => setIrisGrow(true),    5200),   // iris grows, logo turns black
+      setTimeout(() => setLogoBlack(true),   5200),
+      setTimeout(() => setLogoBreak(true),   6300),   // words fly apart
+      setTimeout(() => onDismiss(),          7200),
     ];
     return () => ts.forEach(clearTimeout);
   }, [onDismiss]);
 
-  const logoTransform = logoVisible ? "scale(1)" : "scale(0.3)";
-  const logoOpacity   = logoOut ? 0 : logoVisible ? 1 : 0;
-  const logoTransition = logoOut
-    ? "opacity 0.4s ease-in"
-    : "transform 0.8s cubic-bezier(0.22,1,0.36,1), opacity 0.6s ease-out";
+  const logoBaseTransform = logoVisible ? "scale(1)" : "scale(0.3)";
+  const logoOpacity = logoBreak ? 0 : logoVisible ? 1 : 0;
+
+  // Three horizontal slices of the logo, each flies in a different direction
+  const LOGO_SLICES = [
+    { clip: "inset(0 0 62% 0)",    fly: "translate(-180px, -320px) rotate(-22deg)" },
+    { clip: "inset(33% 0 38% 0)",  fly: "translate(25px, 380px) rotate(6deg)"      },
+    { clip: "inset(57% 0 0 0)",    fly: "translate(170px, -260px) rotate(20deg)"   },
+  ];
 
   return (
     <div style={{
@@ -978,24 +984,31 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
         zIndex: 2,
       }} />
 
-      {/* Layer 3 — Logo (always on top of cup + green flood) */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src="/images/splash-text.svg"
-        alt="Rate your Tea"
-        style={{
-          position: "absolute",
-          top: "42%", left: "50%",
-          transform: `translate(-50%, -50%) ${logoTransform}`,
-          width: "62%", maxWidth: 240,
-          opacity: logoOpacity,
-          filter: LOGO_WHITE_FILTER,
-          transition: logoTransition,
-          willChange: "transform, opacity",
-          transformOrigin: "center center",
-          zIndex: 4,
-        }}
-      />
+      {/* Layer 3 — Logo: 3 slices that break apart on exit */}
+      {LOGO_SLICES.map(({ clip, fly }, i) => (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          key={i}
+          src="/images/splash-text.svg"
+          alt={i === 0 ? "Rate your Tea" : ""}
+          aria-hidden={i !== 0}
+          style={{
+            position: "absolute",
+            top: "42%", left: "50%",
+            transform: `translate(-50%, -50%) ${logoBreak ? fly : logoBaseTransform}`,
+            width: "62%", maxWidth: 240,
+            opacity: logoOpacity,
+            filter: logoBlack ? "brightness(0)" : LOGO_WHITE_FILTER,
+            clipPath: clip,
+            transition: logoBreak
+              ? `transform 0.9s cubic-bezier(0.55,0,1,0.45), opacity 0.5s ease, filter 0.3s ease`
+              : `transform 0.8s cubic-bezier(0.22,1,0.36,1), opacity 0.6s ease-out, filter 0.4s ease`,
+            willChange: "transform, opacity",
+            transformOrigin: "center center",
+            zIndex: 6,
+          }}
+        />
+      ))}
 
       {/* Layer 4 — White iris (grows over green to reveal home) */}
       <div style={{
@@ -1008,7 +1021,7 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
         transform: irisGrow ? "scale(30)" : "scale(0)",
         transition: irisGrow ? "transform 2s cubic-bezier(0.25,0.1,0.25,1)" : "none",
         willChange: "transform",
-        zIndex: 5,
+        zIndex: 5,  // logo slices are z:6, above iris
       }} />
 
     </div>
