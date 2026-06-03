@@ -1152,11 +1152,11 @@ const CUP_IMAGES = [
   "/images/glass-teacuop3.png",
 ];
 
-// Dip animation: 8s continuous sequence
-// Keyframe %s → ms: 8% = 640ms, 62% = 4960ms (cup changes timed to match)
-const DIP_DURATION = 8000;
-const CUP2_AT     = DIP_DURATION * 0.08;  // 640ms — long dip starts
-const CUP3_AT     = DIP_DURATION * 0.62;  // 4960ms — second long dip starts
+// Dip animation: 3 slow short dips, each ~1/3 of total duration
+// Cup changes on way back up: after dip 1 (33%) and dip 2 (66%)
+const DIP_DURATION = 9000;
+const CUP2_AT     = DIP_DURATION * 0.33;  // ~2970ms — after dip 1
+const CUP3_AT     = DIP_DURATION * 0.66;  // ~5940ms — after dip 2
 const BAGOUT_AT   = DIP_DURATION + 400;
 
 function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
@@ -1178,10 +1178,10 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
     ts.push(setTimeout(() => setCupIn(true),              200));
     ts.push(setTimeout(() => setLogoIn(true),            1200));
     ts.push(setTimeout(() => setDipping(true),      DIP_START));
-    // cup 2 blends at 8% into animation
-    ts.push(setTimeout(() => setCupImgIdx(1),  DIP_START + DIP_DURATION * 0.08));
-    // cup 3 blends at 62% into animation
-    ts.push(setTimeout(() => setCupImgIdx(2),  DIP_START + DIP_DURATION * 0.62));
+    // cup 2 blends after dip 1 (33%)
+    ts.push(setTimeout(() => setCupImgIdx(1),  DIP_START + DIP_DURATION * 0.33));
+    // cup 3 blends after dip 2 (66%)
+    ts.push(setTimeout(() => setCupImgIdx(2),  DIP_START + DIP_DURATION * 0.66));
     // bag flies off just after animation ends
     ts.push(setTimeout(() => setBagOut(true),  DIP_START + DIP_DURATION + 300));
     ts.push(setTimeout(() => setGreenFill(true), DIP_START + DIP_DURATION + 900));
@@ -1213,19 +1213,12 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
         }
         @keyframes teabagDip {
           0%        { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
-          8%        { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 + var(--bag-offset, -20px))); }
-          18%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 + var(--bag-offset, -20px))); }
-          26%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 + var(--bag-offset, -20px))); }
-          34%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 + var(--bag-offset, -20px))); }
-          44%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
-          58%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
-          66%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 + var(--bag-offset, -20px))); }
-          73%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 + var(--bag-offset, -20px))); }
-          78%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 + var(--bag-offset, -20px))); }
-          83%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 + var(--bag-offset, -20px))); }
-          87%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 + var(--bag-offset, -20px))); }
-          91%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 + var(--bag-offset, -20px))); }
-          97%, 100% { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
+          16%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.10 + var(--bag-offset, -20px))); }
+          33%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
+          50%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.10 + var(--bag-offset, -20px))); }
+          66%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
+          83%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.10 + var(--bag-offset, -20px))); }
+          100%      { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
         }
         }
       `}</style>
@@ -1276,7 +1269,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
         animation: bagOut
           ? "teabagExit 0.7s cubic-bezier(0.55,0,1,0.45) forwards"
           : dipping
-            ? `teabagDip ${DIP_DURATION}ms ease-in-out forwards`
+            ? `teabagDip ${DIP_DURATION}ms linear forwards`
             : "none",
         width: "62%", maxWidth: 252,
         opacity: cupIn ? 1 : 0,
