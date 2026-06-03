@@ -1169,9 +1169,9 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/images/glass-teacuop.png" alt="" aria-hidden style={{
         position: "absolute",
-        bottom: "3%", left: "50%",
-        transform: `translateX(-50%) translateY(${cupIn ? "0" : "50%"})`,
-        width: "94%",
+        bottom: 0, left: "50%",
+        transform: `translateX(-50%) translateY(${cupIn ? "0" : "60%"})`,
+        width: "140%",
         opacity: cupIn ? 1 : 0,
         transition: "transform 1s cubic-bezier(0.22,1,0.36,1), opacity 0.8s ease",
         zIndex: 2,
