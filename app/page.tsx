@@ -1182,20 +1182,20 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
           50%       { transform: translateX(-50%) translateY(-8px); }
         }
         @keyframes teabagDip {
-          0%        { transform: translateX(-50%) translateY(-26vh); }
-          8%        { transform: translateX(-50%) translateY(-4vh); }
-          18%       { transform: translateX(-50%) translateY(-7vh); }
-          26%       { transform: translateX(-50%) translateY(-4vh); }
-          34%       { transform: translateX(-50%) translateY(-7vh); }
-          44%       { transform: translateX(-50%) translateY(-26vh); }
-          58%       { transform: translateX(-50%) translateY(-26vh); }
-          66%       { transform: translateX(-50%) translateY(-4vh); }
-          73%       { transform: translateX(-50%) translateY(-7vh); }
-          78%       { transform: translateX(-50%) translateY(-4vh); }
-          83%       { transform: translateX(-50%) translateY(-7vh); }
-          87%       { transform: translateX(-50%) translateY(-4vh); }
-          91%       { transform: translateX(-50%) translateY(-7vh); }
-          97%, 100% { transform: translateX(-50%) translateY(-26vh); }
+          0%        { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26)); }
+          8%        { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04)); }
+          18%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07)); }
+          26%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04)); }
+          34%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07)); }
+          44%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26)); }
+          58%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26)); }
+          66%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04)); }
+          73%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07)); }
+          78%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04)); }
+          83%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07)); }
+          87%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04)); }
+          91%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07)); }
+          97%, 100% { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26)); }
         }
         }
       `}</style>
@@ -1204,9 +1204,9 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       <div style={{
         position: "absolute",
         bottom: 10, left: 0, right: 0,
-        height: "58vh",
+        height: "calc(var(--ch, 100vh) * 0.58)",
         opacity: cupIn ? 1 : 0,
-        transform: `translateY(${cupIn ? "0" : "60vh"})`,
+        transform: cupIn ? "translateY(0)" : "translateY(calc(var(--ch, 100vh) * 0.6))",
         transition: "transform 1s cubic-bezier(0.22,1,0.36,1), opacity 0.8s ease",
         zIndex: 2,
         overflow: "hidden",
@@ -1228,7 +1228,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/images/splash-text.svg" alt="Rate your Tea" style={{
         position: "absolute",
-        bottom: "calc(10vh + 55px)", left: "50%",
+        bottom: "calc(var(--ch, 100vh) * 0.10 + 55px)", left: "50%",
         width: "34%", maxWidth: 140,
         opacity: cupIn ? 0.8 : 0,
         filter: "brightness(0)",
@@ -1242,7 +1242,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       <img src="/images/real-teabag.png" alt="" aria-hidden style={{
         position: "absolute",
         top: 0, left: "50%",
-        transform: bagOut ? "translateX(-50%) translateY(-120vh)" : !cupIn ? "translateX(-50%) translateY(-40vh)" : undefined,
+        transform: bagOut ? "translateX(-50%) translateY(calc(var(--ch, 100vh) * -1.2))" : !cupIn ? "translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.4))" : undefined,
         animation: bagOut ? "none" : dipping ? `teabagDip ${DIP_DURATION}ms ease-in-out forwards` : "none",
         width: "62%", maxWidth: 252,
         opacity: cupIn ? 1 : 0,
@@ -1283,6 +1283,19 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
 // ── App ───────────────────────────────────────────────────────────────────────
 
 export default function App() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Set --ch to actual container height so splash uses container px not viewport vh
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const update = () => el.style.setProperty("--ch", `${el.clientHeight}px`);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   const [showSplash, setShowSplash] = useState(true);
   const [screen, setScreen] = useState<Screen>("home");
   const [activeTeaId, setActiveTeaId] = useState<string | null>(null);
@@ -1370,6 +1383,7 @@ export default function App() {
   return (
     <div className="flex items-center justify-center sm:bg-[#d1d5db] bg-[#F7F6F3] sm:p-4" style={{ minHeight: "100dvh" }}>
       <div
+        ref={containerRef}
         className="relative overflow-hidden w-full sm:h-[844px] sm:w-[390px] sm:rounded-[50px] sm:shadow-2xl"
         style={{ height: "100dvh", background: "#F7F6F3" } as React.CSSProperties}
       >
