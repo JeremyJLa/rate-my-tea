@@ -1181,6 +1181,10 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
           0%, 100% { transform: translateX(-50%) translateY(0px); }
           50%       { transform: translateX(-50%) translateY(-8px); }
         }
+        @keyframes teabagExit {
+          from { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 - 15px)); }
+          to   { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -1.5 - 15px)); }
+        }
         @keyframes teabagDip {
           0%        { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 - 15px)); }
           8%        { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.04 - 15px)); }
@@ -1242,16 +1246,16 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       <img src="/images/real-teabag.png" alt="" aria-hidden style={{
         position: "absolute",
         top: 0, left: "50%",
-        transform: bagOut
-          ? `translateX(-50%) translateY(calc(var(--ch, 100vh) * -1.2 - 15px))`
+        transform: dipping ? "translateX(-50%)" : `translateX(-50%) translateY(calc(var(--ch, 100vh) * ${cupIn ? -0.26 : -0.4} - 15px))`,
+        animation: bagOut
+          ? "teabagExit 0.7s cubic-bezier(0.55,0,1,0.45) forwards"
           : dipping
-            ? "translateX(-50%)"
-            : `translateX(-50%) translateY(calc(var(--ch, 100vh) * ${cupIn ? -0.26 : -0.4} - 15px))`,
-        animation: bagOut ? "none" : dipping ? `teabagDip ${DIP_DURATION}ms ease-in-out forwards` : "none",
+            ? `teabagDip ${DIP_DURATION}ms ease-in-out forwards`
+            : "none",
         width: "62%", maxWidth: 252,
         opacity: cupIn ? 1 : 0,
         mixBlendMode: "multiply",
-        transition: bagOut ? "transform 1s cubic-bezier(0.55,0,1,0.45)" : "opacity 0.5s ease",
+        transition: "opacity 0.5s ease",
         willChange: "transform",
         zIndex: 8,
       }} />
