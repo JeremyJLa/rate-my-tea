@@ -1150,33 +1150,30 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
     after(200,  () => setCupIn(true));
     after(1000, () => setLogoIn(true));
 
-    // dip 1 — short
-    after(900, () => setBagShortDown(true));
+    // === First sequence: 1 long dip + 2 short dips → cup 2 blends ===
+    after(900, () => setBagDown(true));                              // long dip
+    after(600, () => { setCupImgIdx(1); setBagDown(false); });      // cup 2 starts blending
+
+    after(550, () => setBagShortDown(true));                        // short dip 1
     after(350, () => setBagShortDown(false));
 
-    // dip 2 — short, blend to cup 2
-    after(600, () => setBagShortDown(true));
-    after(350, () => { setColourIdx(1); setCupImgIdx(1); setBagShortDown(false); });
+    after(450, () => setBagShortDown(true));                        // short dip 2
+    after(350, () => setBagShortDown(false));
 
-    // pause 2 seconds with bag at full rest height
-    after(2000, () => { /* bag stays up */ });
+    // back up to high rest position — pause
+    after(1800, () => { /* bag at high rest */ });
 
-    // longer dip down — deeper than short dips
-    after(0,   () => setBagDown(true));
+    // === Second sequence: 1 long dip + 3 short dips → cup 3 blends → flies off ===
+    after(0,   () => { setBagDown(true); setCupImgIdx(2); });       // long dip, cup 3 blends
     after(600, () => setBagDown(false));
 
-    // second longer dip — start blending to cup 3
-    after(700, () => { setBagDown(true); setCupImgIdx(2); });
-    after(600, () => { setColourIdx(2); setBagDown(false); });
-
-    // 3 short dips
-    after(600, () => setBagShortDown(true));
+    after(550, () => setBagShortDown(true));                        // short dip 1
     after(350, () => setBagShortDown(false));
 
-    after(500, () => setBagShortDown(true));
+    after(450, () => setBagShortDown(true));                        // short dip 2
     after(350, () => setBagShortDown(false));
 
-    after(500, () => setBagShortDown(true));
+    after(450, () => setBagShortDown(true));                        // short dip 3
     after(350, () => setBagShortDown(false));
 
     // bag flies up off screen, green floods in, then home
@@ -1247,7 +1244,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       <img src="/images/real-teabag.png" alt="" aria-hidden style={{
         position: "absolute",
         top: 0, left: "50%",
-        transform: `translateX(-50%) translateY(${bagOut ? "-120vh" : bagShortDown ? "-8vh" : bagDown ? "-4vh" : cupIn ? "calc(-18vh - 20px)" : "-40vh"})`,
+        transform: `translateX(-50%) translateY(${bagOut ? "-120vh" : bagShortDown ? "-8vh" : bagDown ? "-4vh" : cupIn ? "-26vh" : "-40vh"})`,
         width: "62%", maxWidth: 252,
         opacity: cupIn ? 1 : 0,
         mixBlendMode: "multiply",
