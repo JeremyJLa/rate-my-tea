@@ -1152,10 +1152,10 @@ const CUP_IMAGES = [
   "/images/glass-teacuop3.png",
 ];
 
-// Dip animation: deep+shallow → colour change, then deep+shallow+shallow → colour change
+// Dip animation: long dip → partial rise → short dip → colour change (x2)
 const DIP_DURATION = 9000;
-const CUP2_AT     = DIP_DURATION * 0.42;  // after deep+shallow phase
-const CUP3_AT     = DIP_DURATION * 0.93;  // after deep+shallow+shallow phase
+const CUP2_AT     = DIP_DURATION * 0.48;  // after first long+short pattern
+const CUP3_AT     = DIP_DURATION * 0.96;  // after second long+short pattern
 const BAGOUT_AT   = DIP_DURATION + 400;
 
 function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
@@ -1180,10 +1180,10 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
     ts.push(setTimeout(() => setLogoIn(true),            1200));
     ts.push(setTimeout(() => setHiVisible(false), DIP_START + DIP_DURATION + 100));
     ts.push(setTimeout(() => setDipping(true),      DIP_START));
-    // cup 2 blends after deep+shallow phase (42%)
-    ts.push(setTimeout(() => setCupImgIdx(1),  DIP_START + DIP_DURATION * 0.42));
-    // cup 3 blends after deep+shallow+shallow phase (93%)
-    ts.push(setTimeout(() => setCupImgIdx(2),  DIP_START + DIP_DURATION * 0.93));
+    // cup 2 blends after first long+short pattern (48%)
+    ts.push(setTimeout(() => setCupImgIdx(1),  DIP_START + DIP_DURATION * 0.48));
+    // cup 3 blends after second long+short pattern (96%)
+    ts.push(setTimeout(() => setCupImgIdx(2),  DIP_START + DIP_DURATION * 0.96));
     // bag flies off just after animation ends
     ts.push(setTimeout(() => setBagOut(true),  DIP_START + DIP_DURATION + 300));
     ts.push(setTimeout(() => setGreenFill(true), DIP_START + DIP_DURATION + 900));
@@ -1214,16 +1214,16 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
           .splash-cup { height: calc(var(--ch, 100vh) * 0.58) !important; }
         }
         @keyframes teabagDip {
+          /* Pattern 1: long dip → partial rise → short dip → colour change */
           0%        { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
-          10%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 + var(--bag-offset, -20px))); }
-          21%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
-          31%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.15 + var(--bag-offset, -20px))); }
-          42%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
-          55%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.07 + var(--bag-offset, -20px))); }
-          65%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
-          75%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.15 + var(--bag-offset, -20px))); }
-          83%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
-          90%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.15 + var(--bag-offset, -20px))); }
+          18%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.06 + var(--bag-offset, -20px))); }
+          34%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.17 + var(--bag-offset, -20px))); }
+          46%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.11 + var(--bag-offset, -20px))); }
+          50%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
+          /* Pattern 2: long dip → partial rise → short dip → colour change */
+          66%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.06 + var(--bag-offset, -20px))); }
+          82%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.17 + var(--bag-offset, -20px))); }
+          94%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.11 + var(--bag-offset, -20px))); }
           100%      { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
         }
         }
