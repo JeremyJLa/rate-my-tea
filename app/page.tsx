@@ -930,8 +930,9 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
           width: "100%", height: "100%",
           objectFit: "cover", objectPosition: "center",
           opacity: cupVisible ? 1 : 0,
-          transition: "opacity 0.7s ease",
-          willChange: "opacity",
+          transform: cupVisible ? "scale(1)" : "scale(2.2)",
+          transition: cupVisible ? "opacity 1.0s ease-out, transform 1.4s cubic-bezier(0.22,1,0.36,1)" : "none",
+          willChange: "opacity, transform",
         }}
       />
 
@@ -943,6 +944,7 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
         top: "calc(50% - 40px)",
         left: "calc(50% - 40px)",
         background: TEA_GREEN,
+        mixBlendMode: "hard-light",
         transform: greenFlood ? "scale(30)" : "scale(0)",
         transition: greenFlood ? "transform 0.8s cubic-bezier(0.4,0,0.6,1)" : "none",
         willChange: "transform",
