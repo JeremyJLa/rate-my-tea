@@ -882,31 +882,35 @@ function SharedRatingView({ rating, onClose }: { rating: Rating; onClose: () => 
 
 // ── Splash Screen ─────────────────────────────────────────────────────────────
 
+const TEA_GREEN = "#3dba6e";
+const LOGO_GREEN_FILTER = "brightness(0) saturate(100%) invert(45%) sepia(40%) saturate(600%) hue-rotate(60deg) brightness(95%)";
+const LOGO_WHITE_FILTER = "brightness(0) invert(1) drop-shadow(0 2px 8px rgba(0,0,0,0.4))";
+
 function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
   const [logoVisible, setLogoVisible] = useState(false);
   const [cupVisible,  setCupVisible]  = useState(false);
+  const [greenFlood,  setGreenFlood]  = useState(false);
   const [logoOut,     setLogoOut]     = useState(false);
   const [irisGrow,    setIrisGrow]    = useState(false);
 
   useEffect(() => {
     const ts = [
-      setTimeout(() => setLogoVisible(true),  50),
-      setTimeout(() => setCupVisible(true),  800),
-      setTimeout(() => setLogoOut(true),    1600),
-      setTimeout(() => setIrisGrow(true),   2200),
-      setTimeout(() => onDismiss(),         4000),
+      setTimeout(() => setLogoVisible(true),   50),
+      setTimeout(() => setCupVisible(true),    800),
+      setTimeout(() => setGreenFlood(true),   1700),
+      setTimeout(() => setLogoOut(true),      2500),
+      setTimeout(() => setIrisGrow(true),     2500),
+      setTimeout(() => onDismiss(),           4300),
     ];
     return () => ts.forEach(clearTimeout);
   }, [onDismiss]);
 
-  // Logo transform: starts tiny, grows to full, then shrinks out
-  const logoTransform = logoOut
-    ? "scale(0.5)"
-    : logoVisible ? "scale(1)" : "scale(0.18)";
-  const logoOpacity = logoOut ? 0 : logoVisible ? 1 : 0;
+  const logoTransform = logoVisible ? "scale(1)" : "scale(0.18)";
+  const logoOpacity   = logoOut ? 0 : logoVisible ? 1 : 0;
+  const logoFilter    = cupVisible ? LOGO_WHITE_FILTER : LOGO_GREEN_FILTER;
   const logoTransition = logoOut
-    ? "transform 0.5s ease-in, opacity 0.5s ease-in"
-    : "transform 1.1s cubic-bezier(0.22,1,0.36,1), opacity 0.5s ease-out";
+    ? "opacity 0.4s ease-in"
+    : "transform 1.1s cubic-bezier(0.22,1,0.36,1), opacity 0.5s ease-out, filter 0.7s ease";
 
   return (
     <div style={{
@@ -915,7 +919,7 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
       overflow: "hidden",
     }}>
 
-      {/* Cup photo — fades in behind logo */}
+      {/* Layer 1 — Cup photo */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/images/teahcup5.png"
@@ -926,12 +930,26 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
           width: "100%", height: "100%",
           objectFit: "cover", objectPosition: "center",
           opacity: cupVisible ? 1 : 0,
-          transition: "opacity 0.9s ease",
+          transition: "opacity 0.7s ease",
           willChange: "opacity",
         }}
       />
 
-      {/* Logo — grows in, then shrinks + fades out */}
+      {/* Layer 2 — Green flood circle (expands to cover cup) */}
+      <div style={{
+        position: "absolute",
+        width: 80, height: 80,
+        borderRadius: "50%",
+        top: "calc(50% - 40px)",
+        left: "calc(50% - 40px)",
+        background: TEA_GREEN,
+        transform: greenFlood ? "scale(30)" : "scale(0)",
+        transition: greenFlood ? "transform 0.8s cubic-bezier(0.4,0,0.6,1)" : "none",
+        willChange: "transform",
+        zIndex: 2,
+      }} />
+
+      {/* Layer 3 — Logo (always on top of cup + green flood) */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/images/splash-text.svg"
@@ -942,30 +960,26 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
           transform: `translate(-50%, -50%) ${logoTransform}`,
           width: "62%", maxWidth: 240,
           opacity: logoOpacity,
+          filter: logoFilter,
           transition: logoTransition,
           willChange: "transform, opacity",
           transformOrigin: "center center",
-          zIndex: 2,
-          // SVG is white — tint green on white bg, transition to white over cup
-          filter: cupVisible
-            ? "brightness(0) invert(1) drop-shadow(0 2px 8px rgba(0,0,0,0.4))"
-            : "brightness(0) saturate(100%) invert(45%) sepia(40%) saturate(600%) hue-rotate(60deg) brightness(95%)",
-          transition: logoTransition + ", filter 0.9s ease",
+          zIndex: 4,
         }}
       />
 
-      {/* White iris — grows from cup centre to fill screen */}
+      {/* Layer 4 — White iris (grows over green to reveal home) */}
       <div style={{
         position: "absolute",
         width: 80, height: 80,
         borderRadius: "50%",
-        top: "calc(48% - 40px)",
+        top: "calc(50% - 40px)",
         left: "calc(50% - 40px)",
         background: "#fff",
-        transform: irisGrow ? "scale(25)" : "scale(0)",
+        transform: irisGrow ? "scale(30)" : "scale(0)",
         transition: irisGrow ? "transform 2s cubic-bezier(0.25,0.1,0.25,1)" : "none",
         willChange: "transform",
-        zIndex: 3,
+        zIndex: 5,
       }} />
 
     </div>
