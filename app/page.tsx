@@ -1135,6 +1135,8 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
   const [cupIn,     setCupIn]     = useState(false);
   const [cupImgIdx, setCupImgIdx] = useState(0);
   const [bagDown,   setBagDown]   = useState(false);
+  const [bagOut,    setBagOut]    = useState(false);
+  const [greenFill, setGreenFill] = useState(false);
   const [colourIdx, setColourIdx] = useState(0);
   const [logoIn,    setLogoIn]    = useState(false);
   const [fading,    setFading]    = useState(false);
@@ -1172,7 +1174,10 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
     after(500, () => setColourIdx(2));
     after(500, () => setBagDown(false));
 
-    after(1000, () => setFading(true));
+    // bag flies up off screen, green floods in, then home
+    after(800,  () => setBagOut(true));
+    after(600,  () => setGreenFill(true));
+    after(1200, () => setFading(true));
     after(800,  () => onDismiss());
 
     return () => ts.forEach(clearTimeout);
@@ -1237,13 +1242,25 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       <img src="/images/real-teabag.png" alt="" aria-hidden style={{
         position: "absolute",
         top: 0, left: "50%",
-        transform: `translateX(-50%) translateY(${bagDown ? "8vh" : cupIn ? "calc(-18vh - 20px)" : "-40vh"})`,
+        transform: `translateX(-50%) translateY(${bagOut ? "-120vh" : bagDown ? "8vh" : cupIn ? "calc(-18vh - 20px)" : "-40vh"})`,
         width: "62%", maxWidth: 252,
         opacity: cupIn ? 1 : 0,
         mixBlendMode: "multiply",
-        transition: "transform 0.6s cubic-bezier(0.22,1,0.36,1), opacity 0.5s ease",
+        transition: bagOut ? "transform 0.7s cubic-bezier(0.55,0,1,0.45)" : "transform 0.6s cubic-bezier(0.22,1,0.36,1), opacity 0.5s ease",
         willChange: "transform",
         zIndex: 5,
+      }} />
+
+      {/* Green flood — expands from centre after bag exits */}
+      <div style={{
+        position: "absolute",
+        width: 80, height: 80, borderRadius: "50%",
+        top: "calc(50% - 40px)", left: "calc(50% - 40px)",
+        background: "#3dba6e",
+        transform: greenFill ? "scale(30)" : "scale(0)",
+        transition: greenFill ? "transform 1s cubic-bezier(0.4,0,0.6,1)" : "none",
+        willChange: "transform",
+        zIndex: 6,
       }} />
 
     </div>
