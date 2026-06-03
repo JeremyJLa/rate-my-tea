@@ -946,10 +946,11 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
           willChange: "transform, opacity",
           transformOrigin: "center center",
           zIndex: 2,
+          // SVG is white — tint green on white bg, transition to white over cup
           filter: cupVisible
             ? "brightness(0) invert(1) drop-shadow(0 2px 8px rgba(0,0,0,0.4))"
-            : "none",
-          transition: logoTransition + (cupVisible ? ", filter 0.9s ease" : ""),
+            : "brightness(0) saturate(100%) invert(45%) sepia(40%) saturate(600%) hue-rotate(60deg) brightness(95%)",
+          transition: logoTransition + ", filter 0.9s ease",
         }}
       />
 
