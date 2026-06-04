@@ -1060,7 +1060,7 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
   const pageBg  = "#FAFAFA";
   const card    = "#FFFFFF";
   const cardShadow = "none";
-  const cardBorder = "1px solid #F8F8F8";
+  const cardBorder = "1px solid #F0F0F0";
 
   return (
     <div className="flex flex-col h-full" style={{ background: pageBg, fontFamily: "-apple-system, 'Inter', sans-serif" }}>
@@ -1099,7 +1099,7 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
                     padding: "6px 12px", borderRadius: 999,
                     fontSize: 13, fontWeight: 600,
                     background: state === "on" ? `rgba(62,196,195,0.12)` : "#fff",
-                    border: `1.5px solid ${state === "on" ? teal : "#E8E8E8"}`,
+                    border: `1.5px solid ${state === "on" ? teal : "#F0F0F0"}`,
                     color: state === "on" ? teal : ink,
                     opacity: state === "off" ? 0.28 : 1,
                     transition: "all .18s ease",
@@ -1129,7 +1129,7 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
                     borderRadius: 20,
                     padding: "16px 16px 14px",
                     boxShadow: "none",
-                    border: `1.5px solid ${isActive ? teal : "#F8F8F8"}`,
+                    border: `1.5px solid ${isActive ? teal : "#F0F0F0"}`,
                     display: "block", width: "100%", textAlign: "left",
                     cursor: "pointer", transition: "all .18s ease",
                   }}
