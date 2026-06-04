@@ -502,16 +502,16 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard, onVi
               onClick={onViewTasteDNA}
               aria-label="Taste DNA"
               style={{
-                width: "100%", aspectRatio: "1", borderRadius: 18,
-                background: "rgba(192,129,58,0.10)",
-                border: "1.5px solid rgba(192,129,58,0.22)",
+                width: 35, height: 35, borderRadius: 8,
+                background: "#fff",
+                border: "1px solid #d1d1d1",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 cursor: "pointer", padding: 0,
               }}
             >
-              <img src="/images/graphicon.svg" alt="" aria-hidden style={{ width: 32, height: 32 }} />
+              <img src="/images/graphicon.svg" alt="" aria-hidden style={{ width: 22, height: 22 }} />
             </button>
-            <span style={{ fontSize: 10, fontWeight: 600, color: "#C0813A", textAlign: "center", letterSpacing: 0.2, lineHeight: 1.2 }}>Taste DNA</span>
+            <span style={{ fontSize: 10, fontWeight: 600, color: "#888", textAlign: "center", letterSpacing: 0.2, lineHeight: 1.2 }}>Taste DNA</span>
           </div>
         </div>
       </div>
