@@ -443,7 +443,7 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard, spla
         <div style={{ textAlign: "center", paddingBottom: 16 }}>
           <button
             onClick={() => setDecideOpen(true)}
-            style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: "#888", textDecoration: "underline", textUnderlineOffset: 3, padding: 0 }}
+            style={{ background: "none", border: "none", cursor: "pointer", fontSize: 15, color: "#888", textDecoration: "underline", textUnderlineOffset: 3, padding: 0 }}
           >
             Can't decide which tea to try next?
           </button>
