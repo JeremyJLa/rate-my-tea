@@ -496,7 +496,8 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard, onVi
             opacity: cardsIn ? 1 : 0,
             transform: cardsIn ? "translateY(0)" : "translateY(-24px)",
             transition: `opacity 0.4s ease ${TEAS.length * 55}ms, transform 0.5s cubic-bezier(0.22,1,0.36,1) ${TEAS.length * 55}ms`,
-            display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
+            width: "100%", aspectRatio: "1",
+            display: "flex", alignItems: "center", justifyContent: "center",
           }}>
             <button
               onClick={onViewTasteDNA}
