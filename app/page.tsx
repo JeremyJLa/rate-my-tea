@@ -1053,50 +1053,55 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
     return active.teaIds.includes(id) ? "on" : "off";
   };
 
-  const teal = "#3DBAB3";
-  const tealLight = "rgba(61,186,179,0.12)";
-  const tealMid = "rgba(61,186,179,0.22)";
-  const ink = "#1C3130";
-  const soft = "#9AADAB";
-  const pageBg = "#FAFAFA";
+  const teal    = "#3EC4C3";
+  const orange  = "#F28B6A";
+  const ink     = "#1A1A2E";
+  const soft    = "#9CA3AF";
+  const pageBg  = "#FAFAFA";
+  const card    = "#FFFFFF";
+  const cardShadow = "0 2px 12px rgba(0,0,0,0.06)";
 
   return (
-    <div className="flex flex-col h-full" style={{ background: pageBg }}>
+    <div className="flex flex-col h-full" style={{ background: pageBg, fontFamily: "-apple-system, 'Inter', sans-serif" }}>
       <StatusBar />
 
       {/* Header */}
-      <div className="flex items-center px-5" style={{ paddingTop: 14, paddingBottom: 10, flexShrink: 0 }}>
-        <button onClick={onClose} className="flex items-center justify-center" style={{ width: 36, height: 36, borderRadius: 999, background: "#fff", boxShadow: "0 2px 8px rgba(0,0,0,0.08)", color: teal, flexShrink: 0 }}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      <div className="flex items-center" style={{ padding: "14px 20px 8px", flexShrink: 0 }}>
+        <button onClick={onClose} style={{ width: 36, height: 36, borderRadius: 999, background: card, boxShadow: cardShadow, border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: ink, flexShrink: 0 }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
         </button>
-        <div className="flex-1 text-center" style={{ marginRight: 36 }}>
-          <h1 style={{ fontSize: 18, fontWeight: 700, color: ink, letterSpacing: -0.3 }}>Taste DNA</h1>
-          <p style={{ fontSize: 12, color: soft, marginTop: 1 }}>your top {topN || "—"} teas by ingredient</p>
-        </div>
+        <h1 style={{ flex: 1, textAlign: "center", fontSize: 17, fontWeight: 700, color: ink, letterSpacing: -0.2, margin: "0 36px 0 0" }}>Taste DNA</h1>
       </div>
 
       {topN === 0 ? (
         <div className="flex-1 flex items-center justify-center px-8 text-center">
-          <p style={{ fontSize: 15, color: soft, lineHeight: 1.6 }}>Rate some teas first — your flavour profile will appear here.</p>
+          <p style={{ fontSize: 15, color: soft, lineHeight: 1.7 }}>Rate some teas first — your flavour profile will appear here.</p>
         </div>
       ) : (
-        <div className="flex-1 overflow-y-auto pb-8" style={{ padding: "0 16px 32px" }}>
+        <div className="flex-1 overflow-y-auto" style={{ padding: "8px 20px 40px" }}>
 
-          {/* Top teas card */}
-          <div style={{ background: "#fff", borderRadius: 20, padding: "16px 18px", marginBottom: 14, boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}>
-            <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: teal, marginBottom: 12 }}>Your top teas</p>
+          {/* Page title */}
+          <div style={{ marginBottom: 24 }}>
+            <h2 style={{ fontSize: 28, fontWeight: 800, color: ink, letterSpacing: -0.6, margin: "0 0 4px" }}>Your Flavour</h2>
+            <p style={{ fontSize: 14, color: soft, margin: 0 }}>Based on your top {topN} rated {topN === 1 ? "tea" : "teas"}</p>
+          </div>
+
+          {/* Top teas chips */}
+          <div style={{ background: card, borderRadius: 20, padding: "16px 16px 14px", marginBottom: 16, boxShadow: cardShadow }}>
+            <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.1, textTransform: "uppercase", color: teal, margin: "0 0 12px" }}>Top teas</p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
               {scored.map(({ id, tea }) => {
                 const state = chipState(id);
                 return (
                   <span key={id} style={{
-                    display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 12px",
-                    borderRadius: 999, fontSize: 12, fontWeight: 600,
-                    background: state === "on" ? tealMid : tealLight,
+                    display: "inline-flex", alignItems: "center", gap: 6,
+                    padding: "6px 12px", borderRadius: 999,
+                    fontSize: 13, fontWeight: 600,
+                    background: state === "on" ? `rgba(62,196,195,0.15)` : "#F3F4F6",
                     border: `1.5px solid ${state === "on" ? teal : "transparent"}`,
                     color: state === "on" ? teal : ink,
-                    opacity: state === "off" ? 0.3 : 1,
-                    transition: "all .16s",
+                    opacity: state === "off" ? 0.28 : 1,
+                    transition: "all .18s ease",
                   }}>
                     <TeaThumb tea={tea} size={16} />
                     {tea.name.replace(" Breakfast", "")}
@@ -1107,48 +1112,51 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
           </div>
 
           {/* Section label */}
-          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: soft, marginBottom: 10, paddingLeft: 4 }}>Flavour breakdown</p>
+          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.1, textTransform: "uppercase", color: soft, margin: "0 0 12px 4px" }}>Flavour breakdown</p>
 
-          {/* Ingredient rows */}
+          {/* Ingredient cards */}
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {ingredientRows.map(ing => {
               const isActive = pinned === ing.name;
+              const pct = Math.round((ing.count / topN) * 100);
               return (
                 <button
                   key={ing.name}
                   onClick={() => setPinned(isActive ? null : ing.name)}
-                  className="w-full text-left transition-all active:scale-[0.98]"
                   style={{
-                    background: "#fff",
-                    borderRadius: 20, padding: "16px 18px",
-                    boxShadow: isActive ? `0 4px 20px rgba(61,191,184,0.2), 0 0 0 1.5px ${teal}` : "0 4px 20px rgba(0,0,0,0.06)",
-                    display: "block", width: "100%",
-                    borderLeft: isActive ? `4px solid ${teal}` : "4px solid transparent",
+                    background: card,
+                    borderRadius: 20,
+                    padding: "16px 16px 14px",
+                    boxShadow: isActive ? `0 4px 24px rgba(62,196,195,0.18)` : cardShadow,
+                    border: `1.5px solid ${isActive ? teal : "transparent"}`,
+                    display: "block", width: "100%", textAlign: "left",
+                    cursor: "pointer", transition: "all .18s ease",
                   }}
                 >
-                  <div className="flex items-center justify-between" style={{ marginBottom: 10 }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                    {/* Left: name + descriptor */}
                     <div>
-                      <span style={{ fontSize: 16, fontWeight: 700, color: ink, display: "block" }}>{ing.name}</span>
-                      <span style={{ fontSize: 11, fontWeight: 600, color: isActive ? teal : soft, letterSpacing: 0.4, textTransform: "uppercase" }}>{ing.desc}</span>
+                      <p style={{ fontSize: 16, fontWeight: 700, color: ink, margin: "0 0 3px", letterSpacing: -0.2 }}>{ing.name}</p>
+                      <p style={{ fontSize: 12, fontWeight: 500, color: isActive ? teal : soft, margin: 0, letterSpacing: 0.1 }}>{ing.desc}</p>
                     </div>
+                    {/* Right: circular badge */}
                     <div style={{
-                      width: 40, height: 40, borderRadius: 999,
-                      background: isActive ? teal : tealLight,
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      flexShrink: 0,
+                      width: 44, height: 44, borderRadius: 999, flexShrink: 0,
+                      background: isActive ? `rgba(242,139,106,0.12)` : "#F3F4F6",
+                      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
                     }}>
-                      <span style={{ fontSize: 14, fontWeight: 800, color: isActive ? "#fff" : teal }}>{ing.count}</span>
+                      <span style={{ fontSize: 15, fontWeight: 800, color: isActive ? orange : soft, lineHeight: 1 }}>{ing.count}</span>
+                      <span style={{ fontSize: 9, fontWeight: 600, color: isActive ? orange : soft, opacity: 0.8 }}>of {topN}</span>
                     </div>
                   </div>
-                  {/* Segment bar */}
-                  <div style={{ display: "flex", gap: 5 }}>
-                    {[0,1,2,3,4].map(i => (
-                      <span key={i} style={{
-                        flex: 1, height: 6, borderRadius: 99,
-                        background: i < ing.count ? teal : "rgba(61,191,184,0.15)",
-                        transition: "background .2s",
-                      }} />
-                    ))}
+                  {/* Progress bar */}
+                  <div style={{ height: 6, borderRadius: 99, background: "#F3F4F6", overflow: "hidden" }}>
+                    <div style={{
+                      height: "100%", borderRadius: 99,
+                      width: `${pct}%`,
+                      background: isActive ? `linear-gradient(90deg, ${teal}, ${orange})` : teal,
+                      transition: "width .3s ease, background .18s ease",
+                    }} />
                   </div>
                 </button>
               );
@@ -1156,7 +1164,7 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
           </div>
 
           {/* Hint */}
-          <p className="text-center" style={{ fontSize: 12, color: soft, paddingTop: 16 }}>Tap a row to see which teas share that ingredient</p>
+          <p style={{ textAlign: "center", fontSize: 12, color: soft, marginTop: 20 }}>Tap a row to highlight which teas share that ingredient</p>
         </div>
       )}
     </div>
