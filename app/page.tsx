@@ -80,9 +80,9 @@ function DotRating({ value, onChange }: { value: number; onChange: (v: number) =
             className="block w-5 h-5 rounded-full transition-all duration-200"
             style={{
               background: n <= value
-                ? "#16a34a"
+                ? "#30D158"
                 : "transparent",
-              border: n <= value ? "none" : "2px solid #d1d5db",
+              border: n <= value ? "none" : "2px solid #E5E5EA",
               transform: n <= value ? "scale(1.1)" : "scale(1)",
             }}
           />
@@ -331,7 +331,7 @@ function DecideModal({ unrated, onRate, onClose }: {
         onClick={e => e.stopPropagation()}
         style={{
           width: "100%",
-          background: "linear-gradient(160deg,#F5F9F5 0%,#F2EFE8 100%)",
+          background: "#F5F5F7",
           borderRadius: "28px 28px 0 0",
           paddingBottom: 40,
           transform: visible ? "translateY(0)" : "translateY(100%)",
@@ -447,18 +447,18 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard, onVi
 
       {/* Header */}
       <div className="px-5 pb-4 text-center" style={{ paddingTop: 8 }}>
-        <p style={{ fontSize: 24, color: "#aaa", fontWeight: 500, marginBottom: 0 }}>Hi Kate</p>
-        <h1 className="font-bold" style={{ fontSize: 36, letterSpacing: -1, color: "#111" }}>Rate Your Tea</h1>
+        <p style={{ fontSize: 17, color: "#86868B", fontWeight: 400, marginBottom: 2, letterSpacing: 0.1 }}>Hi Kate</p>
+        <h1 className="font-bold" style={{ fontSize: 34, letterSpacing: -0.5, color: "#1d1d1f" }}>Rate Your Tea</h1>
         {tastedCount === 0 ? (
-          <p style={{ fontSize: 14, color: "#888" }}>pick any of your samples and start rating</p>
+          <p style={{ fontSize: 14, color: "#86868B" }}>Pick any of your samples and start rating</p>
         ) : (
-          <div style={{ marginTop: 28 }}>
+          <div style={{ marginTop: 20 }}>
             <div className="flex items-center gap-3 px-1">
-              <div className="flex-1 rounded-full overflow-hidden" style={{ height: 15, background: "#e2e2e2" }}>
+              <div className="flex-1 rounded-full overflow-hidden" style={{ height: 6, background: "#E5E5EA" }}>
                 <div className="h-full rounded-full transition-all duration-500"
-                  style={{ width: `${progressPct}%`, background: "linear-gradient(90deg,#4ade80,#16a34a)" }} />
+                  style={{ width: `${progressPct}%`, background: "#30D158" }} />
               </div>
-              <span className="font-bold tabular-nums" style={{ fontSize: 18, color: "#111", minWidth: 46 }}>
+              <span className="font-semibold tabular-nums" style={{ fontSize: 15, color: "#1d1d1f", minWidth: 40 }}>
                 {tastedCount}/11
               </span>
             </div>
@@ -471,7 +471,7 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard, onVi
         <div style={{ textAlign: "center", paddingBottom: 16 }}>
           <button
             onClick={() => setDecideOpen(true)}
-            style={{ background: "none", border: "none", cursor: "pointer", fontSize: 15, color: "#888", textDecoration: "underline", textUnderlineOffset: 3, padding: 0 }}
+            style={{ background: "none", border: "none", cursor: "pointer", fontSize: 15, color: "#0071E3", textDecoration: "none", padding: 0 }}
           >
             Can't decide which tea to try next?
           </button>
@@ -784,8 +784,8 @@ function LeaderboardScreen({ ratings, onEditTea, onClose }: {
       {/* Header */}
       <div className="flex items-center justify-between px-5 pb-4" style={{ paddingTop: 14 }}>
         <div className="flex-1 text-center">
-          <h1 className="font-bold" style={{ fontSize: 26, color: "#111", letterSpacing: -0.6 }}>Leaderboard</h1>
-          <p style={{ fontSize: 13, color: "#aaa", marginTop: 1 }}>ranked by would-buy-again</p>
+          <h1 className="font-bold" style={{ fontSize: 26, color: "#1d1d1f", letterSpacing: -0.6 }}>Leaderboard</h1>
+          <p style={{ fontSize: 13, color: "#86868B", marginTop: 1 }}>ranked by would-buy-again</p>
         </div>
         <button
           onClick={onClose}
@@ -807,9 +807,9 @@ function LeaderboardScreen({ ratings, onEditTea, onClose }: {
               style={{
                 width: 120, height: 34, borderRadius: 999,
                 fontSize: 13,
-                background: tab === t ? "#111" : "transparent",
-                color: tab === t ? "#fff" : "#999",
-                border: tab === t ? "none" : "1.5px solid #e0e0e0",
+                background: tab === t ? "#1d1d1f" : "transparent",
+                color: tab === t ? "#fff" : "#86868B",
+                border: tab === t ? "none" : "1.5px solid #E5E5EA",
                 letterSpacing: 0.1,
               }}>
               {t === "top5" ? "My top 3" : "All"}
@@ -838,8 +838,7 @@ function LeaderboardScreen({ ratings, onEditTea, onClose }: {
               <span className="flex-1 text-left font-medium" style={{ fontSize: 14, color: "#111" }}>{tea.name}</span>
               <span className="font-bold tabular-nums" style={{
                 fontSize: 17,
-                background: "linear-gradient(135deg,#3b82f6,#06b6d4)",
-                WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+                color: "#0071E3",
               }}>{r.buyAgainPct}%</span>
             </button>
           );
@@ -1055,14 +1054,14 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
   };
 
   return (
-    <div className="flex flex-col h-full" style={{ background: "linear-gradient(160deg, #F5F9F5 0%, #F7F6F0 50%, #F2EFE8 100%)" }}>
+    <div className="flex flex-col h-full" style={{ background: "#F5F5F7" }}>
       <StatusBar />
 
       {/* Header */}
       <div className="flex items-center justify-between px-5 pb-4" style={{ paddingTop: 14, flexShrink: 0 }}>
         <div className="flex-1 text-center">
-          <h1 className="font-bold" style={{ fontSize: 26, color: "#111", letterSpacing: -0.6 }}>Taste DNA</h1>
-          <p style={{ fontSize: 13, color: "#aaa", marginTop: 1 }}>your top {topN || "—"} teas by ingredient</p>
+          <h1 className="font-bold" style={{ fontSize: 26, color: "#1d1d1f", letterSpacing: -0.6 }}>Taste DNA</h1>
+          <p style={{ fontSize: 13, color: "#86868B", marginTop: 1 }}>your top {topN || "—"} teas by ingredient</p>
         </div>
         <button onClick={onClose} className="flex items-center justify-center" style={{ width: 40, height: 40, borderRadius: 20, color: "#111" }}>
           <svg width="30" height="30" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -1086,9 +1085,9 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
                 <span key={id} style={{
                   display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 11px",
                   borderRadius: 999, fontSize: 12, fontWeight: 600,
-                  background: state === "on" ? "rgba(22,163,74,.15)" : "#f0f0f0",
-                  border: `1.5px solid ${state === "on" ? "#16a34a" : "transparent"}`,
-                  color: state === "on" ? "#15803d" : "#555",
+                  background: state === "on" ? "rgba(48,209,88,.15)" : "#E5E5EA",
+                  border: `1.5px solid ${state === "on" ? "#30D158" : "transparent"}`,
+                  color: state === "on" ? "#248A3D" : "#1d1d1f",
                   opacity: state === "off" ? 0.3 : 1,
                   transition: "all .16s",
                 }}>
@@ -1110,9 +1109,9 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
                 onClick={() => setPinned(pinned === ing.name ? null : ing.name)}
                 className="w-full text-left transition-all active:scale-[0.98]"
                 style={{
-                  background: pinned === ing.name ? "rgba(22,163,74,.07)" : "#fff",
+                  background: pinned === ing.name ? "rgba(48,209,88,.07)" : "#fff",
                   borderRadius: 16, padding: "12px 14px",
-                  boxShadow: pinned === ing.name ? "0 0 0 1.5px #16a34a" : "0 1px 4px rgba(0,0,0,0.06)",
+                  boxShadow: pinned === ing.name ? "0 0 0 1.5px #30D158" : "0 1px 4px rgba(0,0,0,0.06)",
                   display: "block", width: "100%",
                 }}
               >
@@ -1128,7 +1127,7 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
                   {[0,1,2,3,4].map(i => (
                     <span key={i} style={{
                       flex: 1, height: 8, borderRadius: 99,
-                      background: i < ing.count ? "#16a34a" : "#e5e5e5",
+                      background: i < ing.count ? "#30D158" : "#E5E5EA",
                       transition: "background .2s",
                     }} />
                   ))}
@@ -1759,7 +1758,7 @@ export default function App() {
       <div
         ref={containerRef}
         className="relative overflow-hidden w-full sm:h-[844px] sm:w-[390px] sm:rounded-[50px] sm:shadow-2xl"
-        style={{ height: "100dvh", background: "linear-gradient(160deg, #F5F9F5 0%, #F7F6F0 50%, #F2EFE8 100%)" } as React.CSSProperties}
+        style={{ height: "100dvh", background: "#F5F5F7" } as React.CSSProperties}
       >
 
         {/* Home */}
@@ -1768,7 +1767,7 @@ export default function App() {
         </div>
 
         {/* Leaderboard — slides up, stays put when rate slides over it from right */}
-        <div className="absolute inset-0 transition-transform duration-300 ease-in-out" style={{ transform: (leaderboardVisible || (rateVisible && rateSlideDir === "right")) ? "translateY(0)" : "translateY(100%)", background: "linear-gradient(160deg, #F5F9F5 0%, #F7F6F0 50%, #F2EFE8 100%)" }}>
+        <div className="absolute inset-0 transition-transform duration-300 ease-in-out" style={{ transform: (leaderboardVisible || (rateVisible && rateSlideDir === "right")) ? "translateY(0)" : "translateY(100%)", background: "#F5F5F7" }}>
           <LeaderboardScreen ratings={ratings} onEditTea={handleEditFromLeaderboard} onClose={() => setScreen("home")} />
         </div>
 
