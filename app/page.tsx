@@ -1350,8 +1350,9 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
       overflow: "hidden",
     }}>
       <style>{`
-        .splash-root { --bag-offset: -30px; }
+        .splash-root { --bag-offset: -30px; --dip-bottom: calc(var(--ch, 100vh) * -0.06 + var(--bag-offset, -20px)); }
         @media (max-width: 639px) { .splash-root { --bag-offset: -40px; } }
+        @media (min-width: 640px) { .splash-root { --dip-bottom: calc(var(--ch, 100vh) * 0.06 + var(--bag-offset, -20px)); } }
         @keyframes floatLogo {
           0%, 100% { transform: translateX(-50%) translateY(0px); }
           50%       { transform: translateX(-50%) translateY(-8px); }
@@ -1370,10 +1371,10 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
         @keyframes teabagDip {
           /* Dip 2: long dip down → back to rest */
           0%        { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
-          28%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.06 + var(--bag-offset, -20px))); }
+          28%       { transform: translateX(-50%) translateY(var(--dip-bottom)); }
           50%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
           /* Dip 3: long dip down → back to rest */
-          78%       { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.06 + var(--bag-offset, -20px))); }
+          78%       { transform: translateX(-50%) translateY(var(--dip-bottom)); }
           100%      { transform: translateX(-50%) translateY(calc(var(--ch, 100vh) * -0.26 + var(--bag-offset, -20px))); }
         }
         }
