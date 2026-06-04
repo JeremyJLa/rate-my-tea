@@ -1051,163 +1051,101 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
     return { ...ing, count: teaIds.length, teaIds };
   }).filter(r => r.count > 0).sort((a, b) => b.count - a.count);
 
-  const totalIngredients = ingredientRows.length;
-
   const active = ingredientRows.find(r => r.name === pinned) ?? null;
   const chipState = (id: string) => {
     if (!active) return "";
     return active.teaIds.includes(id) ? "on" : "off";
   };
 
-  const ink = "#2E2A23", soft = "#8A8072", faint = "#B6AC99";
-  const amber = "#C0813A", amberDeep = "#9A5F22";
-  const card = "#FBF7EF", card2 = "#F4ECDD";
-  const line = "rgba(46,42,35,0.10)";
-  const serif = "'Newsreader', Georgia, serif";
-  const sans = "system-ui, -apple-system, sans-serif";
-
-  if (topN === 0) {
-    return (
-      <div style={{ height: "100%", display: "flex", flexDirection: "column", background: "#EDE4D4" }}>
-        <div style={{ display: "flex", alignItems: "center", padding: "56px 20px 16px", gap: 12 }}>
-          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", padding: 4 }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={ink} strokeWidth="2" strokeLinecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-          </button>
-          <span style={{ fontFamily: serif, fontSize: 20, fontWeight: 500, color: ink }}>Taste DNA</span>
-        </div>
-        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 32, textAlign: "center" }}>
-          <p style={{ fontFamily: serif, fontSize: 18, color: soft, lineHeight: 1.5 }}>Rate some teas first — your flavour profile will appear here.</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div style={{ height: "100%", overflowY: "auto", background: `radial-gradient(circle at 12% 4%, rgba(192,129,58,.12), rgba(192,129,58,0) 40%), radial-gradient(circle at 96% 98%, rgba(126,140,146,.13), rgba(126,140,146,0) 44%), #EDE4D4`, WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
-      <div style={{ padding: "60px 22px 48px", position: "relative" }}>
+    <div className="flex flex-col h-full" style={{ background: "transparent" }}>
+      <StatusBar />
 
-        {/* Back button */}
-        <button onClick={onClose} style={{ position: "absolute", top: 16, left: 16, background: "none", border: "none", cursor: "pointer", padding: 8, display: "flex", alignItems: "center", gap: 6, color: amberDeep }}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-          <span style={{ fontFamily: sans, fontSize: 13, fontWeight: 600 }}>Back</span>
-        </button>
-
-        {/* Eyebrow */}
-        <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 11 }}>
-          <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", color: amber, textTransform: "uppercase" }}>{totalIngredients}</span>
-          <span style={{ width: 16, height: 1, background: amber, opacity: 0.5 }} />
-          <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, letterSpacing: "1.5px", color: soft, textTransform: "uppercase" }}>Ingredient DNA</span>
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 pb-4" style={{ paddingTop: 14, flexShrink: 0 }}>
+        <div className="flex-1 text-center">
+          <h1 className="font-bold" style={{ fontSize: 26, color: "#111", letterSpacing: -0.6 }}>Taste DNA</h1>
+          <p style={{ fontSize: 13, color: "#aaa", marginTop: 1 }}>your top {topN || "—"} teas by ingredient</p>
         </div>
-
-        {/* Title */}
-        <h1 style={{ margin: "0 0 18px", fontFamily: serif, fontWeight: 500, fontSize: 28, letterSpacing: "-0.5px", lineHeight: 1.04, color: ink }}>
-          Your taste,<br />by ingredient
-        </h1>
-
-        {/* Caption */}
-        <p style={{ fontFamily: serif, fontStyle: "italic", fontSize: 15, lineHeight: 1.4, color: soft, margin: "0 2px 20px" }}>
-          How often each ingredient appears across your {topN} highest-rated {topN === 1 ? "tea" : "teas"}.
-        </p>
-
-        {/* Tea chips */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 22 }}>
-          {scored.map(({ id, tea, score }) => {
-            const state = chipState(id);
-            return (
-              <span key={id} style={{
-                display: "inline-flex", alignItems: "center", gap: 7, padding: "8px 13px",
-                borderRadius: 999, whiteSpace: "nowrap",
-                background: state === "on" ? "rgba(192,129,58,.16)" : "rgba(154,95,34,.07)",
-                border: `1px solid ${state === "on" ? amber : "rgba(154,95,34,.14)"}`,
-                transform: state === "on" ? "translateY(-1px)" : "none",
-                boxShadow: state === "on" ? "0 3px 8px rgba(120,80,30,.14)" : "none",
-                opacity: state === "off" ? 0.3 : 1,
-                transition: "all .16s",
-              }}>
-                <span style={{ width: 7, height: 7, borderRadius: "50%", flexShrink: 0, background: amberDeep }} />
-                <span style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, color: ink }}>{tea.name.replace(" Breakfast", "")}</span>
-                <span style={{ fontFamily: sans, fontSize: 12, fontWeight: 700, color: state === "on" ? amberDeep : soft, fontVariantNumeric: "tabular-nums" }}>{score.toFixed(1)}</span>
-              </span>
-            );
-          })}
-        </div>
-
-        {/* Black tea base row */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr auto", alignItems: "center", gap: 12, padding: "13px 0", borderTop: `1px solid ${line}`, borderBottom: `1px dashed ${line}` }}>
-          <div>
-            <span style={{ fontFamily: serif, fontSize: 16, fontWeight: 600, color: ink }}>Black tea</span>
-            <small style={{ display: "block", fontFamily: sans, fontSize: 9.5, fontWeight: 600, letterSpacing: ".6px", textTransform: "uppercase", color: faint, marginTop: 3 }}>the shared base</small>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <div style={{ display: "flex", gap: 5, width: 110 }}>
-              {[0,1,2,3,4].slice(0, topN).map(i => <span key={i} style={{ flex: 1, height: 13, borderRadius: 4, background: amberDeep }} />)}
-              {[0,1,2,3,4].slice(topN).map(i => <span key={i + topN} style={{ flex: 1, height: 13, borderRadius: 4, background: "rgba(46,42,35,.07)" }} />)}
-            </div>
-            <span style={{ fontFamily: serif, fontSize: 13, fontWeight: 600, color: soft, whiteSpace: "nowrap" }}>{topN} / {topN}</span>
-          </div>
-        </div>
-
-        {/* What sets them apart divider */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "18px 0 8px" }}>
-          <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: "1.2px", textTransform: "uppercase", color: faint, whiteSpace: "nowrap" }}>What sets them apart</span>
-          <span style={{ flex: 1, height: 1, background: line }} />
-        </div>
-
-        {/* Ingredient rows */}
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          {ingredientRows.map(ing => (
-            <div
-              key={ing.name}
-              onClick={() => setPinned(pinned === ing.name ? null : ing.name)}
-              style={{
-                display: "grid", gridTemplateColumns: "1fr auto", alignItems: "center", gap: "10px 12px",
-                cursor: "pointer", padding: "13px 10px", margin: "0 -10px", borderRadius: 13,
-                background: pinned === ing.name ? "rgba(192,129,58,.10)" : "transparent",
-                transition: "background .15s", WebkitTapHighlightColor: "transparent",
-              } as React.CSSProperties}
-            >
-              <div style={{ gridRow: 1 }}>
-                <span style={{ fontFamily: serif, fontSize: 18, fontWeight: 500, color: ink, lineHeight: 1.05 }}>{ing.name}</span>
-                <small style={{ display: "block", fontFamily: sans, fontSize: 9, fontWeight: 700, letterSpacing: ".6px", textTransform: "uppercase", marginTop: 4, color: ing.color }}>{ing.desc}</small>
-              </div>
-              <div style={{ gridRow: 1, fontFamily: serif, fontSize: 14.5, fontWeight: 600, color: soft, whiteSpace: "nowrap", textAlign: "right" }}>
-                <b style={{ color: ink }}>{ing.count}</b> of {topN}
-              </div>
-              {/* Segment bar — spans full width on row 2 */}
-              <div style={{ gridRow: 2, gridColumn: "1 / -1", display: "flex", gap: 6, marginTop: 2 }}>
-                {[0,1,2,3,4].map(i => (
-                  <span key={i} style={{ flex: 1, height: 11, borderRadius: 4, background: i < ing.count ? ing.color : "rgba(46,42,35,.07)" }} />
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Hint */}
-        <div style={{ marginTop: 18, fontSize: 11.5, lineHeight: 1.4, color: faint, letterSpacing: ".2px", display: "flex", alignItems: "center", gap: 8, fontFamily: sans }}>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-            <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        <button onClick={onClose} className="flex items-center justify-center" style={{ width: 40, height: 40, borderRadius: 20, color: "#111" }}>
+          <svg width="30" height="30" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/>
           </svg>
-          <span>Tap an ingredient to see which teas it comes from</span>
-        </div>
-
-        {/* Divider */}
-        <div style={{ height: 1, background: line, margin: "22px 0 0" }} />
-
-        {/* Takeaway */}
-        {ingredientRows.length > 0 && (
-          <div style={{ display: "flex", gap: 13, alignItems: "flex-start", marginTop: 20 }}>
-            <span style={{ flexShrink: 0, width: 32, height: 32, borderRadius: "50%", background: "rgba(176,96,58,.12)", display: "flex", alignItems: "center", justifyContent: "center", marginTop: 1 }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B0603A" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9 18h6M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1 1 2h6c0-.8.4-1.5 1-2A7 7 0 0 0 12 2Z"/>
-              </svg>
-            </span>
-            <p style={{ margin: 0, fontFamily: serif, fontSize: 17, lineHeight: 1.45, color: ink, letterSpacing: "-.1px" }}>
-              Your top pick is <b style={{ color: amberDeep }}>{scored[0]?.tea.name.replace(" Breakfast", "")}</b> — and <b style={{ color: amberDeep }}>{ingredientRows[0]?.name.toLowerCase()}</b> is your most common flavour note. <span style={{ fontStyle: "italic", color: soft }}>Keep tasting to refine your profile.</span>
-            </p>
-          </div>
-        )}
+        </button>
       </div>
+
+      {topN === 0 ? (
+        <div className="flex-1 flex items-center justify-center px-8 text-center">
+          <p style={{ fontSize: 15, color: "#aaa", lineHeight: 1.6 }}>Rate some teas first — your flavour profile will appear here.</p>
+        </div>
+      ) : (
+        <div className="flex-1 overflow-y-auto px-5 pb-8">
+
+          {/* Tea chips */}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 7, marginBottom: 20 }}>
+            {scored.map(({ id, tea }) => {
+              const state = chipState(id);
+              return (
+                <span key={id} style={{
+                  display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 11px",
+                  borderRadius: 999, fontSize: 12, fontWeight: 600,
+                  background: state === "on" ? "rgba(22,163,74,.15)" : "#f0f0f0",
+                  border: `1.5px solid ${state === "on" ? "#16a34a" : "transparent"}`,
+                  color: state === "on" ? "#15803d" : "#555",
+                  opacity: state === "off" ? 0.3 : 1,
+                  transition: "all .16s",
+                }}>
+                  <TeaThumb tea={tea} size={18} />
+                  {tea.name.replace(" Breakfast", "")}
+                </span>
+              );
+            })}
+          </div>
+
+          {/* Section label */}
+          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "#bbb", marginBottom: 8 }}>Ingredients in your top teas</p>
+
+          {/* Ingredient rows */}
+          <div className="space-y-2">
+            {ingredientRows.map(ing => (
+              <button
+                key={ing.name}
+                onClick={() => setPinned(pinned === ing.name ? null : ing.name)}
+                className="w-full text-left transition-all active:scale-[0.98]"
+                style={{
+                  background: pinned === ing.name ? "rgba(22,163,74,.07)" : "#fff",
+                  borderRadius: 16, padding: "12px 14px",
+                  boxShadow: pinned === ing.name ? "0 0 0 1.5px #16a34a" : "0 1px 4px rgba(0,0,0,0.06)",
+                  display: "block", width: "100%",
+                }}
+              >
+                {/* Name + count */}
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-semibold" style={{ fontSize: 15, color: "#111" }}>{ing.name}</span>
+                  <span style={{ fontSize: 13, color: "#aaa", fontWeight: 600 }}>
+                    <span style={{ color: "#111", fontWeight: 700 }}>{ing.count}</span> of {topN}
+                  </span>
+                </div>
+                {/* Bar */}
+                <div style={{ display: "flex", gap: 4 }}>
+                  {[0,1,2,3,4].map(i => (
+                    <span key={i} style={{
+                      flex: 1, height: 8, borderRadius: 99,
+                      background: i < ing.count ? "#16a34a" : "#e5e5e5",
+                      transition: "background .2s",
+                    }} />
+                  ))}
+                </div>
+                {/* Descriptor */}
+                <p style={{ fontSize: 11, color: "#aaa", marginTop: 5, fontWeight: 500 }}>{ing.desc}</p>
+              </button>
+            ))}
+          </div>
+
+          {/* Hint */}
+          <p className="text-center" style={{ fontSize: 12, color: "#ccc", paddingTop: 12 }}>tap a row to highlight which teas share that ingredient</p>
+        </div>
+      )}
     </div>
   );
 }
