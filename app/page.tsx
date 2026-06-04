@@ -1058,7 +1058,7 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
   const tealMid = "rgba(61,186,179,0.22)";
   const ink = "#1C3130";
   const soft = "#9AADAB";
-  const pageBg = "#F4F5F5";
+  const pageBg = "#FAFAFA";
 
   return (
     <div className="flex flex-col h-full" style={{ background: pageBg }}>
