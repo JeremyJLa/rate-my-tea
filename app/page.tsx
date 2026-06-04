@@ -1055,7 +1055,7 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
   };
 
   return (
-    <div className="flex flex-col h-full" style={{ background: "transparent" }}>
+    <div className="flex flex-col h-full" style={{ background: "linear-gradient(160deg, #F5F9F5 0%, #F7F6F0 50%, #F2EFE8 100%)" }}>
       <StatusBar />
 
       {/* Header */}
