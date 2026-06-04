@@ -509,10 +509,7 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard, onVi
                 cursor: "pointer", padding: 0,
               }}
             >
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C0813A" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M2 20h20M2 14h20M7 20v-6M12 20V8M17 20v-4" />
-                <circle cx="12" cy="5" r="2" fill="#C0813A" stroke="none" />
-              </svg>
+              <img src="/images/graphicon.svg" alt="" aria-hidden style={{ width: 32, height: 32 }} />
             </button>
             <span style={{ fontSize: 10, fontWeight: 600, color: "#C0813A", textAlign: "center", letterSpacing: 0.2, lineHeight: 1.2 }}>Taste DNA</span>
           </div>
