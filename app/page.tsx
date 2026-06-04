@@ -1099,7 +1099,7 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
                     padding: "6px 12px", borderRadius: 999,
                     fontSize: 13, fontWeight: 600,
                     background: state === "on" ? `rgba(62,196,195,0.12)` : "#fff",
-                    border: `1.5px solid ${state === "on" ? teal : cardBorder.replace("1px solid ", "")}`,
+                    border: `1.5px solid ${state === "on" ? teal : "#E8E8E8"}`,
                     color: state === "on" ? teal : ink,
                     opacity: state === "off" ? 0.28 : 1,
                     transition: "all .18s ease",
