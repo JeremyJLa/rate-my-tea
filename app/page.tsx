@@ -511,7 +511,6 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard, onVi
             >
               <img src="/images/graphicon.svg" alt="" aria-hidden style={{ width: 22, height: 22 }} />
             </button>
-            <span style={{ fontSize: 10, fontWeight: 600, color: "#888", textAlign: "center", letterSpacing: 0.2, lineHeight: 1.2 }}>Taste DNA</span>
           </div>
         </div>
       </div>
