@@ -602,7 +602,7 @@ function RateScreen({ teaId, existing, fromLeaderboard, onSubmit, onUnrate, onDi
             <TeaThumb tea={tea} size={imgSize} />
             <h1 className="font-bold" style={{ color: "#1d1d1f", letterSpacing: -0.4, display: "flex", flexDirection: inline ? "row" : "column", alignItems: inline ? "baseline" : "flex-start", gap: inline ? 5 : 0 }}>
               <span style={{ fontSize: titleSize, lineHeight: 1.15, transition: "font-size 0.1s" }}>{tea.name.replace(/\s+\S+$/, "")}</span>
-              <span style={{ fontSize: subSize, fontWeight: 500, color: inline ? "#111" : "#888", lineHeight: 1.15, transition: "font-size 0.1s, color 0.15s" }}>{tea.name.split(" ").pop()}</span>
+              <span style={{ fontSize: subSize, fontWeight: 500, color: inline ? "#1d1d1f" : "#86868B", lineHeight: 1.15, transition: "font-size 0.1s, color 0.15s" }}>{tea.name.split(" ").pop()}</span>
             </h1>
           </div>
 
@@ -634,7 +634,7 @@ function RateScreen({ teaId, existing, fromLeaderboard, onSubmit, onUnrate, onDi
         style={{ flex: 1, minHeight: 0, overflowY: "auto", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
       >
         <div className="px-5 space-y-6 py-4">
-          <div className="rounded-2xl p-4 space-y-5" style={{ background: "#F7F6F3" }}>
+          <div className="rounded-2xl p-4 space-y-5" style={{ background: "#F5F5F7" }}>
             <p className="font-semibold" style={{ fontSize: 11, color: "#86868B", textTransform: "uppercase", letterSpacing: 1 }}>Score the basics</p>
             {AXES.map((axis) => (
               <div key={axis.id}>
@@ -654,7 +654,7 @@ function RateScreen({ teaId, existing, fromLeaderboard, onSubmit, onUnrate, onDi
             ))}
           </div>
 
-          <div className="rounded-2xl p-4" style={{ background: "#F7F6F3" }}>
+          <div className="rounded-2xl p-4" style={{ background: "#F5F5F7" }}>
             <div className="flex items-center justify-between mb-1">
               <p className="font-semibold" style={{ fontSize: 11, color: "#86868B", textTransform: "uppercase", letterSpacing: 1 }}>Would you buy this tea?</p>
               <span className="font-bold tabular-nums" style={{ fontSize: 22, color: "#30D158" }}>
@@ -668,7 +668,7 @@ function RateScreen({ teaId, existing, fromLeaderboard, onSubmit, onUnrate, onDi
             </div>
           </div>
 
-          <div className="rounded-2xl p-4" style={{ background: "#F7F6F3" }}>
+          <div className="rounded-2xl p-4" style={{ background: "#F5F5F7" }}>
             <p className="font-semibold mb-2" style={{ fontSize: 11, color: "#86868B", textTransform: "uppercase", letterSpacing: 1 }}>Tasting note</p>
             <textarea
               value={note}
@@ -1169,7 +1169,7 @@ function SharedRatingView({ rating, onClose }: { rating: Rating; onClose: () => 
 
       <div className="flex-1 overflow-y-auto px-5 space-y-6 pb-8">
         {/* Axes */}
-        <div className="rounded-2xl p-4 space-y-5" style={{ background: "#F7F6F3" }}>
+        <div className="rounded-2xl p-4 space-y-5" style={{ background: "#F5F5F7" }}>
           <p className="font-semibold" style={{ fontSize: 11, color: "#86868B", textTransform: "uppercase", letterSpacing: 1 }}>Score the basics</p>
           {AXES.map((axis) => (
             <div key={axis.id}>
@@ -1200,7 +1200,7 @@ function SharedRatingView({ rating, onClose }: { rating: Rating; onClose: () => 
         </div>
 
         {/* Buy-again */}
-        <div className="rounded-2xl p-4" style={{ background: "#F7F6F3" }}>
+        <div className="rounded-2xl p-4" style={{ background: "#F5F5F7" }}>
           <div className="flex items-center justify-between">
             <p className="font-semibold" style={{ fontSize: 11, color: "#86868B", textTransform: "uppercase", letterSpacing: 1 }}>Would you buy this tea?</p>
             <span className="font-bold tabular-nums" style={{ fontSize: 22, color: "#30D158" }}>
@@ -1218,7 +1218,7 @@ function SharedRatingView({ rating, onClose }: { rating: Rating; onClose: () => 
 
         {/* Note */}
         {rating.note ? (
-          <div className="rounded-2xl p-4" style={{ background: "#F7F6F3" }}>
+          <div className="rounded-2xl p-4" style={{ background: "#F5F5F7" }}>
             <p className="font-semibold mb-2" style={{ fontSize: 11, color: "#86868B", textTransform: "uppercase", letterSpacing: 1 }}>Tasting note</p>
             <p style={{ fontSize: 14, color: "#333", lineHeight: 1.6 }}>{rating.note}</p>
           </div>
