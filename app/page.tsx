@@ -139,7 +139,7 @@ function lightenHex(hex: string): string {
   return `rgb(${Math.round(r + (255 - r) * 0.85)},${Math.round(g + (255 - g) * 0.85)},${Math.round(b + (255 - b) * 0.85)})`;
 }
 
-function TeaThumb({ tea, size = 40 }: { tea: (typeof TEAS)[number]; size?: number }) {
+function TeaThumb({ tea, size = 40, noRing = false }: { tea: (typeof TEAS)[number]; size?: number; noRing?: boolean }) {
   const hash = tea.id.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
   const rotate = ((hash * 37) % 80) - 40;
   const rad = (Math.abs(rotate) * Math.PI) / 180;
@@ -151,8 +151,8 @@ function TeaThumb({ tea, size = 40 }: { tea: (typeof TEAS)[number]; size?: numbe
     <div style={{
       width: size, height: size, borderRadius: "50%", overflow: "hidden", flexShrink: 0,
       backgroundColor: tea.color,
-      border: "2.5px solid #fff",
-      boxShadow: `0 0 0 2.5px ${tea.color}, 0 3px 10px rgba(0,0,0,0.15)`,
+      border: noRing ? "none" : "2.5px solid #fff",
+      boxShadow: noRing ? "none" : `0 0 0 2.5px ${tea.color}, 0 3px 10px rgba(0,0,0,0.15)`,
       position: "relative",
     }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -1104,7 +1104,7 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
                     opacity: state === "off" ? 0.28 : 1,
                     transition: "all .18s ease",
                   }}>
-                    <TeaThumb tea={tea} size={16} />
+                    <TeaThumb tea={tea} size={16} noRing />
                     {tea.name.replace(" Breakfast", "")}
                   </span>
                 );
