@@ -1099,7 +1099,7 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
           </div>
 
           {/* Section label */}
-          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "#bbb", marginBottom: 8 }}>Ingredients in your top teas</p>
+          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "#86868B", marginBottom: 8 }}>Ingredients in your top teas</p>
 
           {/* Ingredient rows */}
           <div className="space-y-2">
