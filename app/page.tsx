@@ -1088,8 +1088,8 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
           </div>
 
           {/* Top teas chips */}
-          <div style={{ background: card, borderRadius: 20, padding: "16px 16px 14px", marginBottom: 16, border: cardBorder }}>
-            <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.1, textTransform: "uppercase", color: teal, margin: "0 0 12px" }}>Top teas</p>
+          <div style={{ marginBottom: 16 }}>
+            <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.1, textTransform: "uppercase", color: teal, margin: "0 0 10px 2px" }}>Top teas</p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
               {scored.map(({ id, tea }) => {
                 const state = chipState(id);
@@ -1098,8 +1098,8 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
                     display: "inline-flex", alignItems: "center", gap: 6,
                     padding: "6px 12px", borderRadius: 999,
                     fontSize: 13, fontWeight: 600,
-                    background: state === "on" ? `rgba(62,196,195,0.15)` : "#F3F4F6",
-                    border: `1.5px solid ${state === "on" ? teal : "transparent"}`,
+                    background: state === "on" ? `rgba(62,196,195,0.12)` : "#fff",
+                    border: `1.5px solid ${state === "on" ? teal : cardBorder.replace("1px solid ", "")}`,
                     color: state === "on" ? teal : ink,
                     opacity: state === "off" ? 0.28 : 1,
                     transition: "all .18s ease",
