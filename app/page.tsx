@@ -1059,7 +1059,8 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
   const soft    = "#9CA3AF";
   const pageBg  = "#FAFAFA";
   const card    = "#FFFFFF";
-  const cardShadow = "0 2px 12px rgba(0,0,0,0.06)";
+  const cardShadow = "none";
+  const cardBorder = "1px solid #E5E5E5";
 
   return (
     <div className="flex flex-col h-full" style={{ background: pageBg, fontFamily: "-apple-system, 'Inter', sans-serif" }}>
@@ -1067,7 +1068,7 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
 
       {/* Header */}
       <div className="flex items-center" style={{ padding: "14px 20px 8px", flexShrink: 0 }}>
-        <button onClick={onClose} style={{ width: 36, height: 36, borderRadius: 999, background: card, boxShadow: cardShadow, border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: ink, flexShrink: 0 }}>
+        <button onClick={onClose} style={{ width: 36, height: 36, borderRadius: 999, background: card, border: cardBorder, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: ink, flexShrink: 0 }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
         </button>
         <h1 style={{ flex: 1, textAlign: "center", fontSize: 17, fontWeight: 700, color: ink, letterSpacing: -0.2, margin: "0 36px 0 0" }}>Taste DNA</h1>
@@ -1087,7 +1088,7 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
           </div>
 
           {/* Top teas chips */}
-          <div style={{ background: card, borderRadius: 20, padding: "16px 16px 14px", marginBottom: 16, boxShadow: cardShadow }}>
+          <div style={{ background: card, borderRadius: 20, padding: "16px 16px 14px", marginBottom: 16, border: cardBorder }}>
             <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.1, textTransform: "uppercase", color: teal, margin: "0 0 12px" }}>Top teas</p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
               {scored.map(({ id, tea }) => {
@@ -1127,8 +1128,8 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
                     background: card,
                     borderRadius: 20,
                     padding: "16px 16px 14px",
-                    boxShadow: isActive ? `0 4px 24px rgba(62,196,195,0.18)` : cardShadow,
-                    border: `1.5px solid ${isActive ? teal : "transparent"}`,
+                    boxShadow: "none",
+                    border: `1.5px solid ${isActive ? teal : "#E5E5E5"}`,
                     display: "block", width: "100%", textAlign: "left",
                     cursor: "pointer", transition: "all .18s ease",
                   }}
