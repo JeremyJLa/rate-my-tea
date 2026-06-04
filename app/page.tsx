@@ -1053,12 +1053,12 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
     return active.teaIds.includes(id) ? "on" : "off";
   };
 
-  const teal = "#3DBFB8";
-  const tealLight = "rgba(61,191,184,0.12)";
-  const tealMid = "rgba(61,191,184,0.25)";
-  const ink = "#1A2E2D";
-  const soft = "#7AA8A5";
-  const pageBg = "#EEF8F7";
+  const teal = "#3DBAB3";
+  const tealLight = "rgba(61,186,179,0.12)";
+  const tealMid = "rgba(61,186,179,0.22)";
+  const ink = "#1C3130";
+  const soft = "#9AADAB";
+  const pageBg = "#F4F5F5";
 
   return (
     <div className="flex flex-col h-full" style={{ background: pageBg }}>
