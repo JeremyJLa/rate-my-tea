@@ -113,7 +113,7 @@ function Slider({ value, onChange }: { value: number; onChange: (v: number) => v
       <div className="w-full rounded-full overflow-hidden" style={{ height: 8, background: "#e5e7eb" }}>
         <div
           className="h-full rounded-full"
-          style={{ width: `${value}%`, background: "linear-gradient(90deg,#4ade80,#16a34a)", transition: "width 0.05s" }}
+          style={{ width: `${value}%`, background: "#30D158", transition: "width 0.05s" }}
         />
       </div>
       {/* Thumb */}
@@ -122,11 +122,11 @@ function Slider({ value, onChange }: { value: number; onChange: (v: number) => v
         style={{
           width: 28, height: 28,
           left: `calc(${value}% - 14px)`,
-          boxShadow: "0 2px 8px rgba(22,163,74,0.35), 0 0 0 2px #16a34a",
+          boxShadow: "0 2px 8px rgba(48,209,88,0.35), 0 0 0 2px #30D158",
           transition: "left 0.05s",
         }}
       >
-        <div className="w-2 h-2 rounded-full" style={{ background: "linear-gradient(135deg,#4ade80,#16a34a)" }} />
+        <div className="w-2 h-2 rounded-full" style={{ background: "#30D158" }} />
       </div>
     </div>
   );
@@ -242,9 +242,9 @@ function TeaCard({ tea, rated, animating, onClick }: {
           {/* Content */}
           <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, pointerEvents: "none" }}>
             <svg width="20" height="16" viewBox="0 0 20 16" fill="none">
-              <path d="M2 8L7.5 14L18 2" stroke="#111" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M2 8L7.5 14L18 2" stroke="#1d1d1f" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            <span style={{ fontWeight: 800, fontSize: 13, letterSpacing: 1.5, color: "#111", textTransform: "uppercase" }}>Rated</span>
+            <span style={{ fontWeight: 800, fontSize: 13, letterSpacing: 1.5, color: "#1d1d1f", textTransform: "uppercase" }}>Rated</span>
             <span style={{ fontSize: 10, fontWeight: 400, color: "#333", textAlign: "center", lineHeight: 1.4, marginTop: 1 }}>{city}<br/>Breakfast</span>
           </div>
         </div>
@@ -346,10 +346,10 @@ function DecideModal({ unrated, onRate, onClose }: {
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 pb-4">
-          <p style={{ fontSize: 13, fontWeight: 600, color: "#aaa", textTransform: "uppercase", letterSpacing: 1 }}>
+          <p style={{ fontSize: 13, fontWeight: 600, color: "#86868B", textTransform: "uppercase", letterSpacing: 1 }}>
             Teas to try
           </p>
-          <button onClick={close} style={{ width: 32, height: 32, borderRadius: 16, background: "#f0f0f0", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#888", fontSize: 16 }}>✕</button>
+          <button onClick={close} style={{ width: 32, height: 32, borderRadius: 16, background: "#F5F5F7", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#86868B", fontSize: 16 }}>✕</button>
         </div>
 
         {/* Card */}
@@ -374,7 +374,7 @@ function DecideModal({ unrated, onRate, onClose }: {
           }}>
             <TeaThumb tea={tea} size={72} />
             <div style={{ textAlign: "center" }}>
-              <h2 style={{ fontSize: 22, fontWeight: 800, color: "#111", letterSpacing: -0.4, marginBottom: 10 }}>
+              <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1d1d1f", letterSpacing: -0.4, marginBottom: 10 }}>
                 {tea.name}
               </h2>
               <p style={{ fontSize: 15, color: "#666", lineHeight: 1.6, maxWidth: 280, margin: "0 auto" }}>
@@ -385,7 +385,7 @@ function DecideModal({ unrated, onRate, onClose }: {
               onClick={() => { onRate(tea.id); close(); }}
               style={{
                 marginTop: 8, height: 50, paddingInline: 32, borderRadius: 9999, border: "none",
-                background: "linear-gradient(135deg,#4ade80,#16a34a)",
+                background: "#30D158",
                 color: "#fff", fontWeight: 700, fontSize: 16, cursor: "pointer",
                 boxShadow: "0 4px 16px rgba(22,163,74,0.35)",
                 width: "100%",
@@ -398,19 +398,19 @@ function DecideModal({ unrated, onRate, onClose }: {
 
         {/* Dots + arrows */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 16, marginTop: 20, paddingInline: 20 }}>
-          <button onClick={prev} style={{ background: "none", border: "none", cursor: "pointer", padding: 8, color: "#aaa" }}>
+          <button onClick={prev} style={{ background: "none", border: "none", cursor: "pointer", padding: 8, color: "#86868B" }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
           </button>
           <div style={{ display: "flex", gap: 6 }}>
             {unrated.map((_, i) => (
               <button key={i} onClick={() => setIdx(i)} style={{
                 width: i === idx ? 18 : 7, height: 7, borderRadius: 9999, border: "none", cursor: "pointer",
-                background: i === idx ? "#16a34a" : "#ddd",
+                background: i === idx ? "#30D158" : "#ddd",
                 transition: "width 0.2s ease, background 0.2s ease", padding: 0,
               }} />
             ))}
           </div>
-          <button onClick={next} style={{ background: "none", border: "none", cursor: "pointer", padding: 8, color: "#aaa" }}>
+          <button onClick={next} style={{ background: "none", border: "none", cursor: "pointer", padding: 8, color: "#86868B" }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
           </button>
         </div>
@@ -590,7 +590,7 @@ function RateScreen({ teaId, existing, fromLeaderboard, onSubmit, onUnrate, onDi
         <div className={`flex items-center px-5 ${fromLeaderboard ? "" : "justify-between"}`} style={{ paddingTop: 14, paddingBottom: headerPb, transition: "padding-bottom 0.1s", gap: fromLeaderboard ? 20 : 0 }}>
           {/* Back chevron (leaderboard) or tea info (home) on left */}
           {fromLeaderboard ? (
-            <button onClick={onDismiss} className="flex items-center justify-center" style={{ width: 40, height: 40, borderRadius: 20, color: "#111", flexShrink: 0 }}>
+            <button onClick={onDismiss} className="flex items-center justify-center" style={{ width: 40, height: 40, borderRadius: 20, color: "#1d1d1f", flexShrink: 0 }}>
               <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M15 18l-6-6 6-6"/>
               </svg>
@@ -600,7 +600,7 @@ function RateScreen({ teaId, existing, fromLeaderboard, onSubmit, onUnrate, onDi
           {/* Tea image + name — always shown */}
           <div className="flex items-center gap-3">
             <TeaThumb tea={tea} size={imgSize} />
-            <h1 className="font-bold" style={{ color: "#111", letterSpacing: -0.4, display: "flex", flexDirection: inline ? "row" : "column", alignItems: inline ? "baseline" : "flex-start", gap: inline ? 5 : 0 }}>
+            <h1 className="font-bold" style={{ color: "#1d1d1f", letterSpacing: -0.4, display: "flex", flexDirection: inline ? "row" : "column", alignItems: inline ? "baseline" : "flex-start", gap: inline ? 5 : 0 }}>
               <span style={{ fontSize: titleSize, lineHeight: 1.15, transition: "font-size 0.1s" }}>{tea.name.replace(/\s+\S+$/, "")}</span>
               <span style={{ fontSize: subSize, fontWeight: 500, color: inline ? "#111" : "#888", lineHeight: 1.15, transition: "font-size 0.1s, color 0.15s" }}>{tea.name.split(" ").pop()}</span>
             </h1>
@@ -618,7 +618,7 @@ function RateScreen({ teaId, existing, fromLeaderboard, onSubmit, onUnrate, onDi
                   </svg>
                 </button>
               )}
-              <button onClick={onDismiss} className="flex items-center justify-center" style={{ width: 40, height: 40, borderRadius: 20, color: "#111" }}>
+              <button onClick={onDismiss} className="flex items-center justify-center" style={{ width: 40, height: 40, borderRadius: 20, color: "#1d1d1f" }}>
                 <svg width="30" height="30" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                   <line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/>
                 </svg>
@@ -635,15 +635,15 @@ function RateScreen({ teaId, existing, fromLeaderboard, onSubmit, onUnrate, onDi
       >
         <div className="px-5 space-y-6 py-4">
           <div className="rounded-2xl p-4 space-y-5" style={{ background: "#F7F6F3" }}>
-            <p className="font-semibold" style={{ fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: 1 }}>Score the basics</p>
+            <p className="font-semibold" style={{ fontSize: 11, color: "#86868B", textTransform: "uppercase", letterSpacing: 1 }}>Score the basics</p>
             {AXES.map((axis) => (
               <div key={axis.id}>
                 <div className="flex items-baseline justify-between mb-2">
-                  <span className="font-semibold" style={{ fontSize: 15, color: "#111" }}>{axis.label}</span>
-                  <span style={{ fontSize: 12, color: "#aaa" }}>{axis.prompt}</span>
+                  <span className="font-semibold" style={{ fontSize: 15, color: "#1d1d1f" }}>{axis.label}</span>
+                  <span style={{ fontSize: 12, color: "#86868B" }}>{axis.prompt}</span>
                 </div>
                 <DotRating value={axes[axis.id]} onChange={(v) => setAxis(axis.id, v)} />
-                <div className="flex gap-2.5 mt-1" style={{ fontSize: 15, color: "#888" }}>
+                <div className="flex gap-2.5 mt-1" style={{ fontSize: 15, color: "#86868B" }}>
                   <span className="w-9 shrink-0 text-center">{axis.scaleLabels[0]}</span>
                   <span className="w-9 shrink-0" />
                   <span className="w-9 shrink-0 text-center" style={{ marginLeft: -5 }}>{axis.scaleLabels[1]}</span>
@@ -656,8 +656,8 @@ function RateScreen({ teaId, existing, fromLeaderboard, onSubmit, onUnrate, onDi
 
           <div className="rounded-2xl p-4" style={{ background: "#F7F6F3" }}>
             <div className="flex items-center justify-between mb-1">
-              <p className="font-semibold" style={{ fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: 1 }}>Would you buy this tea?</p>
-              <span className="font-bold tabular-nums" style={{ fontSize: 22, color: "#16a34a" }}>
+              <p className="font-semibold" style={{ fontSize: 11, color: "#86868B", textTransform: "uppercase", letterSpacing: 1 }}>Would you buy this tea?</p>
+              <span className="font-bold tabular-nums" style={{ fontSize: 22, color: "#30D158" }}>
                 {buyAgainPct}%
               </span>
             </div>
@@ -669,7 +669,7 @@ function RateScreen({ teaId, existing, fromLeaderboard, onSubmit, onUnrate, onDi
           </div>
 
           <div className="rounded-2xl p-4" style={{ background: "#F7F6F3" }}>
-            <p className="font-semibold mb-2" style={{ fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: 1 }}>Tasting note</p>
+            <p className="font-semibold mb-2" style={{ fontSize: 11, color: "#86868B", textTransform: "uppercase", letterSpacing: 1 }}>Tasting note</p>
             <textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
@@ -683,7 +683,7 @@ function RateScreen({ teaId, existing, fromLeaderboard, onSubmit, onUnrate, onDi
       </div>
 
       {/* ── Fixed footer ───────────────────────────────────────────────── */}
-      <div className="pt-3 pb-8 px-5" style={{ flexShrink: 0, background: "#fff", borderTop: "1px solid #f0f0f0", zIndex: 20 }}>
+      <div className="pt-3 pb-8 px-5" style={{ flexShrink: 0, background: "#fff", borderTop: "1px solid #F5F5F7", zIndex: 20 }}>
         {existing ? (
           <div className="flex items-center gap-4">
             <button
@@ -729,10 +729,10 @@ function RateScreen({ teaId, existing, fromLeaderboard, onSubmit, onUnrate, onDi
         style={{ background: "#fff", borderRadius: "24px 24px 0 0", padding: "12px 20px 40px", zIndex: 50, transform: shareOpen ? "translateY(0)" : "translateY(100%)", transition: "transform 0.3s cubic-bezier(0.32,0.72,0,1)" }}
       >
         <div className="flex justify-center mb-5">
-          <div className="rounded-full" style={{ width: 36, height: 4, background: "#e0e0e0" }} />
+          <div className="rounded-full" style={{ width: 36, height: 4, background: "#E5E5EA" }} />
         </div>
-        <p className="font-semibold mb-1" style={{ fontSize: 16, color: "#111" }}>Share Kate&apos;s rating</p>
-        <p style={{ fontSize: 13, color: "#aaa", marginBottom: 20 }}>{tea.name} · {buyAgainPct}% likely to buy</p>
+        <p className="font-semibold mb-1" style={{ fontSize: 16, color: "#1d1d1f" }}>Share Kate&apos;s rating</p>
+        <p style={{ fontSize: 13, color: "#86868B", marginBottom: 20 }}>{tea.name} · {buyAgainPct}% likely to buy</p>
         <button
           onClick={() => {
             const url = shareUrl();
@@ -746,8 +746,8 @@ function RateScreen({ teaId, existing, fromLeaderboard, onSubmit, onUnrate, onDi
         >
           <span style={{ fontSize: 22 }}>💬</span>
           <div className="text-left">
-            <p className="font-medium" style={{ fontSize: 15, color: "#111" }}>Send via Messages</p>
-            <p style={{ fontSize: 12, color: "#aaa" }}>Share with a friend</p>
+            <p className="font-medium" style={{ fontSize: 15, color: "#1d1d1f" }}>Send via Messages</p>
+            <p style={{ fontSize: 12, color: "#86868B" }}>Share with a friend</p>
           </div>
           <svg className="ml-auto" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </button>
@@ -758,8 +758,8 @@ function RateScreen({ teaId, existing, fromLeaderboard, onSubmit, onUnrate, onDi
         >
           <span style={{ fontSize: 22 }}>🔗</span>
           <div className="text-left">
-            <p className="font-medium" style={{ fontSize: 15, color: "#111" }}>Copy link</p>
-            <p style={{ fontSize: 12, color: "#aaa" }}>Paste anywhere</p>
+            <p className="font-medium" style={{ fontSize: 15, color: "#1d1d1f" }}>Copy link</p>
+            <p style={{ fontSize: 12, color: "#86868B" }}>Paste anywhere</p>
           </div>
           <svg className="ml-auto" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </button>
@@ -790,7 +790,7 @@ function LeaderboardScreen({ ratings, onEditTea, onClose }: {
         <button
           onClick={onClose}
           className="flex items-center justify-center"
-          style={{ width: 40, height: 40, borderRadius: 20, color: "#111" }}
+          style={{ width: 40, height: 40, borderRadius: 20, color: "#1d1d1f" }}
         >
           <svg width="30" height="30" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/>
@@ -835,7 +835,7 @@ function LeaderboardScreen({ ratings, onEditTea, onClose }: {
             >
               <span className="font-bold tabular-nums" style={{ fontSize: 13, color: "#ccc", width: 20, textAlign: "right" }}>{i + 1}</span>
               <TeaThumb tea={tea} size={36} />
-              <span className="flex-1 text-left font-medium" style={{ fontSize: 14, color: "#111" }}>{tea.name}</span>
+              <span className="flex-1 text-left font-medium" style={{ fontSize: 14, color: "#1d1d1f" }}>{tea.name}</span>
               <span className="font-bold tabular-nums" style={{
                 fontSize: 17,
                 color: "#0071E3",
@@ -846,11 +846,11 @@ function LeaderboardScreen({ ratings, onEditTea, onClose }: {
 
         {/* Placeholder */}
         <div className="flex items-center gap-3" style={{
-          background: "transparent", border: "1.5px dashed #e0e0e0",
+          background: "transparent", border: "1.5px dashed #E5E5EA",
           borderRadius: 16, padding: "12px 14px",
         }}>
           <span style={{ fontSize: 13, color: "#ddd", width: 20, textAlign: "right" }}>{ranked.length + 1}</span>
-          <div style={{ width: 36, height: 36, borderRadius: 10, background: "#f0f0f0", flexShrink: 0 }} />
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: "#F5F5F7", flexShrink: 0 }} />
           <span style={{ fontSize: 14, color: "#ccc" }}>next tea…</span>
         </div>
 
@@ -1063,7 +1063,7 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
           <h1 className="font-bold" style={{ fontSize: 26, color: "#1d1d1f", letterSpacing: -0.6 }}>Taste DNA</h1>
           <p style={{ fontSize: 13, color: "#86868B", marginTop: 1 }}>your top {topN || "—"} teas by ingredient</p>
         </div>
-        <button onClick={onClose} className="flex items-center justify-center" style={{ width: 40, height: 40, borderRadius: 20, color: "#111" }}>
+        <button onClick={onClose} className="flex items-center justify-center" style={{ width: 40, height: 40, borderRadius: 20, color: "#1d1d1f" }}>
           <svg width="30" height="30" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/>
           </svg>
@@ -1072,7 +1072,7 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
 
       {topN === 0 ? (
         <div className="flex-1 flex items-center justify-center px-8 text-center">
-          <p style={{ fontSize: 15, color: "#aaa", lineHeight: 1.6 }}>Rate some teas first — your flavour profile will appear here.</p>
+          <p style={{ fontSize: 15, color: "#86868B", lineHeight: 1.6 }}>Rate some teas first — your flavour profile will appear here.</p>
         </div>
       ) : (
         <div className="flex-1 overflow-y-auto px-5 pb-8">
@@ -1117,9 +1117,9 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
               >
                 {/* Name + count */}
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-semibold" style={{ fontSize: 15, color: "#111" }}>{ing.name}</span>
-                  <span style={{ fontSize: 13, color: "#aaa", fontWeight: 600 }}>
-                    <span style={{ color: "#111", fontWeight: 700 }}>{ing.count}</span> of {topN}
+                  <span className="font-semibold" style={{ fontSize: 15, color: "#1d1d1f" }}>{ing.name}</span>
+                  <span style={{ fontSize: 13, color: "#86868B", fontWeight: 600 }}>
+                    <span style={{ color: "#1d1d1f", fontWeight: 700 }}>{ing.count}</span> of {topN}
                   </span>
                 </div>
                 {/* Bar */}
@@ -1133,7 +1133,7 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
                   ))}
                 </div>
                 {/* Descriptor */}
-                <p style={{ fontSize: 11, color: "#aaa", marginTop: 5, fontWeight: 500 }}>{ing.desc}</p>
+                <p style={{ fontSize: 11, color: "#86868B", marginTop: 5, fontWeight: 500 }}>{ing.desc}</p>
               </button>
             ))}
           </div>
@@ -1159,8 +1159,8 @@ function SharedRatingView({ rating, onClose }: { rating: Rating; onClose: () => 
         <div className="flex items-center gap-3">
           <TeaThumb tea={tea} size={44} />
           <div>
-            <p style={{ fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: 1, fontWeight: 600 }}>Kate rated this</p>
-            <h1 className="font-bold" style={{ fontSize: 22, color: "#111", letterSpacing: -0.4 }}>{tea.name}</h1>
+            <p style={{ fontSize: 11, color: "#86868B", textTransform: "uppercase", letterSpacing: 1, fontWeight: 600 }}>Kate rated this</p>
+            <h1 className="font-bold" style={{ fontSize: 22, color: "#1d1d1f", letterSpacing: -0.4 }}>{tea.name}</h1>
           </div>
         </div>
         <button onClick={onClose} className="flex items-center justify-center"
@@ -1170,25 +1170,25 @@ function SharedRatingView({ rating, onClose }: { rating: Rating; onClose: () => 
       <div className="flex-1 overflow-y-auto px-5 space-y-6 pb-8">
         {/* Axes */}
         <div className="rounded-2xl p-4 space-y-5" style={{ background: "#F7F6F3" }}>
-          <p className="font-semibold" style={{ fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: 1 }}>Score the basics</p>
+          <p className="font-semibold" style={{ fontSize: 11, color: "#86868B", textTransform: "uppercase", letterSpacing: 1 }}>Score the basics</p>
           {AXES.map((axis) => (
             <div key={axis.id}>
               <div className="flex items-baseline justify-between mb-2">
-                <span className="font-semibold" style={{ fontSize: 15, color: "#111" }}>{axis.label}</span>
+                <span className="font-semibold" style={{ fontSize: 15, color: "#1d1d1f" }}>{axis.label}</span>
               </div>
               {/* Read-only dots */}
               <div className="flex gap-2.5">
                 {[1,2,3,4,5].map((n) => (
                   <div key={n} className="w-9 h-9 flex items-center justify-center">
                     <span className="block w-5 h-5 rounded-full" style={{
-                      background: n <= rating.axes[axis.id] ? "linear-gradient(135deg,#4ade80,#16a34a)" : "transparent",
-                      border: n <= rating.axes[axis.id] ? "none" : "2px solid #d1d5db",
+                      background: n <= rating.axes[axis.id] ? "#30D158" : "transparent",
+                      border: n <= rating.axes[axis.id] ? "none" : "2px solid #E5E5EA",
                       transform: n <= rating.axes[axis.id] ? "scale(1.1)" : "scale(1)",
                     }} />
                   </div>
                 ))}
               </div>
-              <div className="flex gap-2.5 mt-1" style={{ fontSize: 15, color: "#888" }}>
+              <div className="flex gap-2.5 mt-1" style={{ fontSize: 15, color: "#86868B" }}>
                 <span className="w-9 shrink-0 text-center">{axis.scaleLabels[0]}</span>
                 <span className="w-9 shrink-0" />
                 <span className="w-9 shrink-0 text-center" style={{ marginLeft: -5 }}>{axis.scaleLabels[1]}</span>
@@ -1202,14 +1202,14 @@ function SharedRatingView({ rating, onClose }: { rating: Rating; onClose: () => 
         {/* Buy-again */}
         <div className="rounded-2xl p-4" style={{ background: "#F7F6F3" }}>
           <div className="flex items-center justify-between">
-            <p className="font-semibold" style={{ fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: 1 }}>Would you buy this tea?</p>
-            <span className="font-bold tabular-nums" style={{ fontSize: 22, background: "linear-gradient(135deg,#4ade80,#16a34a)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            <p className="font-semibold" style={{ fontSize: 11, color: "#86868B", textTransform: "uppercase", letterSpacing: 1 }}>Would you buy this tea?</p>
+            <span className="font-bold tabular-nums" style={{ fontSize: 22, color: "#30D158" }}>
               {rating.buyAgainPct}%
             </span>
           </div>
           {/* Read-only track */}
           <div className="w-full rounded-full overflow-hidden mt-3" style={{ height: 8, background: "#e5e7eb" }}>
-            <div className="h-full rounded-full" style={{ width: `${rating.buyAgainPct}%`, background: "linear-gradient(90deg,#4ade80,#16a34a)" }} />
+            <div className="h-full rounded-full" style={{ width: `${rating.buyAgainPct}%`, background: "#30D158" }} />
           </div>
           <div className="flex justify-between mt-1" style={{ fontSize: 11, color: "#bbb" }}>
             <span>Wouldn&apos;t buy</span><span>Definitely buying</span>
@@ -1219,7 +1219,7 @@ function SharedRatingView({ rating, onClose }: { rating: Rating; onClose: () => 
         {/* Note */}
         {rating.note ? (
           <div className="rounded-2xl p-4" style={{ background: "#F7F6F3" }}>
-            <p className="font-semibold mb-2" style={{ fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: 1 }}>Tasting note</p>
+            <p className="font-semibold mb-2" style={{ fontSize: 11, color: "#86868B", textTransform: "uppercase", letterSpacing: 1 }}>Tasting note</p>
             <p style={{ fontSize: 14, color: "#333", lineHeight: 1.6 }}>{rating.note}</p>
           </div>
         ) : null}
@@ -1283,7 +1283,7 @@ function SplashScreen({ onDismiss }: { onDismiss: () => void }) {
         position: "absolute", inset: 0,
         display: "flex", alignItems: "center", justifyContent: "center",
         margin: 0, fontSize: 28, fontWeight: 400,
-        color: "#aaa", letterSpacing: 0.2,
+        color: "#86868B", letterSpacing: 0.2,
         opacity: hiKate && !hiKateOut ? 1 : 0,
         transition: hiKateOut ? "opacity 0.5s ease-in" : "opacity 0.6s ease-out",
         zIndex: 1,
@@ -1622,7 +1622,7 @@ function SplashScreenC({ onDismiss }: { onDismiss: () => void }) {
         zIndex: 3,
         pointerEvents: "none",
       }}>
-        <span style={{ fontSize: 32, fontWeight: 700, color: "#aaa", letterSpacing: -0.5 }}>Hi Kate</span>
+        <span style={{ fontSize: 32, fontWeight: 700, color: "#86868B", letterSpacing: -0.5 }}>Hi Kate</span>
       </div>
 
       {/* Green flood — expands from centre after bag exits */}
@@ -1754,7 +1754,7 @@ export default function App() {
   };
 
   return (
-    <div className="flex items-center justify-center sm:bg-[#d1d5db] bg-[#F7F6F3] sm:p-4" style={{ minHeight: "100dvh" }}>
+    <div className="flex items-center justify-center sm:bg-[#E5E5EA] bg-[#E5E5EA] sm:p-4" style={{ minHeight: "100dvh" }}>
       <div
         ref={containerRef}
         className="relative overflow-hidden w-full sm:h-[844px] sm:w-[390px] sm:rounded-[50px] sm:shadow-2xl"
