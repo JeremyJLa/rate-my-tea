@@ -1053,93 +1053,110 @@ function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; on
     return active.teaIds.includes(id) ? "on" : "off";
   };
 
+  const teal = "#3DBFB8";
+  const tealLight = "rgba(61,191,184,0.12)";
+  const tealMid = "rgba(61,191,184,0.25)";
+  const ink = "#1A2E2D";
+  const soft = "#7AA8A5";
+  const pageBg = "#EEF8F7";
+
   return (
-    <div className="flex flex-col h-full" style={{ background: "#F5F5F7" }}>
+    <div className="flex flex-col h-full" style={{ background: pageBg }}>
       <StatusBar />
 
       {/* Header */}
-      <div className="flex items-center justify-between px-5 pb-4" style={{ paddingTop: 14, flexShrink: 0 }}>
-        <div className="flex-1 text-center">
-          <h1 className="font-bold" style={{ fontSize: 26, color: "#1d1d1f", letterSpacing: -0.6 }}>Taste DNA</h1>
-          <p style={{ fontSize: 13, color: "#86868B", marginTop: 1 }}>your top {topN || "—"} teas by ingredient</p>
-        </div>
-        <button onClick={onClose} className="flex items-center justify-center" style={{ width: 40, height: 40, borderRadius: 20, color: "#1d1d1f" }}>
-          <svg width="30" height="30" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/>
-          </svg>
+      <div className="flex items-center px-5" style={{ paddingTop: 14, paddingBottom: 10, flexShrink: 0 }}>
+        <button onClick={onClose} className="flex items-center justify-center" style={{ width: 36, height: 36, borderRadius: 999, background: "#fff", boxShadow: "0 2px 8px rgba(0,0,0,0.08)", color: teal, flexShrink: 0 }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
         </button>
+        <div className="flex-1 text-center" style={{ marginRight: 36 }}>
+          <h1 style={{ fontSize: 18, fontWeight: 700, color: ink, letterSpacing: -0.3 }}>Taste DNA</h1>
+          <p style={{ fontSize: 12, color: soft, marginTop: 1 }}>your top {topN || "—"} teas by ingredient</p>
+        </div>
       </div>
 
       {topN === 0 ? (
         <div className="flex-1 flex items-center justify-center px-8 text-center">
-          <p style={{ fontSize: 15, color: "#86868B", lineHeight: 1.6 }}>Rate some teas first — your flavour profile will appear here.</p>
+          <p style={{ fontSize: 15, color: soft, lineHeight: 1.6 }}>Rate some teas first — your flavour profile will appear here.</p>
         </div>
       ) : (
-        <div className="flex-1 overflow-y-auto px-5 pb-8">
+        <div className="flex-1 overflow-y-auto pb-8" style={{ padding: "0 16px 32px" }}>
 
-          {/* Tea chips */}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 7, marginBottom: 20 }}>
-            {scored.map(({ id, tea }) => {
-              const state = chipState(id);
+          {/* Top teas card */}
+          <div style={{ background: "#fff", borderRadius: 20, padding: "16px 18px", marginBottom: 14, boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}>
+            <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: teal, marginBottom: 12 }}>Your top teas</p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              {scored.map(({ id, tea }) => {
+                const state = chipState(id);
+                return (
+                  <span key={id} style={{
+                    display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 12px",
+                    borderRadius: 999, fontSize: 12, fontWeight: 600,
+                    background: state === "on" ? tealMid : tealLight,
+                    border: `1.5px solid ${state === "on" ? teal : "transparent"}`,
+                    color: state === "on" ? teal : ink,
+                    opacity: state === "off" ? 0.3 : 1,
+                    transition: "all .16s",
+                  }}>
+                    <TeaThumb tea={tea} size={16} />
+                    {tea.name.replace(" Breakfast", "")}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Section label */}
+          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: soft, marginBottom: 10, paddingLeft: 4 }}>Flavour breakdown</p>
+
+          {/* Ingredient rows */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {ingredientRows.map(ing => {
+              const isActive = pinned === ing.name;
               return (
-                <span key={id} style={{
-                  display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 11px",
-                  borderRadius: 999, fontSize: 12, fontWeight: 600,
-                  background: state === "on" ? "rgba(48,209,88,.15)" : "#E5E5EA",
-                  border: `1.5px solid ${state === "on" ? "#30D158" : "transparent"}`,
-                  color: state === "on" ? "#248A3D" : "#1d1d1f",
-                  opacity: state === "off" ? 0.3 : 1,
-                  transition: "all .16s",
-                }}>
-                  <TeaThumb tea={tea} size={18} />
-                  {tea.name.replace(" Breakfast", "")}
-                </span>
+                <button
+                  key={ing.name}
+                  onClick={() => setPinned(isActive ? null : ing.name)}
+                  className="w-full text-left transition-all active:scale-[0.98]"
+                  style={{
+                    background: "#fff",
+                    borderRadius: 20, padding: "16px 18px",
+                    boxShadow: isActive ? `0 4px 20px rgba(61,191,184,0.2), 0 0 0 1.5px ${teal}` : "0 4px 20px rgba(0,0,0,0.06)",
+                    display: "block", width: "100%",
+                    borderLeft: isActive ? `4px solid ${teal}` : "4px solid transparent",
+                  }}
+                >
+                  <div className="flex items-center justify-between" style={{ marginBottom: 10 }}>
+                    <div>
+                      <span style={{ fontSize: 16, fontWeight: 700, color: ink, display: "block" }}>{ing.name}</span>
+                      <span style={{ fontSize: 11, fontWeight: 600, color: isActive ? teal : soft, letterSpacing: 0.4, textTransform: "uppercase" }}>{ing.desc}</span>
+                    </div>
+                    <div style={{
+                      width: 40, height: 40, borderRadius: 999,
+                      background: isActive ? teal : tealLight,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      flexShrink: 0,
+                    }}>
+                      <span style={{ fontSize: 14, fontWeight: 800, color: isActive ? "#fff" : teal }}>{ing.count}</span>
+                    </div>
+                  </div>
+                  {/* Segment bar */}
+                  <div style={{ display: "flex", gap: 5 }}>
+                    {[0,1,2,3,4].map(i => (
+                      <span key={i} style={{
+                        flex: 1, height: 6, borderRadius: 99,
+                        background: i < ing.count ? teal : "rgba(61,191,184,0.15)",
+                        transition: "background .2s",
+                      }} />
+                    ))}
+                  </div>
+                </button>
               );
             })}
           </div>
 
-          {/* Section label */}
-          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "#86868B", marginBottom: 8 }}>Ingredients in your top teas</p>
-
-          {/* Ingredient rows */}
-          <div className="space-y-2">
-            {ingredientRows.map(ing => (
-              <button
-                key={ing.name}
-                onClick={() => setPinned(pinned === ing.name ? null : ing.name)}
-                className="w-full text-left transition-all active:scale-[0.98]"
-                style={{
-                  background: pinned === ing.name ? "rgba(48,209,88,.07)" : "#fff",
-                  borderRadius: 16, padding: "12px 14px",
-                  boxShadow: pinned === ing.name ? "0 0 0 1.5px #30D158" : "0 1px 4px rgba(0,0,0,0.06)",
-                  display: "block", width: "100%",
-                }}
-              >
-                {/* Name + count */}
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-semibold" style={{ fontSize: 15, color: "#1d1d1f" }}>{ing.name}</span>
-                  <span style={{ fontSize: 13, color: "#86868B", fontWeight: 600 }}>
-                    <span style={{ color: "#1d1d1f", fontWeight: 700 }}>{ing.count}</span> of {topN}
-                  </span>
-                </div>
-                {/* Bar */}
-                <div style={{ display: "flex", gap: 4 }}>
-                  {[0,1,2,3,4].map(i => (
-                    <span key={i} style={{
-                      flex: 1, height: 8, borderRadius: 99,
-                      background: i < ing.count ? "#30D158" : "#E5E5EA",
-                      transition: "background .2s",
-                    }} />
-                  ))}
-                </div>
-                {/* Descriptor */}
-                <p style={{ fontSize: 11, color: "#86868B", marginTop: 5, fontWeight: 500 }}>{ing.desc}</p>
-              </button>
-            ))}
-          </div>
-
           {/* Hint */}
-          <p className="text-center" style={{ fontSize: 12, color: "#ccc", paddingTop: 12 }}>tap a row to highlight which teas share that ingredient</p>
+          <p className="text-center" style={{ fontSize: 12, color: soft, paddingTop: 16 }}>Tap a row to see which teas share that ingredient</p>
         </div>
       )}
     </div>
