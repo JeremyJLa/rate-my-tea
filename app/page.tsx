@@ -19,6 +19,34 @@ const TEAS = [
   { id: "new-york-breakfast",   name: "New York Breakfast",   image: "/images/new-york-breakfast.jpg",   color: "#D4A020", t2url: "https://www.t2tea.com/search?q=new+york+breakfast",    description: "Bold, energising and built for pace — just like the city. New York Breakfast hits hard with a robust, full-strength brew that powers you through whatever the day throws at you." },
 ];
 
+// ── Taste DNA data ────────────────────────────────────────────────────────────
+
+const TEA_INGREDIENT_MAP: Record<string, string[]> = {
+  "adelaide-breakfast":    ["malt", "cinnamon", "assam"],
+  "sydney-breakfast":      ["malt", "assam", "bergamot"],
+  "melbourne-breakfast":   ["vanilla", "cacao-husk", "malt"],
+  "irish-breakfast":       ["malt", "assam", "oat-flakes"],
+  "singapore-breakfast":   ["rose-petals", "vanilla", "coconut"],
+  "canberra-breakfast":    ["cinnamon", "coconut", "rose-petals", "oat-flakes"],
+  "brisbane-breakfast":    ["coconut", "vanilla", "malt"],
+  "english-breakfast":     ["malt", "assam", "bergamot"],
+  "scots-breakfast":       ["cinnamon", "cacao-husk", "oat-flakes"],
+  "new-zealand-breakfast": ["malt", "bergamot", "vanilla"],
+  "new-york-breakfast":    ["cinnamon", "vanilla", "malt"],
+};
+
+const ALL_INGREDIENTS = [
+  { id: "malt",        name: "Malt",        desc: "Rich & roasted",  color: "#B0603A" },
+  { id: "cinnamon",    name: "Cinnamon",    desc: "Spice & warmth",  color: "#C0813A" },
+  { id: "vanilla",     name: "Vanilla",     desc: "Sweet & creamy",  color: "#C89B4A" },
+  { id: "cacao-husk",  name: "Cacao husk",  desc: "Chocolate",       color: "#7A4E2E" },
+  { id: "oat-flakes",  name: "Oat flakes",  desc: "Toasty grain",    color: "#A98A5E" },
+  { id: "coconut",     name: "Coconut",     desc: "Dessert",         color: "#B9A98C" },
+  { id: "rose-petals", name: "Rose petals", desc: "Floral",          color: "#BE8A86" },
+  { id: "assam",       name: "Assam leaf",  desc: "Bold & brisk",    color: "#8B5E3C" },
+  { id: "bergamot",    name: "Bergamot",    desc: "Citrus & floral", color: "#7A8A5A" },
+];
+
 const AXES = [
   { id: "strength", label: "Strength", prompt: "How strong does it feel?",    scaleLabels: ["Light",  "Medium",   "Bold"]    },
   { id: "aroma",    label: "Aroma",    prompt: "Smell when brewed",            scaleLabels: ["Faint",  "Pleasant", "Intense"] },
@@ -34,7 +62,7 @@ interface Rating {
   note: string;
 }
 
-type Screen = "home" | "rate" | "leaderboard" | "complete";
+type Screen = "home" | "rate" | "leaderboard" | "complete" | "tasteDNA";
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
@@ -396,10 +424,10 @@ function DecideModal({ unrated, onRate, onClose }: {
   );
 }
 
-function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard, splashDone }: {
+function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard, onViewTasteDNA, splashDone }: {
   ratings: Map<string, Rating>; animatingId: string | null;
   onSelectTea: (id: string) => void; onViewLeaderboard: () => void;
-  splashDone: boolean;
+  onViewTasteDNA: () => void; splashDone: boolean;
 }) {
   const tastedCount = ratings.size;
   const progressPct = (tastedCount / 11) * 100;
@@ -463,6 +491,31 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard, spla
                 animating={animatingId === tea.id} onClick={() => onSelectTea(tea.id)} />
             </div>
           ))}
+          {/* Taste DNA icon — fills the empty 12th cell */}
+          <div style={{
+            opacity: cardsIn ? 1 : 0,
+            transform: cardsIn ? "translateY(0)" : "translateY(-24px)",
+            transition: `opacity 0.4s ease ${TEAS.length * 55}ms, transform 0.5s cubic-bezier(0.22,1,0.36,1) ${TEAS.length * 55}ms`,
+            display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
+          }}>
+            <button
+              onClick={onViewTasteDNA}
+              aria-label="Taste DNA"
+              style={{
+                width: "100%", aspectRatio: "1", borderRadius: 18,
+                background: "rgba(192,129,58,0.10)",
+                border: "1.5px solid rgba(192,129,58,0.22)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                cursor: "pointer", padding: 0,
+              }}
+            >
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C0813A" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M2 20h20M2 14h20M7 20v-6M12 20V8M17 20v-4" />
+                <circle cx="12" cy="5" r="2" fill="#C0813A" stroke="none" />
+              </svg>
+            </button>
+            <span style={{ fontSize: 10, fontWeight: 600, color: "#C0813A", textAlign: "center", letterSpacing: 0.2, lineHeight: 1.2 }}>Taste DNA</span>
+          </div>
         </div>
       </div>
 
@@ -969,6 +1022,191 @@ function CompletionScreen({ ratings, onDone }: {
       {/* Home bar */}
       <div className="absolute bottom-2 inset-x-0 flex justify-center pointer-events-none">
         <div className="rounded-full" style={{ width: 134, height: 5, background: "rgba(255,255,255,0.25)" }} />
+      </div>
+    </div>
+  );
+}
+
+// ── Taste DNA screen ──────────────────────────────────────────────────────────
+
+function TasteDNAScreen({ ratings, onClose }: { ratings: Map<string, Rating>; onClose: () => void }) {
+  const [pinned, setPinned] = useState<string | null>(null);
+
+  // Compute top 5 teas by composite score
+  const scored = Array.from(ratings.entries())
+    .map(([id, r]) => ({
+      id,
+      tea: TEAS.find(t => t.id === id)!,
+      score: r.axes.strength + r.axes.aroma + r.axes.flavour + r.buyAgainPct / 100,
+    }))
+    .filter(x => x.tea)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 5);
+
+  const topN = scored.length;
+
+  // Compute ingredient frequency across top teas
+  const ingredientRows = ALL_INGREDIENTS.map(ing => {
+    const teaIds = scored.filter(s => (TEA_INGREDIENT_MAP[s.id] ?? []).includes(ing.id)).map(s => s.id);
+    return { ...ing, count: teaIds.length, teaIds };
+  }).filter(r => r.count > 0).sort((a, b) => b.count - a.count);
+
+  const totalIngredients = ingredientRows.length;
+
+  const active = ingredientRows.find(r => r.name === pinned) ?? null;
+  const chipState = (id: string) => {
+    if (!active) return "";
+    return active.teaIds.includes(id) ? "on" : "off";
+  };
+
+  const ink = "#2E2A23", soft = "#8A8072", faint = "#B6AC99";
+  const amber = "#C0813A", amberDeep = "#9A5F22";
+  const card = "#FBF7EF", card2 = "#F4ECDD";
+  const line = "rgba(46,42,35,0.10)";
+  const serif = "'Newsreader', Georgia, serif";
+  const sans = "system-ui, -apple-system, sans-serif";
+
+  if (topN === 0) {
+    return (
+      <div style={{ height: "100%", display: "flex", flexDirection: "column", background: "#EDE4D4" }}>
+        <div style={{ display: "flex", alignItems: "center", padding: "56px 20px 16px", gap: 12 }}>
+          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", padding: 4 }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={ink} strokeWidth="2" strokeLinecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+          </button>
+          <span style={{ fontFamily: serif, fontSize: 20, fontWeight: 500, color: ink }}>Taste DNA</span>
+        </div>
+        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 32, textAlign: "center" }}>
+          <p style={{ fontFamily: serif, fontSize: 18, color: soft, lineHeight: 1.5 }}>Rate some teas first — your flavour profile will appear here.</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ height: "100%", overflowY: "auto", background: `radial-gradient(circle at 12% 4%, rgba(192,129,58,.12), rgba(192,129,58,0) 40%), radial-gradient(circle at 96% 98%, rgba(126,140,146,.13), rgba(126,140,146,0) 44%), #EDE4D4`, WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
+      <div style={{ padding: "60px 22px 48px", position: "relative" }}>
+
+        {/* Back button */}
+        <button onClick={onClose} style={{ position: "absolute", top: 16, left: 16, background: "none", border: "none", cursor: "pointer", padding: 8, display: "flex", alignItems: "center", gap: 6, color: amberDeep }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+          <span style={{ fontFamily: sans, fontSize: 13, fontWeight: 600 }}>Back</span>
+        </button>
+
+        {/* Eyebrow */}
+        <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 11 }}>
+          <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", color: amber, textTransform: "uppercase" }}>{totalIngredients}</span>
+          <span style={{ width: 16, height: 1, background: amber, opacity: 0.5 }} />
+          <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, letterSpacing: "1.5px", color: soft, textTransform: "uppercase" }}>Ingredient DNA</span>
+        </div>
+
+        {/* Title */}
+        <h1 style={{ margin: "0 0 18px", fontFamily: serif, fontWeight: 500, fontSize: 28, letterSpacing: "-0.5px", lineHeight: 1.04, color: ink }}>
+          Your taste,<br />by ingredient
+        </h1>
+
+        {/* Caption */}
+        <p style={{ fontFamily: serif, fontStyle: "italic", fontSize: 15, lineHeight: 1.4, color: soft, margin: "0 2px 20px" }}>
+          How often each ingredient appears across your {topN} highest-rated {topN === 1 ? "tea" : "teas"}.
+        </p>
+
+        {/* Tea chips */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 22 }}>
+          {scored.map(({ id, tea, score }) => {
+            const state = chipState(id);
+            return (
+              <span key={id} style={{
+                display: "inline-flex", alignItems: "center", gap: 7, padding: "8px 13px",
+                borderRadius: 999, whiteSpace: "nowrap",
+                background: state === "on" ? "rgba(192,129,58,.16)" : "rgba(154,95,34,.07)",
+                border: `1px solid ${state === "on" ? amber : "rgba(154,95,34,.14)"}`,
+                transform: state === "on" ? "translateY(-1px)" : "none",
+                boxShadow: state === "on" ? "0 3px 8px rgba(120,80,30,.14)" : "none",
+                opacity: state === "off" ? 0.3 : 1,
+                transition: "all .16s",
+              }}>
+                <span style={{ width: 7, height: 7, borderRadius: "50%", flexShrink: 0, background: amberDeep }} />
+                <span style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, color: ink }}>{tea.name.replace(" Breakfast", "")}</span>
+                <span style={{ fontFamily: sans, fontSize: 12, fontWeight: 700, color: state === "on" ? amberDeep : soft, fontVariantNumeric: "tabular-nums" }}>{score.toFixed(1)}</span>
+              </span>
+            );
+          })}
+        </div>
+
+        {/* Black tea base row */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr auto", alignItems: "center", gap: 12, padding: "13px 0", borderTop: `1px solid ${line}`, borderBottom: `1px dashed ${line}` }}>
+          <div>
+            <span style={{ fontFamily: serif, fontSize: 16, fontWeight: 600, color: ink }}>Black tea</span>
+            <small style={{ display: "block", fontFamily: sans, fontSize: 9.5, fontWeight: 600, letterSpacing: ".6px", textTransform: "uppercase", color: faint, marginTop: 3 }}>the shared base</small>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ display: "flex", gap: 5, width: 110 }}>
+              {[0,1,2,3,4].slice(0, topN).map(i => <span key={i} style={{ flex: 1, height: 13, borderRadius: 4, background: amberDeep }} />)}
+              {[0,1,2,3,4].slice(topN).map(i => <span key={i + topN} style={{ flex: 1, height: 13, borderRadius: 4, background: "rgba(46,42,35,.07)" }} />)}
+            </div>
+            <span style={{ fontFamily: serif, fontSize: 13, fontWeight: 600, color: soft, whiteSpace: "nowrap" }}>{topN} / {topN}</span>
+          </div>
+        </div>
+
+        {/* What sets them apart divider */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "18px 0 8px" }}>
+          <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: "1.2px", textTransform: "uppercase", color: faint, whiteSpace: "nowrap" }}>What sets them apart</span>
+          <span style={{ flex: 1, height: 1, background: line }} />
+        </div>
+
+        {/* Ingredient rows */}
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          {ingredientRows.map(ing => (
+            <div
+              key={ing.name}
+              onClick={() => setPinned(pinned === ing.name ? null : ing.name)}
+              style={{
+                display: "grid", gridTemplateColumns: "1fr auto", alignItems: "center", gap: "10px 12px",
+                cursor: "pointer", padding: "13px 10px", margin: "0 -10px", borderRadius: 13,
+                background: pinned === ing.name ? "rgba(192,129,58,.10)" : "transparent",
+                transition: "background .15s", WebkitTapHighlightColor: "transparent",
+              } as React.CSSProperties}
+            >
+              <div style={{ gridRow: 1 }}>
+                <span style={{ fontFamily: serif, fontSize: 18, fontWeight: 500, color: ink, lineHeight: 1.05 }}>{ing.name}</span>
+                <small style={{ display: "block", fontFamily: sans, fontSize: 9, fontWeight: 700, letterSpacing: ".6px", textTransform: "uppercase", marginTop: 4, color: ing.color }}>{ing.desc}</small>
+              </div>
+              <div style={{ gridRow: 1, fontFamily: serif, fontSize: 14.5, fontWeight: 600, color: soft, whiteSpace: "nowrap", textAlign: "right" }}>
+                <b style={{ color: ink }}>{ing.count}</b> of {topN}
+              </div>
+              {/* Segment bar — spans full width on row 2 */}
+              <div style={{ gridRow: 2, gridColumn: "1 / -1", display: "flex", gap: 6, marginTop: 2 }}>
+                {[0,1,2,3,4].map(i => (
+                  <span key={i} style={{ flex: 1, height: 11, borderRadius: 4, background: i < ing.count ? ing.color : "rgba(46,42,35,.07)" }} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Hint */}
+        <div style={{ marginTop: 18, fontSize: 11.5, lineHeight: 1.4, color: faint, letterSpacing: ".2px", display: "flex", alignItems: "center", gap: 8, fontFamily: sans }}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+            <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
+          <span>Tap an ingredient to see which teas it comes from</span>
+        </div>
+
+        {/* Divider */}
+        <div style={{ height: 1, background: line, margin: "22px 0 0" }} />
+
+        {/* Takeaway */}
+        {ingredientRows.length > 0 && (
+          <div style={{ display: "flex", gap: 13, alignItems: "flex-start", marginTop: 20 }}>
+            <span style={{ flexShrink: 0, width: 32, height: 32, borderRadius: "50%", background: "rgba(176,96,58,.12)", display: "flex", alignItems: "center", justifyContent: "center", marginTop: 1 }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B0603A" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 18h6M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1 1 2h6c0-.8.4-1.5 1-2A7 7 0 0 0 12 2Z"/>
+              </svg>
+            </span>
+            <p style={{ margin: 0, fontFamily: serif, fontSize: 17, lineHeight: 1.45, color: ink, letterSpacing: "-.1px" }}>
+              Your top pick is <b style={{ color: amberDeep }}>{scored[0]?.tea.name.replace(" Breakfast", "")}</b> — and <b style={{ color: amberDeep }}>{ingredientRows[0]?.name.toLowerCase()}</b> is your most common flavour note. <span style={{ fontStyle: "italic", color: soft }}>Keep tasting to refine your profile.</span>
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -1591,12 +1829,17 @@ export default function App() {
 
         {/* Home */}
         <div className="absolute inset-0">
-          <HomeScreen ratings={ratings} animatingId={animatingId} onSelectTea={handleOpenFromHome} onViewLeaderboard={() => setScreen("leaderboard")} splashDone={!showSplash} />
+          <HomeScreen ratings={ratings} animatingId={animatingId} onSelectTea={handleOpenFromHome} onViewLeaderboard={() => setScreen("leaderboard")} onViewTasteDNA={() => setScreen("tasteDNA")} splashDone={!showSplash} />
         </div>
 
         {/* Leaderboard — slides up, stays put when rate slides over it from right */}
         <div className="absolute inset-0 transition-transform duration-300 ease-in-out" style={{ transform: (leaderboardVisible || (rateVisible && rateSlideDir === "right")) ? "translateY(0)" : "translateY(100%)", background: "linear-gradient(160deg, #F5F9F5 0%, #F7F6F0 50%, #F2EFE8 100%)" }}>
           <LeaderboardScreen ratings={ratings} onEditTea={handleEditFromLeaderboard} onClose={() => setScreen("home")} />
+        </div>
+
+        {/* Taste DNA — slides up from home */}
+        <div className="absolute inset-0 transition-transform duration-300 ease-in-out" style={{ transform: screen === "tasteDNA" ? "translateY(0)" : "translateY(100%)" }}>
+          <TasteDNAScreen ratings={ratings} onClose={() => setScreen("home")} />
         </div>
 
         {/* Rate — slides up from home, slides in from right over leaderboard */}
