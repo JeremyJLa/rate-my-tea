@@ -1499,6 +1499,81 @@ const CUP_IMAGES = [
   "/images/glass-teacuop3.png",
 ];
 
+// ── Splash V1 — logo grow → teahcup5 overhead → white iris wipe ──────────────
+
+function SplashScreenV1({ onDismiss }: { onDismiss: () => void }) {
+  const [logoVisible, setLogoVisible] = useState(false);
+  const [cupVisible,  setCupVisible]  = useState(false);
+  const [logoOut,     setLogoOut]     = useState(false);
+  const [irisGrow,    setIrisGrow]    = useState(false);
+
+  useEffect(() => {
+    const ts = [
+      setTimeout(() => setLogoVisible(true),  50),
+      setTimeout(() => setCupVisible(true),  800),
+      setTimeout(() => setLogoOut(true),    1600),
+      setTimeout(() => setIrisGrow(true),   2200),
+      setTimeout(() => onDismiss(),         4000),
+    ];
+    return () => ts.forEach(clearTimeout);
+  }, [onDismiss]);
+
+  const logoTransform = logoOut
+    ? "scale(0.5)"
+    : logoVisible ? "scale(1)" : "scale(0.18)";
+  const logoOpacity = logoOut ? 0 : logoVisible ? 1 : 0;
+  const logoTransition = logoOut
+    ? "transform 0.5s ease-in, opacity 0.5s ease-in"
+    : "transform 1.1s cubic-bezier(0.22,1,0.36,1), opacity 0.5s ease-out";
+
+  return (
+    <div style={{ position: "absolute", inset: 0, zIndex: 100, backgroundColor: "#fff", overflow: "hidden" }}>
+
+      {/* Cup photo — fades in full-screen */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/images/teahcup5.png" alt="" aria-hidden style={{
+        position: "absolute", inset: 0,
+        width: "100%", height: "100%",
+        objectFit: "cover", objectPosition: "center",
+        opacity: cupVisible ? 1 : 0,
+        transition: "opacity 0.9s ease",
+        willChange: "opacity",
+      }} />
+
+      {/* Logo — grows in green, turns white over cup, then shrinks out */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/images/splash-text.svg" alt="Rate your Tea" style={{
+        position: "absolute",
+        top: "50%", left: "50%",
+        transform: `translate(-50%, -50%) ${logoTransform}`,
+        width: "62%", maxWidth: 240,
+        opacity: logoOpacity,
+        transition: logoTransition + ", filter 0.9s ease",
+        willChange: "transform, opacity",
+        transformOrigin: "center center",
+        zIndex: 2,
+        filter: cupVisible
+          ? "brightness(0) invert(1) drop-shadow(0 2px 8px rgba(0,0,0,0.4))"
+          : "brightness(0) saturate(100%) invert(45%) sepia(40%) saturate(600%) hue-rotate(60deg) brightness(95%)",
+      }} />
+
+      {/* White iris wipe */}
+      <div style={{
+        position: "absolute",
+        width: 80, height: 80, borderRadius: "50%",
+        top: "calc(48% - 40px)", left: "calc(50% - 40px)",
+        background: "#fff",
+        transform: irisGrow ? "scale(25)" : "scale(0)",
+        transition: irisGrow ? "transform 2s cubic-bezier(0.25,0.1,0.25,1)" : "none",
+        willChange: "transform",
+        zIndex: 3,
+      }} />
+    </div>
+  );
+}
+
+// ── Splash V2 — glass cup + teabag dip (active: SplashScreenC below) ─────────
+
 // Dip animation: long dip → partial rise → short dip → colour change (x2)
 const DIP_DURATION = 9000;
 const CUP2_AT     = DIP_DURATION * 0.28;  // at bottom of dip 2
@@ -1842,7 +1917,7 @@ export default function App() {
         </div>
 
         {/* Splash screen */}
-        {showSplash && <SplashScreenC onDismiss={() => setShowSplash(false)} />}
+        {showSplash && <SplashScreenV1 onDismiss={() => setShowSplash(false)} />}
       </div>
     </div>
   );
