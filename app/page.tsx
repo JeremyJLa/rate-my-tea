@@ -1604,7 +1604,7 @@ function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
   return (
     <div style={{
       position: "absolute", inset: 0, zIndex: 100,
-      backgroundColor: "#f0f7ff", overflow: "hidden",
+      backgroundColor: "#ffffff", overflow: "hidden",
     }}>
       {/* Illustration */}
       <img
