@@ -1917,7 +1917,7 @@ export default function App() {
         </div>
 
         {/* Splash screen */}
-        {showSplash && <SplashScreenV1 onDismiss={() => setShowSplash(false)} />}
+        {showSplash && <SplashScreen onDismiss={() => setShowSplash(false)} />}
       </div>
     </div>
   );
