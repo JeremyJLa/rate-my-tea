@@ -1572,6 +1572,83 @@ function SplashScreenV1({ onDismiss }: { onDismiss: () => void }) {
   );
 }
 
+// ── Splash V3 — illustrated scene (cat, teacup, stars) ───────────────────────
+
+function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
+  const [illIn,    setIllIn]    = useState(false);
+  const [logoIn,   setLogoIn]   = useState(false);
+  const [logoOut,  setLogoOut]  = useState(false);
+  const [irisGrow, setIrisGrow] = useState(false);
+
+  useEffect(() => {
+    const ts = [
+      setTimeout(() => setIllIn(true),   150),
+      setTimeout(() => setLogoIn(true),  900),
+      setTimeout(() => setLogoOut(true), 2800),
+      setTimeout(() => setIrisGrow(true),3400),
+      setTimeout(() => onDismiss(),      5000),
+    ];
+    return () => ts.forEach(clearTimeout);
+  }, [onDismiss]);
+
+  const logoTransform = logoOut
+    ? "translate(-50%, -50%) scale(0.4)"
+    : logoIn
+      ? "translate(-50%, -50%) scale(1)"
+      : "translate(-50%, -50%) scale(0.15)";
+  const logoOpacity = logoOut ? 0 : logoIn ? 1 : 0;
+  const logoTransition = logoOut
+    ? "transform 0.45s ease-in, opacity 0.45s ease-in"
+    : "transform 1.1s cubic-bezier(0.22,1,0.36,1), opacity 0.55s ease-out";
+
+  return (
+    <div style={{
+      position: "absolute", inset: 0, zIndex: 100,
+      backgroundColor: "#f0f7ff", overflow: "hidden",
+    }}>
+      {/* Illustration */}
+      <img
+        src="/images/Illustrator-vector2.svg"
+        alt=""
+        aria-hidden
+        style={{
+          position: "absolute",
+          bottom: 0, left: "50%",
+          transform: illIn ? "translateX(-50%) translateY(0)" : "translateX(-50%) translateY(60px)",
+          width: "100%", maxWidth: 500,
+          opacity: illIn ? 1 : 0,
+          transition: "opacity 1.1s ease, transform 1.1s cubic-bezier(0.22,1,0.36,1)",
+        }}
+      />
+      {/* Logo */}
+      <img
+        src="/images/splash-text.svg"
+        alt="Rate your Tea"
+        style={{
+          position: "absolute",
+          top: "38%", left: "50%",
+          transform: logoTransform,
+          width: "62%", maxWidth: 240,
+          opacity: logoOpacity,
+          transition: logoTransition,
+          filter: "brightness(0) saturate(100%) invert(40%) sepia(60%) saturate(800%) hue-rotate(185deg) brightness(90%)",
+          willChange: "transform, opacity",
+        }}
+      />
+      {/* White iris wipe */}
+      <div style={{
+        position: "absolute",
+        width: 80, height: 80, borderRadius: "50%",
+        top: "calc(38% - 40px)", left: "calc(50% - 40px)",
+        background: "#fff",
+        transform: irisGrow ? "scale(28)" : "scale(0)",
+        transition: irisGrow ? "transform 1.8s cubic-bezier(0.25,0.1,0.25,1)" : "none",
+        willChange: "transform", zIndex: 3,
+      }} />
+    </div>
+  );
+}
+
 // ── Splash V2 — glass cup + teabag dip (active: SplashScreenC below) ─────────
 
 // Dip animation: long dip → partial rise → short dip → colour change (x2)
@@ -1917,7 +1994,7 @@ export default function App() {
         </div>
 
         {/* Splash screen */}
-        {showSplash && <SplashScreen onDismiss={() => setShowSplash(false)} />}
+        {showSplash && <SplashScreenV3 onDismiss={() => setShowSplash(false)} />}
       </div>
     </div>
   );
