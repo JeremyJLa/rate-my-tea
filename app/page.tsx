@@ -1622,16 +1622,16 @@ function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
       />
       {/* Logo */}
       <img
-        src="/images/splash-text.svg"
+        src="/images/new-tea-logo.svg"
         alt="Rate your Tea"
         style={{
           position: "absolute",
-          top: "38%", left: "50%",
+          top: "32%", left: "50%",
           transform: logoTransform,
-          width: "62%", maxWidth: 240,
+          width: "78%", maxWidth: 320,
           opacity: logoOpacity,
           transition: logoTransition,
-          filter: "brightness(0) saturate(100%) invert(40%) sepia(60%) saturate(800%) hue-rotate(185deg) brightness(90%)",
+          filter: "brightness(0) saturate(100%) invert(55%) sepia(40%) saturate(600%) hue-rotate(185deg) brightness(95%)",
           willChange: "transform, opacity",
         }}
       />
