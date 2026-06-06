@@ -1623,15 +1623,26 @@ function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
         transition: "opacity 2.4s ease",
       }}/>
 
-      {/* ── Illustration as HTML img — SVGs are transparent when used this way ── */}
-      <img
-        src="/images/Illustrator-vector2.svg"
-        alt="" aria-hidden
-        style={{
-          position: "absolute", bottom: 0, left: 0, width: "100%", display: "block",
-          mixBlendMode: "multiply",
-        }}
-      />
+      {/* ── Illustration — clipped so only the scene (mountains/trees/objects) shows,
+           gradient sky is fully visible above. The SVG canvas is 1149×2532; scene
+           starts at ~y=1100 (≈43% from top). We show the bottom 57% and fade the
+           top edge with a mask so the scene blends naturally into the sky. ── */}
+      <div style={{
+        position: "absolute", bottom: 0, left: 0, right: 0,
+        /* 57% of the viewport height gives us the scene without the sky fill */
+        height: "57%",
+        overflow: "hidden",
+        maskImage: "linear-gradient(to bottom, transparent 0%, black 18%, black 100%)",
+        WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 18%, black 100%)",
+      }}>
+        <img
+          src="/images/Illustrator-vector2.svg"
+          alt="" aria-hidden
+          style={{
+            position: "absolute", bottom: 0, left: 0, width: "100%", display: "block",
+          }}
+        />
+      </div>
 
       {/* ── Stars + Cat overlay SVG ── */}
       <svg
