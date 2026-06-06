@@ -448,7 +448,7 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard, onVi
       {/* Header */}
       <div className="px-5 pb-4 text-center" style={{ paddingTop: 8 }}>
         <p style={{ fontSize: 17, color: "#9CA3AF", fontWeight: 400, marginBottom: 2, letterSpacing: 0.1 }}>Hi Kate</p>
-        <h1 className="font-bold" style={{ fontSize: 34, letterSpacing: -0.5, color: "#1A1A2E" }}>Rate Your Tea</h1>
+        <img src="/images/new-tea-logo.svg" alt="Rate your Tea" style={{ width: 200, maxWidth: "70%", margin: "4px auto 0", display: "block", filter: "brightness(0) saturate(100%) invert(14%) sepia(10%) saturate(800%) hue-rotate(195deg) brightness(90%)" }} />
         {tastedCount === 0 ? (
           <p style={{ fontSize: 14, color: "#9CA3AF" }}>Pick any of your samples and start rating</p>
         ) : (
