@@ -1584,9 +1584,9 @@ function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
     const ts = [
       setTimeout(() => setIllIn(true),   150),
       setTimeout(() => setLogoIn(true),  900),
-      setTimeout(() => setLogoOut(true), 2800),
-      setTimeout(() => setIrisGrow(true),3400),
-      setTimeout(() => onDismiss(),      5000),
+      setTimeout(() => setLogoOut(true), 4800),
+      setTimeout(() => setIrisGrow(true),5400),
+      setTimeout(() => onDismiss(),      7000),
     ];
     return () => ts.forEach(clearTimeout);
   }, [onDismiss]);
