@@ -1572,79 +1572,160 @@ function SplashScreenV1({ onDismiss }: { onDismiss: () => void }) {
   );
 }
 
-// ── Splash V3 — illustrated scene (cat, teacup, stars) ───────────────────────
+// ── Splash V3 — sunrise→night illustrated scene (design_handoff_rate_your_tea2) ─
 
 function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
-  const [illIn,    setIllIn]    = useState(false);
+  const [isNight,  setIsNight]  = useState(false);
+  const [starsIn,  setStarsIn]  = useState(false);
   const [logoIn,   setLogoIn]   = useState(false);
   const [logoOut,  setLogoOut]  = useState(false);
   const [irisGrow, setIrisGrow] = useState(false);
 
   useEffect(() => {
     const ts = [
-      setTimeout(() => setIllIn(true),   150),
-      setTimeout(() => setLogoIn(true),  900),
-      setTimeout(() => setLogoOut(true), 4800),
-      setTimeout(() => setIrisGrow(true),5400),
-      setTimeout(() => onDismiss(),      7000),
+      setTimeout(() => setLogoIn(true),   900),
+      setTimeout(() => setIsNight(true),  3200),
+      setTimeout(() => setStarsIn(true),  3800),
+      setTimeout(() => setLogoOut(true),  5200),
+      setTimeout(() => setIrisGrow(true), 5900),
+      setTimeout(() => onDismiss(),       7600),
     ];
     return () => ts.forEach(clearTimeout);
   }, [onDismiss]);
 
-  const logoTransform = logoOut
-    ? "translate(-50%, -50%) scale(0.4)"
-    : logoIn
-      ? "translate(-50%, -50%) scale(1)"
-      : "translate(-50%, -50%) scale(0.15)";
-  const logoOpacity = logoOut ? 0 : logoIn ? 1 : 0;
-  const logoTransition = logoOut
-    ? "transform 0.45s ease-in, opacity 0.45s ease-in"
-    : "transform 1.1s cubic-bezier(0.22,1,0.36,1), opacity 0.55s ease-out";
+  const logoOpacity  = logoOut ? 0 : logoIn ? 1 : 0;
+  const logoTrans    = logoOut ? "opacity 0.5s ease-in" : "opacity 0.9s ease-out";
+  // Sunrise: periwinkle #6c8ad2 · Night: white
+  const logoFilter   = isNight
+    ? "brightness(0) invert(1)"
+    : "brightness(0) saturate(100%) invert(52%) sepia(35%) saturate(600%) hue-rotate(195deg)";
+
+  const stroke = isNight ? "#1b2748" : "#2b52e0";
+  const strokeTrans = { stroke, transition: "stroke 2.4s ease" };
+  const whiteFill   = { fill: isNight ? "#f3f7fc" : "#fdfdff", transition: "fill 2.4s ease" };
+  const shadowFill  = { fill: isNight ? "#a8c4dd" : "#cfccef", transition: "fill 2.4s ease" };
+  const cushionFill = { fill: isNight ? "#89a7c2" : "#b1bdf7", transition: "fill 2.4s ease" };
+  const lineFill    = { fill: isNight ? "#1a2348" : "#2b52e0", transition: "fill 2.4s ease" };
+  const lw  = { fill: "none", strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
 
   return (
-    <div style={{
-      position: "absolute", inset: 0, zIndex: 100,
-      backgroundColor: "#ffffff", overflow: "hidden",
-    }}>
-      {/* Illustration */}
-      <img
-        src="/images/Illustrator-vector2.svg"
-        alt=""
-        aria-hidden
-        style={{
-          position: "absolute",
-          bottom: 0, left: "50%",
-          transform: illIn ? "translateX(-50%) translateY(0)" : "translateX(-50%) translateY(60px)",
-          width: "100%", maxWidth: 500,
-          opacity: illIn ? 1 : 0,
-          transition: "opacity 1.1s ease, transform 1.1s cubic-bezier(0.22,1,0.36,1)",
-        }}
-      />
-      {/* Logo */}
+    <div style={{ position: "absolute", inset: 0, zIndex: 100, overflow: "hidden" }}>
+
+      {/* ── Full-screen illustrated SVG ── */}
+      <svg
+        viewBox="0 0 1149 2532"
+        preserveAspectRatio="xMidYMax slice"
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", display: "block" }}
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <linearGradient id="v3sg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0"    stopColor="#ffeda9"/>
+            <stop offset="0.20" stopColor="#fce6b4"/>
+            <stop offset="0.40" stopColor="#f8dabf"/>
+            <stop offset="0.62" stopColor="#f3cdd6"/>
+            <stop offset="0.82" stopColor="#efc6e0"/>
+            <stop offset="1"    stopColor="#ecc6e8"/>
+          </linearGradient>
+          <linearGradient id="v3ng" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0"    stopColor="#87b2cc"/>
+            <stop offset="0.20" stopColor="#7a9fbd"/>
+            <stop offset="0.42" stopColor="#66819f"/>
+            <stop offset="0.62" stopColor="#545f88"/>
+            <stop offset="0.82" stopColor="#45456f"/>
+            <stop offset="1"    stopColor="#3a3866"/>
+          </linearGradient>
+        </defs>
+
+        {/* Sky */}
+        <rect x="0" y="0" width="1149" height="2532" fill="url(#v3sg)"/>
+        <rect x="0" y="0" width="1149" height="2532" fill="url(#v3ng)"
+          style={{ opacity: isNight ? 1 : 0, transition: "opacity 2.4s ease" }}/>
+
+        {/* Illustration anchored to bottom (viewBox 1149×1369 → positioned y=1163) */}
+        <image href="/images/Illustrator-vector2.svg" x="0" y="1163" width="1149" height="1369"/>
+
+        {/* Stars — fade in at night */}
+        <g style={{ opacity: starsIn ? 1 : 0, transition: "opacity 2.4s ease" }} fill="#dfeaf6">
+          <path d="M199,227c1.77-1.31,2.77-.31,3,3,1.19,1.13,2.96,1.13,3.98,2.5-.62,1.45-2.39,1.1-2.98,1.5,1.41,2.78-1,5.5-4,4-1.46-1.36-.69-2.42-1-3-1.22,1.17-1.95.7-2-1-.31-.17-1.81.18-2.03-.49-1.11-3.42,1.62-2.04,2.97-3.03,1.01-.74,1.05-2.51,2.05-3.48Z"/>
+          <path d="M511,174c2.18-1.16,2.61-.09,3,2,.26.13.72-.13,1,0,2.93.85,1.91,3.91-1,4-.86,1.23-.37,3.5-2.49,3-3.6-4.92-7.06-4.35-.51-9Z"/>
+          <path d="M128,646c.07-.25,2.74-4.16,2.93-4.34,1.9-1.72,4.13.62,5.36,2.28,1.83,2.47-2.76,6.85-4.41,5.47-.21-.18-.39-.98-.88-1.41-.95-.82-1.64-1.73-3-2Z"/>
+          <path d="M490,378c.17,2.79-.58,3.2,2,5,1.52,1.06,2.44.71,3,1,6.03,3.14-2.56,4.07-4.03,5.48-1.39,1.33-.87,2.91-.97,4.52-.13,1.69-2.56,1.57-3,0-.56-1.24-1.17-3.13-2-4l-3-1c.03-.3.07-.82,0-1-2.06-.28-3.4-1.1-2-3,1.1-.67,5.05-1.19,5.77-2.24.37-.53.72-3.35,1.23-4.76.09-1.58,2.67-1.67,3,0Z"/>
+          <path d="M760,302l-4.5,5.98-5.49-4.5c-.4-2.03,1.72-1.64,3.06-2.95.97-.95.54-3.38,2.43-2.54,1.19.53,1.94,4.32,4.5,4.02Z"/>
+          <path d="M864.7,634c3.71-.96,6.05,4.63,1.6,5.78-3.71.96-6.05-4.63-1.6-5.78Z"/>
+          <path d="M443,636c.99.79,3.28-.71,2.68,1.74l-4.52,4.49-5.46-4.49c-.41-2.21,1.77-1.2,3.45-2.53.59-.46.16-2.82,2.04-1.96.84.39.99,2.09,1.82,2.74Z"/>
+          <path d="M1030,325c5.36-5.92,2.53-.86,7.99,1.02.65,2.93-3.67,2.09-2.99,4.98-.55,1.34-2.13,1.28-3,0-1.43-2.18-2.82-1.82-3-2-2.68-2.69-.07-2.81,1-4Z"/>
+          <path d="M675,689c.16.15-.17,2.12.48,3,.97,1.3,4.65.47,3.52,2.49-.77,1.37-3.01,1.09-3.71,1.8s-.5,4.33-2.77,3.72c-.43-.12-6.04-6.49-5.51-6.99,3.01,1.41,5.67-6.18,7.99-4.01Z"/>
+          <path d="M260,824c-1.04.93-.73,2.81-1.63,3.06-4.82,1.33-7.88-2.08-4.44-4.63,2.47-1.82,5.67,2.68,5.06-1.43.17.69.68,1.72,1,3Z"/>
+          <path d="M575,899c-1.81,3.63-3.17,5.11-5,8,.47-4.03-2.75-2.71-3-6,.15-.24-.15-.76,0-1,1.89-3.07,3.19-6.2,5-9,.53-.81.9-2.22,1.99-1.99-1.27,3.83-.06,6.37,1.01,9.99Z"/>
+          <path d="M999,55l-5.5,7.97c-1.53-.85-1.2-2.92-2.04-3.94-1.09-1.31-7.45-2.38-3.06-4.16,2.93-1.18,4.32-.47,4.61-4.88,2.81,1.63,1.52,5.72,5.99,5.01Z"/>
+          <path d="M967,481c.21-1.68-.36-5.05,2.92-2.94.38.25.64,3.11,1.08,3.94,1.57.36,2.42.78,1,2,1.91,2.26,4.55,2.39,6.99,3.49-3.31,4.97-8.91,1.84-9.48,10.52l-2.52-2.02c.1-.19-.03-.64,0-1-1.81.06-2.15-1.78-1-3-.18-.26-.73-.8-1-1l-6-2c-.15-.17-.85-.09-.99-.5v-1.49c1.27-.31,2.8-.52,3.99-1.01.66-1.93,2.32-3.6,5-5Z"/>
+          <path d="M622,517c.88.93,3.13,1.15,2.64,2.85-.25.88-2.29,1.09-2.69,1.71-.26.4.42,2.95-1.81,3.78-.7-2.16-7.39-6-5.5-7.97.11-.11,1.97.15,2.96-.55,2.36-1.65-.29-4.74,4.39.18Z"/>
+        </g>
+
+        {/* Cat on cushion — translate matches scene offset y=1163 */}
+        <g transform="translate(0,1163)">
+          {/* Shadow */}
+          <ellipse cx="246" cy="1340" rx="138" ry="20" style={shadowFill}/>
+          {/* Cushion */}
+          <path style={cushionFill} d="M150,1322C150,1296 176,1284 246,1284C316,1284 342,1296 342,1322C342,1348 316,1360 246,1360C176,1360 150,1348 150,1322Z"/>
+          <path {...lw} strokeWidth="3.4" style={strokeTrans} d="M150,1322C150,1296 176,1284 246,1284C316,1284 342,1296 342,1322C342,1348 316,1360 246,1360C176,1360 150,1348 150,1322Z"/>
+          <path {...lw} strokeWidth="2.6" style={strokeTrans} d="M168,1310C204,1300 288,1300 324,1310"/>
+          <path {...lw} strokeWidth="2.6" style={strokeTrans} d="M150,1322l-12,-4M150,1322l-13,5"/>
+          <path {...lw} strokeWidth="2.6" style={strokeTrans} d="M342,1322l12,-4M342,1322l13,5"/>
+          {/* Body */}
+          <path style={whiteFill} d="M196,1300C188,1252 200,1206 246,1206C292,1206 304,1252 296,1300C284,1314 208,1314 196,1300Z"/>
+          <path {...lw} strokeWidth="3.4" style={strokeTrans} d="M196,1300C190,1256 200,1208 246,1208C292,1208 302,1256 296,1300"/>
+          <path {...lw} strokeWidth="2.6" style={strokeTrans} d="M216,1306C214,1296 218,1288 228,1288C236,1288 240,1296 238,1306"/>
+          <path {...lw} strokeWidth="2.6" style={strokeTrans} d="M256,1306C254,1296 258,1288 268,1288C276,1288 280,1296 278,1306"/>
+          <path {...lw} strokeWidth="2.6" style={strokeTrans} d="M225,1306l0,-8M232,1306l0,-8M265,1306l0,-8M272,1306l0,-8"/>
+          <path {...lw} strokeWidth="3.4" style={strokeTrans} d="M294,1298C334,1304 354,1276 342,1250C335,1234 316,1232 308,1246C303,1255 308,1266 318,1264"/>
+          {/* Head */}
+          <path style={whiteFill} d="M246,1136C214,1136 196,1158 196,1182C196,1208 220,1224 246,1224C272,1224 296,1208 296,1182C296,1158 278,1136 246,1136Z"/>
+          <path style={whiteFill} d="M210,1150L200,1116L234,1140Z"/>
+          <path style={whiteFill} d="M282,1150L292,1116L258,1140Z"/>
+          <path {...lw} strokeWidth="3.4" style={strokeTrans} d="M210,1150L200,1116L234,1140"/>
+          <path {...lw} strokeWidth="3.4" style={strokeTrans} d="M282,1150L292,1116L258,1140"/>
+          <path {...lw} strokeWidth="2.6" style={strokeTrans} d="M212,1144L207,1126L223,1138Z"/>
+          <path {...lw} strokeWidth="2.6" style={strokeTrans} d="M280,1144L285,1126L269,1138Z"/>
+          <path {...lw} strokeWidth="3.4" style={strokeTrans} d="M234,1140C214,1142 196,1160 196,1182C196,1208 220,1224 246,1224C272,1224 296,1208 296,1182C296,1160 278,1142 258,1140"/>
+          <path style={lineFill} d="M246,1188C243,1188 242,1191 246,1192C250,1191 249,1188 246,1188Z"/>
+          <path {...lw} strokeWidth="2.6" style={strokeTrans} d="M246,1190l0,6M246,1196C242,1202 236,1202 233,1198M246,1196C250,1202 256,1202 259,1198"/>
+          {/* Whiskers */}
+          <path {...lw} strokeWidth="2.6" style={strokeTrans} d="M218,1188l-22,-4M218,1196l-22,4"/>
+          <path {...lw} strokeWidth="2.6" style={strokeTrans} d="M274,1188l22,-4M274,1196l22,4"/>
+          {/* Sleepy eyes */}
+          <path {...lw} strokeWidth="2.6" style={strokeTrans} d="M224,1180C228,1186 234,1186 238,1180"/>
+          <path {...lw} strokeWidth="2.6" style={strokeTrans} d="M254,1180C258,1186 264,1186 268,1180"/>
+        </g>
+      </svg>
+
+      {/* ── Logo (new-tea-logo.svg) in upper third ── */}
       <img
         src="/images/new-tea-logo.svg"
         alt="Rate your Tea"
         style={{
           position: "absolute",
-          top: "32%", left: "50%",
-          transform: logoTransform,
-          width: "78%", maxWidth: 320,
+          top: "20%", left: "50%",
+          transform: "translateX(-50%)",
+          width: "78%", maxWidth: 310,
           opacity: logoOpacity,
-          transition: logoTransition,
-          filter: "brightness(0) saturate(100%) invert(55%) sepia(40%) saturate(600%) hue-rotate(185deg) brightness(95%)",
-          willChange: "transform, opacity",
+          transition: logoTrans,
+          filter: logoFilter,
+          willChange: "opacity, filter",
         }}
       />
-      {/* White iris wipe */}
+
+      {/* ── White iris wipe ── */}
       <div style={{
         position: "absolute",
         width: 80, height: 80, borderRadius: "50%",
-        top: "calc(38% - 40px)", left: "calc(50% - 40px)",
+        top: "calc(50% - 40px)", left: "calc(50% - 40px)",
         background: "#fff",
-        transform: irisGrow ? "scale(28)" : "scale(0)",
+        transform: irisGrow ? "scale(30)" : "scale(0)",
         transition: irisGrow ? "transform 1.8s cubic-bezier(0.25,0.1,0.25,1)" : "none",
         willChange: "transform", zIndex: 3,
-      }} />
+      }}/>
     </div>
   );
 }
