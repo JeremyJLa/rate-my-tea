@@ -1629,8 +1629,7 @@ function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
         alt="" aria-hidden
         style={{
           position: "absolute", bottom: 0, left: 0, width: "100%", display: "block",
-          maskImage: "linear-gradient(to bottom, transparent 0%, transparent 50%, black 72%, black 100%)",
-          WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, transparent 50%, black 72%, black 100%)",
+          mixBlendMode: "multiply",
         }}
       />
 
