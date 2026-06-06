@@ -1611,39 +1611,32 @@ function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
   return (
     <div style={{ position: "absolute", inset: 0, zIndex: 100, overflow: "hidden" }}>
 
-      {/* ── Full-screen illustrated SVG ── */}
+      {/* ── Sky: CSS gradients so they fill the full viewport without SVG clipping ── */}
+      <div style={{
+        position: "absolute", inset: 0,
+        background: "linear-gradient(to bottom, #ffeda9 0%, #fce6b4 20%, #f8dabf 40%, #f3cdd6 62%, #efc6e0 82%, #ecc6e8 100%)",
+      }}/>
+      <div style={{
+        position: "absolute", inset: 0,
+        background: "linear-gradient(to bottom, #87b2cc 0%, #7a9fbd 20%, #66819f 42%, #545f88 62%, #45456f 82%, #3a3866 100%)",
+        opacity: isNight ? 1 : 0,
+        transition: "opacity 2.4s ease",
+      }}/>
+
+      {/* ── Illustration as HTML img — SVGs are transparent when used this way ── */}
+      <img
+        src="/images/Illustrator-vector2.svg"
+        alt="" aria-hidden
+        style={{ position: "absolute", bottom: 0, left: 0, width: "100%", display: "block" }}
+      />
+
+      {/* ── Stars + Cat overlay SVG ── */}
       <svg
         viewBox="0 0 1149 2532"
         preserveAspectRatio="xMidYMax slice"
         style={{ position: "absolute", inset: 0, width: "100%", height: "100%", display: "block" }}
         xmlns="http://www.w3.org/2000/svg"
       >
-        <defs>
-          <linearGradient id="v3sg" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0"    stopColor="#ffeda9"/>
-            <stop offset="0.20" stopColor="#fce6b4"/>
-            <stop offset="0.40" stopColor="#f8dabf"/>
-            <stop offset="0.62" stopColor="#f3cdd6"/>
-            <stop offset="0.82" stopColor="#efc6e0"/>
-            <stop offset="1"    stopColor="#ecc6e8"/>
-          </linearGradient>
-          <linearGradient id="v3ng" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0"    stopColor="#87b2cc"/>
-            <stop offset="0.20" stopColor="#7a9fbd"/>
-            <stop offset="0.42" stopColor="#66819f"/>
-            <stop offset="0.62" stopColor="#545f88"/>
-            <stop offset="0.82" stopColor="#45456f"/>
-            <stop offset="1"    stopColor="#3a3866"/>
-          </linearGradient>
-        </defs>
-
-        {/* Sky */}
-        <rect x="0" y="0" width="1149" height="2532" fill="url(#v3sg)"/>
-        <rect x="0" y="0" width="1149" height="2532" fill="url(#v3ng)"
-          style={{ opacity: isNight ? 1 : 0, transition: "opacity 2.4s ease" }}/>
-
-        {/* Illustration anchored to bottom (viewBox 1149×1369 → positioned y=1163) */}
-        <image href="/images/Illustrator-vector2.svg" x="0" y="1163" width="1149" height="1369"/>
 
         {/* Stars — fade in at night */}
         <g style={{ opacity: starsIn ? 1 : 0, transition: "opacity 2.4s ease" }} fill="#dfeaf6">
@@ -1698,7 +1691,7 @@ function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
           <path {...lw} strokeWidth="2.6" style={strokeTrans} d="M224,1180C228,1186 234,1186 238,1180"/>
           <path {...lw} strokeWidth="2.6" style={strokeTrans} d="M254,1180C258,1186 264,1186 268,1180"/>
         </g>
-      </svg>
+      </svg>{/* end stars+cat overlay */}
 
       {/* ── Logo (new-tea-logo.svg) in upper third ── */}
       <img
