@@ -1587,12 +1587,12 @@ function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
 
   useEffect(() => {
     const ts = [
-      setTimeout(() => setLogoIn(true),   900),
-      setTimeout(() => setIsNight(true),  3200),
-      setTimeout(() => setStarsIn(true),  3800),
-      setTimeout(() => setLogoOut(true),  5200),
-      setTimeout(() => setIrisGrow(true), 5900),
-      setTimeout(() => onDismiss(),       7600),
+      setTimeout(() => setLogoIn(true),   800),
+      setTimeout(() => setIsNight(true),  2800),
+      setTimeout(() => setStarsIn(true),  3400),
+      setTimeout(() => setLogoOut(true),  4500),
+      setTimeout(() => setIrisGrow(true), 5100),
+      setTimeout(() => onDismiss(),       6200),
     ];
     return () => ts.forEach(clearTimeout);
   }, [onDismiss]);
@@ -1741,7 +1741,7 @@ function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
         top: "calc(50% - 40px)", left: "calc(50% - 40px)",
         background: "#fff",
         transform: irisGrow ? "scale(30)" : "scale(0)",
-        transition: irisGrow ? "transform 1.8s cubic-bezier(0.25,0.1,0.25,1)" : "none",
+        transition: irisGrow ? "transform 1.2s cubic-bezier(0.25,0.1,0.25,1)" : "none",
         willChange: "transform", zIndex: 3,
       }}/>
     </div>
