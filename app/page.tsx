@@ -1592,7 +1592,7 @@ function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
       setTimeout(() => setStarsIn(true),  3400),
       setTimeout(() => setLogoOut(true),  4500),
       setTimeout(() => setIrisGrow(true), 5100),  // iris starts expanding
-      setTimeout(() => onDismiss(),       5850),  // home screen appears while iris is white
+      setTimeout(() => onDismiss(),       6900),  // home screen appears once iris is full white
     ];
     return () => ts.forEach(clearTimeout);
   }, [onDismiss]);
@@ -1745,7 +1745,7 @@ function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
         top: "calc(50% - 60px)", left: "calc(50% - 60px)",
         background: "#fff",
         transform: irisGrow ? "scale(26)" : "scale(0)",
-        transition: irisGrow ? "transform 1.4s cubic-bezier(0.16,1,0.3,1)" : "none",
+        transition: irisGrow ? "transform 2.2s cubic-bezier(0.4,0,0.2,1)" : "none",
         willChange: "transform", zIndex: 3,
       }}/>
 
