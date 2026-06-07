@@ -1627,6 +1627,15 @@ function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
         transition: "opacity 2.4s ease",
       }}/>
 
+      {/* ── Snow ground fill — extends the illustration's bottom colour to the
+           screen edge, replacing the white fills that were removed from the SVG ── */}
+      <div style={{
+        position: "absolute", bottom: 0, left: 0, right: 0,
+        height: "22%",
+        background: isNight ? "#cadef2" : "#dedcfc",
+        transition: "background 2.4s ease",
+      }}/>
+
       {/* ── Illustration — filter shifts colours to match design tokens:
            sunrise → periwinkle/lavender (#8ea9f0, #2b52e0)
            night   → desaturated slate-grey (#738da2, #1b2748) ── */}
