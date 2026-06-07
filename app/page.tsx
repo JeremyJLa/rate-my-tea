@@ -1615,39 +1615,43 @@ function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
   return (
     <div style={{ position: "absolute", inset: 0, zIndex: 100, overflow: "hidden" }}>
 
-      {/* ── Sky: CSS gradients so they fill the full viewport without SVG clipping ── */}
+      {/* ── Sunrise sky — warm pink fading to soft lavender ── */}
       <div style={{
         position: "absolute", inset: 0,
-        background: "linear-gradient(to bottom, #ffeda9 0%, #fce6b4 20%, #f8dabf 40%, #f3cdd6 62%, #efc6e0 82%, #ecc6e8 100%)",
+        background: "linear-gradient(to bottom, #f5a0b8 0%, #f0aac5 22%, #e8b8d8 44%, #dcbee8 65%, #cfbfec 82%, #c8c0ee 100%)",
       }}/>
+      {/* ── Night sky — deep navy; fades in over sunrise ── */}
       <div style={{
         position: "absolute", inset: 0,
-        background: "linear-gradient(to bottom, #87b2cc 0%, #7a9fbd 20%, #66819f 42%, #545f88 62%, #45456f 82%, #3a3866 100%)",
+        background: "linear-gradient(to bottom, #0d1b3e 0%, #112040 22%, #162848 44%, #1a2c52 65%, #1c2e58 82%, #1b2c54 100%)",
         opacity: isNight ? 1 : 0,
         transition: "opacity 2.4s ease",
       }}/>
 
-      {/* ── Snow ground fill — extends the illustration's bottom colour to the
-           screen edge, replacing the white fills that were removed from the SVG ── */}
+      {/* ── Snow ground fill — extends bottom colour to screen edge ── */}
       <div style={{
         position: "absolute", bottom: 0, left: 0, right: 0,
-        height: "22%",
-        background: isNight ? "#cadef2" : "#dedcfc",
+        height: "24%",
+        background: isNight ? "#bcd2ec" : "#eae6fc",
         transition: "background 2.4s ease",
       }}/>
 
-      {/* ── Illustration — filter shifts colours to match design tokens ── */}
+      {/* ── Illustration — scaled up so pine trees reach higher into sky;
+           filter colour-grades to match each mode ── */}
       <img
         src="/images/Illustrator-vector2.svg"
         alt="" aria-hidden
         style={{
-          position: "absolute", bottom: 0, left: 0, width: "100%", display: "block",
+          position: "absolute", bottom: 0, left: "50%",
+          width: "115%",
+          transform: "translateX(-50%)",
+          display: "block",
           filter: isNight
-            ? "hue-rotate(12deg) saturate(0.22) brightness(0.68)"
-            : "hue-rotate(18deg) saturate(0.75) brightness(1.08)",
+            ? "hue-rotate(8deg) saturate(0.28) brightness(0.58)"
+            : "hue-rotate(25deg) saturate(0.85) brightness(1.12)",
           transition: "filter 2.4s ease",
-          maskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 100%)",
-          WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 100%)",
+          maskImage: "linear-gradient(to bottom, transparent 0%, black 14%, black 100%)",
+          WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 14%, black 100%)",
         }}
       />
 
