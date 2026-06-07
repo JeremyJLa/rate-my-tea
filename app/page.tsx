@@ -435,14 +435,16 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard, onVi
 }) {
   const tastedCount = ratings.size;
   const progressPct = (tastedCount / 11) * 100;
-  const [cardsIn, setCardsIn] = useState(false);
+  const [cardsIn,  setCardsIn]  = useState(false);
+  const [headerIn, setHeaderIn] = useState(false);
   const [decideOpen, setDecideOpen] = useState(false);
   const unrated = TEAS.filter(t => !ratings.has(t.id));
 
   useEffect(() => {
     if (!splashDone) return;
-    const t = setTimeout(() => setCardsIn(true), 20);
-    return () => clearTimeout(t);
+    const t1 = setTimeout(() => setCardsIn(true),  20);
+    const t2 = setTimeout(() => setHeaderIn(true), 60);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [splashDone]);
 
   return (
@@ -452,7 +454,7 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard, onVi
       {/* Header */}
       <div className="px-5 pb-4 text-center" style={{ paddingTop: 8 }}>
         <p style={{ fontSize: 17, color: "#9CA3AF", fontWeight: 400, marginBottom: 2, letterSpacing: 0.1 }}>Hi Kate</p>
-        <img src="/images/tea-logo-horiz.svg" alt="Rate your Tea" style={{ width: 200, maxWidth: "70%", margin: "4px auto 0", display: "block" }} />
+        <img src="/images/tea-logo-horiz.svg" alt="Rate your Tea" style={{ width: 200, maxWidth: "70%", margin: "4px auto 0", display: "block", opacity: headerIn ? 1 : 0, transition: "opacity 1.4s ease" }} />
         {tastedCount === 0 ? (
           <p style={{ fontSize: 14, color: "#9CA3AF" }}>Pick any of your samples and start rating</p>
         ) : (
@@ -1598,8 +1600,10 @@ function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
   }, [onDismiss]);
 
   const logoOpacity  = logoOut ? 0 : logoIn ? 1 : 0;
-  const logoTrans    = logoOut ? "opacity 0.5s ease-in" : "opacity 0.9s ease-out";
-  // Sunrise: periwinkle #6c8ad2 · Night: white
+  const logoTrans    = logoOut
+    ? "opacity 0.5s ease-in, filter 0.5s ease-in"
+    : "opacity 0.9s ease-out, filter 2.4s ease";
+  // Sunrise: periwinkle #6c8ad2 · Night: white — filter transitions with the sky (2.4s)
   const logoFilter   = isNight
     ? "brightness(0) invert(1)"
     : "brightness(0) saturate(100%) invert(52%) sepia(35%) saturate(600%) hue-rotate(195deg)";
