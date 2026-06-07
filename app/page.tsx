@@ -1627,18 +1627,15 @@ function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
         transition: "opacity 2.4s ease",
       }}/>
 
-      {/* ── Illustration — mix-blend-mode:multiply makes the white SVG background
-           transparent so the gradient sky shows through. Mask fades the top edge
-           of the scene into the sky naturally. No wrapper div (avoids stacking
-           context that would break the blend mode). ── */}
+      {/* ── Illustration — fully opaque, sits in front of gradient.
+           Mask only fades the very top edge so it dissolves softly into the sky. ── */}
       <img
         src="/images/Illustrator-vector2.svg"
         alt="" aria-hidden
         style={{
           position: "absolute", bottom: 0, left: 0, width: "100%", display: "block",
-          mixBlendMode: "multiply",
-          maskImage: "linear-gradient(to bottom, transparent 0%, black 30%, black 100%)",
-          WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 30%, black 100%)",
+          maskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 100%)",
+          WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 100%)",
         }}
       />
 
