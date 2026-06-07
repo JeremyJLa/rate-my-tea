@@ -17,6 +17,8 @@ const TEAS = [
   { id: "scots-breakfast",      name: "Scots Breakfast",      image: "/images/scots-breakfast.png",      color: "#1A4F8A", t2url: "https://www.t2tea.com/search?q=scots+breakfast",       description: "Bold and unapologetically strong, Scots Breakfast is a hearty highland-inspired blend with a robust, warming character. Not for the faint-hearted — and all the better for it." },
   { id: "new-zealand-breakfast",name: "New Zealand Breakfast",image: "/images/new-zealand-breakfast.jpg",color: "#7AB028", t2url: "https://www.t2tea.com/search?q=new+zealand+breakfast", description: "Fresh, clean and naturally light with a gentle grassy sweetness. New Zealand Breakfast reflects the country's pure landscapes — a bright, uncomplicated cup to start the day." },
   { id: "new-york-breakfast",   name: "New York Breakfast",   image: "/images/new-york-breakfast.jpg",   color: "#D4A020", t2url: "https://www.t2tea.com/search?q=new+york+breakfast",    description: "Bold, energising and built for pace — just like the city. New York Breakfast hits hard with a robust, full-strength brew that powers you through whatever the day throws at you." },
+  { id: "caramel-brownie",      name: "Caramel Brownie",      image: "/images/caramel-brownie.jpg",       color: "#7B4A1E", t2url: "https://www.t2tea.com/search?q=caramel+brownie",          description: "Indulgent and warming, this dessert-inspired blend wraps rich caramel sweetness around a dark, chocolatey base. Like a fresh-baked brownie in a cup — deeply satisfying any time of day." },
+  { id: "lamington",            name: "Lamington",            image: "/images/lamington.jpg",             color: "#B04080", t2url: "https://www.t2tea.com/search?q=lamington+tea",             description: "A true Aussie icon in tea form. Light and sweet with notes of coconut and chocolate, this playful blend captures the spirit of the classic sponge cake. Delicate, fun and unmistakably Australian." },
 ];
 
 // ── Taste DNA data ────────────────────────────────────────────────────────────
@@ -33,6 +35,8 @@ const TEA_INGREDIENT_MAP: Record<string, string[]> = {
   "scots-breakfast":       ["cinnamon", "cacao-husk", "oat-flakes"],
   "new-zealand-breakfast": ["malt", "bergamot", "vanilla"],
   "new-york-breakfast":    ["cinnamon", "vanilla", "malt"],
+  "caramel-brownie":       ["cacao-husk", "vanilla", "oat-flakes"],
+  "lamington":             ["coconut", "cacao-husk", "rose-petals"],
 };
 
 const ALL_INGREDIENTS = [
