@@ -441,7 +441,7 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard, onVi
 
   useEffect(() => {
     if (!splashDone) return;
-    const t = setTimeout(() => setCardsIn(true), 80);
+    const t = setTimeout(() => setCardsIn(true), 20);
     return () => clearTimeout(t);
   }, [splashDone]);
 
@@ -489,7 +489,7 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard, onVi
             <div key={tea.id} style={{
               opacity: cardsIn ? 1 : 0,
               transform: cardsIn ? "translateY(0)" : "translateY(-24px)",
-              transition: `opacity 0.4s ease ${i * 55}ms, transform 0.5s cubic-bezier(0.22,1,0.36,1) ${i * 55}ms`,
+              transition: `opacity 0.4s ease ${i * 30}ms, transform 0.5s cubic-bezier(0.22,1,0.36,1) ${i * 30}ms`,
             }}>
               <TeaCard tea={tea} rated={ratings.has(tea.id)}
                 animating={animatingId === tea.id} onClick={() => onSelectTea(tea.id)} />
@@ -499,7 +499,7 @@ function HomeScreen({ ratings, animatingId, onSelectTea, onViewLeaderboard, onVi
           <div style={{
             opacity: cardsIn ? 1 : 0,
             transform: cardsIn ? "translateY(0)" : "translateY(-24px)",
-            transition: `opacity 0.4s ease ${TEAS.length * 55}ms, transform 0.5s cubic-bezier(0.22,1,0.36,1) ${TEAS.length * 55}ms`,
+            transition: `opacity 0.4s ease ${TEAS.length * 30}ms, transform 0.5s cubic-bezier(0.22,1,0.36,1) ${TEAS.length * 30}ms`,
             width: "100%", aspectRatio: "1",
             display: "flex", alignItems: "center", justifyContent: "center",
           }}>
