@@ -1589,12 +1589,12 @@ function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
 
   useEffect(() => {
     const ts = [
-      setTimeout(() => setLogoIn(true),   700),
-      setTimeout(() => setIsNight(true),  2400),
-      setTimeout(() => setStarsIn(true),  3000),
-      setTimeout(() => setLogoOut(true),  3900),
-      setTimeout(() => setIrisGrow(true), 4400),  // iris starts expanding
-      setTimeout(() => onDismiss(),       6200),  // home screen appears once iris is full white
+      setTimeout(() => setLogoIn(true),   500),
+      setTimeout(() => setIsNight(true),  1800),
+      setTimeout(() => setStarsIn(true),  2300),
+      setTimeout(() => setLogoOut(true),  3000),
+      setTimeout(() => setIrisGrow(true), 3500),  // iris starts expanding
+      setTimeout(() => onDismiss(),       5300),  // home screen appears once iris is full white
     ];
     return () => ts.forEach(clearTimeout);
   }, [onDismiss]);
