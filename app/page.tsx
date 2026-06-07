@@ -1627,13 +1627,18 @@ function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
         transition: "opacity 2.4s ease",
       }}/>
 
-      {/* ── Illustration — fully opaque, sits in front of gradient.
-           Mask only fades the very top edge so it dissolves softly into the sky. ── */}
+      {/* ── Illustration — filter shifts colours to match design tokens:
+           sunrise → periwinkle/lavender (#8ea9f0, #2b52e0)
+           night   → desaturated slate-grey (#738da2, #1b2748) ── */}
       <img
         src="/images/Illustrator-vector2.svg"
         alt="" aria-hidden
         style={{
           position: "absolute", bottom: 0, left: 0, width: "100%", display: "block",
+          filter: isNight
+            ? "hue-rotate(12deg) saturate(0.22) brightness(0.68)"
+            : "hue-rotate(18deg) saturate(0.75) brightness(1.08)",
+          transition: "filter 2.4s ease",
           maskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 100%)",
           WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 100%)",
         }}
