@@ -1599,14 +1599,6 @@ function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
     return () => ts.forEach(clearTimeout);
   }, [onDismiss]);
 
-  const logoOpacity  = logoOut ? 0 : logoIn ? 1 : 0;
-  const logoTrans    = logoOut
-    ? "opacity 0.5s ease-in, filter 0.5s ease-in"
-    : "opacity 0.9s ease-out, filter 2.4s ease";
-  // Sunrise: periwinkle #6c8ad2 · Night: white — filter transitions with the sky (2.4s)
-  const logoFilter   = isNight
-    ? "brightness(0) invert(1)"
-    : "brightness(0) saturate(100%) invert(52%) sepia(35%) saturate(600%) hue-rotate(195deg)";
 
   const stroke = isNight ? "#1b2748" : "#2b52e0";
   const strokeTrans = { stroke, transition: "stroke 2.4s ease" };
@@ -1724,21 +1716,38 @@ function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
         </g>
       </svg>{/* end stars+cat overlay */}
 
-      {/* ── Logo (new-tea-logo.svg) in upper third ── */}
-      <img
-        src="/images/new-tea-logo.svg"
-        alt="Rate your Tea"
-        style={{
-          position: "absolute",
-          top: "20%", left: "50%",
-          transform: "translateX(-50%)",
-          width: "78%", maxWidth: 310,
-          opacity: logoOpacity,
-          transition: logoTrans,
-          filter: logoFilter,
-          willChange: "opacity, filter",
-        }}
-      />
+      {/* ── Logo: two stacked copies crossfade for a smooth colour shift.
+           CSS can't interpolate between dissimilar filter chains, so we
+           keep each copy at a fixed filter and transition opacity only. ── */}
+      {(["periwinkle", "white"] as const).map(variant => {
+        const isWhite = variant === "white";
+        // periwinkle copy: visible when not night and not logoOut
+        // white copy:      visible when night and not logoOut
+        const op = logoOut ? 0
+          : !logoIn    ? 0
+          : isWhite    ? (isNight ? 1 : 0)
+          :              (isNight ? 0 : 1);
+        return (
+          <img
+            key={variant}
+            src="/images/new-tea-logo.svg"
+            alt={isWhite ? "" : "Rate your Tea"}
+            aria-hidden={isWhite}
+            style={{
+              position: "absolute",
+              top: "20%", left: "50%",
+              transform: "translateX(-50%)",
+              width: "78%", maxWidth: 310,
+              opacity: op,
+              transition: "opacity 2.4s ease",
+              filter: isWhite
+                ? "brightness(0) invert(1)"
+                : "brightness(0) saturate(100%) invert(52%) sepia(35%) saturate(600%) hue-rotate(195deg)",
+              willChange: "opacity",
+            }}
+          />
+        );
+      })}
 
       {/* ── Iris wipe — white circle blooms from centre, covering the scene.
            onDismiss fires 750ms in so the home screen is already white underneath,
