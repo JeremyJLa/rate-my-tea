@@ -1583,16 +1583,16 @@ function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
   const [starsIn,  setStarsIn]  = useState(false);
   const [logoIn,   setLogoIn]   = useState(false);
   const [logoOut,  setLogoOut]  = useState(false);
-  const [fading,   setFading]   = useState(false);
+  const [irisGrow, setIrisGrow] = useState(false);
 
   useEffect(() => {
     const ts = [
-      setTimeout(() => setLogoIn(true),  800),
-      setTimeout(() => setIsNight(true), 2800),
-      setTimeout(() => setStarsIn(true), 3400),
-      setTimeout(() => setLogoOut(true), 4500),
-      setTimeout(() => setFading(true),  5100),   // begin cross-fade to home
-      setTimeout(() => onDismiss(),      5950),   // unmount after 850ms fade
+      setTimeout(() => setLogoIn(true),   800),
+      setTimeout(() => setIsNight(true),  2800),
+      setTimeout(() => setStarsIn(true),  3400),
+      setTimeout(() => setLogoOut(true),  4500),
+      setTimeout(() => setIrisGrow(true), 5100),  // iris starts expanding
+      setTimeout(() => onDismiss(),       5850),  // home screen appears while iris is white
     ];
     return () => ts.forEach(clearTimeout);
   }, [onDismiss]);
@@ -1615,8 +1615,6 @@ function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
   return (
     <div style={{
       position: "absolute", inset: 0, zIndex: 100, overflow: "hidden",
-      opacity: fading ? 0 : 1,
-      transition: fading ? "opacity 0.85s ease-in-out" : "none",
     }}>
 
       {/* ── Sunrise sky — warm pink fading to soft lavender ── */}
@@ -1737,6 +1735,19 @@ function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
           willChange: "opacity, filter",
         }}
       />
+
+      {/* ── Iris wipe — white circle blooms from centre, covering the scene.
+           onDismiss fires 750ms in so the home screen is already white underneath,
+           making the cut invisible. ease-out so it expands fast then settles. ── */}
+      <div style={{
+        position: "absolute",
+        width: 120, height: 120, borderRadius: "50%",
+        top: "calc(50% - 60px)", left: "calc(50% - 60px)",
+        background: "#fff",
+        transform: irisGrow ? "scale(26)" : "scale(0)",
+        transition: irisGrow ? "transform 1.4s cubic-bezier(0.16,1,0.3,1)" : "none",
+        willChange: "transform", zIndex: 3,
+      }}/>
 
     </div>
   );
