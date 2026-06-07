@@ -1579,6 +1579,7 @@ function SplashScreenV1({ onDismiss }: { onDismiss: () => void }) {
 // ── Splash V3 — sunrise→night illustrated scene (design_handoff_rate_your_tea2) ─
 
 function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
+  const [illIn,    setIllIn]    = useState(false);
   const [isNight,  setIsNight]  = useState(false);
   const [starsIn,  setStarsIn]  = useState(false);
   const [logoIn,   setLogoIn]   = useState(false);
@@ -1587,6 +1588,7 @@ function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
 
   useEffect(() => {
     const ts = [
+      setTimeout(() => setIllIn(true),    80),
       setTimeout(() => setLogoIn(true),   900),
       setTimeout(() => setIsNight(true),  3200),
       setTimeout(() => setStarsIn(true),  3800),
@@ -1628,17 +1630,18 @@ function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
       }}/>
 
       {/* ── Snow ground fill — extends the illustration's bottom colour to the
-           screen edge, replacing the white fills that were removed from the SVG ── */}
+           screen edge; slides up with the illustration on entry ── */}
       <div style={{
         position: "absolute", bottom: 0, left: 0, right: 0,
         height: "22%",
         background: isNight ? "#cadef2" : "#dedcfc",
-        transition: "background 2.4s ease",
+        transition: illIn
+          ? "transform 1.1s cubic-bezier(0.22,1,0.36,1), background 2.4s ease"
+          : "none",
+        transform: illIn ? "translateY(0)" : "translateY(60px)",
       }}/>
 
-      {/* ── Illustration — filter shifts colours to match design tokens:
-           sunrise → periwinkle/lavender (#8ea9f0, #2b52e0)
-           night   → desaturated slate-grey (#738da2, #1b2748) ── */}
+      {/* ── Illustration — slides up on entry, then colour-grades per mode ── */}
       <img
         src="/images/Illustrator-vector2.svg"
         alt="" aria-hidden
@@ -1647,7 +1650,10 @@ function SplashScreenV3({ onDismiss }: { onDismiss: () => void }) {
           filter: isNight
             ? "hue-rotate(12deg) saturate(0.22) brightness(0.68)"
             : "hue-rotate(18deg) saturate(0.75) brightness(1.08)",
-          transition: "filter 2.4s ease",
+          transition: illIn
+            ? "transform 1.1s cubic-bezier(0.22,1,0.36,1), filter 2.4s ease"
+            : "none",
+          transform: illIn ? "translateY(0)" : "translateY(60px)",
           maskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 100%)",
           WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 100%)",
         }}
